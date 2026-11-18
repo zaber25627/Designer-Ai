@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SW Design Studio PRO v2</title>
+<title>SW Design Studio PRO v2.2</title>
 <style>
 :root{--n0:#05070D;--n1:#0B1020;--n2:#111a30;--gl:rgba(255,255,255,.05);--ln:rgba(255,255,255,.09);--tx:#E8ECF5;--mu:#8C96AD;--gold:#F5C451;--blue:#2F8CFF}
 *{box-sizing:border-box}
@@ -70,7 +70,7 @@ input[type=text],input[type=search],select{width:100%;padding:10px 12px;border-r
 </style>
 </head>
 <body>
-<header><div class="logo">SW</div><div><b>SW Design Studio PRO v2</b><small id="hdrInfo">কোনো প্রজেক্ট নেই</small></div>
+<header><div class="logo">SW</div><div><b>SW Design Studio PRO v2.2</b><small id="hdrInfo">কোনো প্রজেক্ট নেই</small></div>
 <div class="hbtns"><button class="sm alt" id="undo" title="Undo">↶</button><button class="sm alt" id="redo" title="Redo">↷</button></div></header>
 <div class="wrap">
 <div class="tabs" id="tabs">
@@ -102,7 +102,7 @@ input[type=text],input[type=search],select{width:100%;padding:10px 12px;border-r
 <section class="pane" id="pTh">
 <div class="box">
   <h2>Theme Library — Complete Redesign Themes</h2>
-  <p>প্রতিটি নতুন থিম শুধু রং নয় — Button, Icon, Layout, Typography, Component, Color, Animation ও Responsive: ৮টি লেয়ারের পূর্ণ ডিজাইন সিস্টেম। থাম্বনেইলে সেই থিমের আসল বাটন/আইকন/নেভ স্টাইল দেখা যায়।</p>
+  <p>প্রতিটি নতুন থিম শুধু রং নয় — Button, Icon, Layout, Typography, Component, Color, Animation ও Responsive: ২৩ লেয়ারের পূর্ণ ডিজাইন সিস্টেম। থাম্বনেইলে সেই থিমের আসল বাটন/আইকন/নেভ স্টাইল দেখা যায়।</p>
   <div class="info" id="selInfo"></div>
   <div class="lay" id="selLay"></div>
   <label class="chk"><input type="checkbox" id="lockTheme" checked> 🔒 অ্যাপে নির্বাচিত থিম লক রাখুন (অ্যাপের নিজস্ব থিম-সুইচার নতুন থিম বদলাবে না)</label>
@@ -130,7 +130,7 @@ input[type=text],input[type=search],select{width:100%;padding:10px 12px;border-r
 <section class="pane" id="pCu">
 <div class="cuwrap">
 <div class="box">
-  <h2>Design Customization (৮ লেয়ার)</h2>
+  <h2>Design Customization (৯ লেয়ার)</h2>
   <p>"Theme default" মানে নির্বাচিত থিমের নিজস্ব ডিজাইন। যা বদলাবেন শুধু সেটাই বদলাবে। শুধুমাত্র CSS — কোনো লজিক/ID/ফাংশন বদলায় না। কাস্টম সেটিং সব থিমের (অরিজিনাল সহ) ওপর প্রয়োগ হয়, ডাউনলোডেও যায়।</p>
   <label class="chk"><input type="checkbox" id="cuLive" checked> ⚡ Live — বদলানোর সাথে সাথে প্রিভিউ আপডেট</label>
   <div id="cuBody"></div>
@@ -504,7 +504,21 @@ table{width:100%;font-size:.78rem}th,td{padding:8px;text-align:left}
     ['rose','Rose Quartz','গোলাপি কোয়ার্টজ, নরম ও মার্জিত',0,0,'#FFF1F5','#FFFFFF','#3A1A26','#8F6677','#E11D74','#F59E0B','Poppins',20,'soft'],
     ['forest','Forest Zen','প্রশান্ত সবুজ, জেন মিনিমাল',0,0,'#F1F5EE','#FFFFFF','#1C2B1E','#667A68','#3F7D4E','#C58B2A','Nunito',18,'zen'],
     ['terminal','Retro Terminal','ক্লাসিক গ্রিন-অন-ব্ল্যাক টার্মিনাল',1,1,'#020A04','#07140A','#B9FFC8','#5E9C6D','#33FF66','#FFB000','JetBrains Mono',2,'term'],
-    ['candy','Candy Pop','উজ্জ্বল ক্যান্ডি রঙ, খেলাধুলার লুক',0,0,'#FFF7FB','#FFFFFF','#2B1B3D','#8C7AA0','#FF4FA3','#7C4DFF','Quicksand',26,'pop']
+    ['candy','Candy Pop','উজ্জ্বল ক্যান্ডি রঙ, খেলাধুলার লুক',0,0,'#FFF7FB','#FFFFFF','#2B1B3D','#8C7AA0','#FF4FA3','#7C4DFF','Quicksand',26,'pop'],
+    ['platinum','Platinum','প্লাটিনাম সিলভার লক্সারি',0,1,'#F4F5F7','#FFFFFF','#1B212B','#6B7482','#98A4B3','#C0A468','Cormorant Garamond',14,'metal'],
+    ['sapphire','Sapphire','রয়্যল নীল স্যাফায়ার গভীরতা',1,1,'#060B1F','#0C1430','#E8F0FF','#7C90B8','#2A5CFF','#66D9FF','Playfair Display',16,'lux'],
+    ['carbon','Carbon','ম্যাট কার্বন কালো, পোড়়া কমলা',1,1,'#111214','#1A1C1F','#E4E6EA','#8A8F98','#FF6B2C','#8E9DAF','Inter',8,'flat'],
+    ['neo-brutalist','Neo-Brutalist','নিও-ব্রুটালিস্ট বোল্ড নীল-হলুদ',0,1,'#FFDE59','#FFFFFF','#111111','#5F5A3C','#3565FF','#FF477E','Space Grotesk',4,'pop'],
+    ['editorial','Editorial','সেরিফ মেগাজিন এডিটোরিয়াল',0,1,'#FAF8F4','#FFFFFF','#141210','#7A736A','#1A1A18','#A33B26','Playfair Display',2,'zen'],
+    ['synthwave','Synthwave','সিন্থওয়েভ নিয়ন গোলাপি-বেগুনি',1,1,'#14002E','#22064A','#FFE9F9','#A581C9','#FF3CAD','#25E2E0','Orbitron',10,'neon'],
+    ['nordic','Nordic','স্ক্যান্ডিনেভিয়ান শান্ত নীরবতা',0,1,'#F4F6F8','#FFFFFF','#22303C','#77828E','#46698B','#C77B4A','Inter',10,'zen'],
+    ['sandstone','Sandstone','উষ্ণ বালুকাময় মরুভূমি',0,1,'#F6EFE6','#FFFDF8','#4A3B2A','#96836C','#C0703C','#7C8F62','Cormorant Garamond',12,'soft'],
+    ['vaporwave','Vaporwave','ভেপরওয়েভ স্বপ্নময় বেগুনি-সায়ান',1,1,'#1E1040','#2B1A55','#F3EAFF','#B79ADC','#FF71CE','#01CDFE','Exo 2',18,'glass'],
+    ['matcha','Matcha','মাচা সবুজ চা-বাগান',0,1,'#F3F6EC','#FFFFFF','#2A3324','#79855F','#88B04B','#D98E4A','Quicksand',20,'soft'],
+    ['arctic','Arctic','আর্কটিক বরফ-নীল রিফ্রেশ',0,1,'#F0F7FB','#FFFFFF','#16303F','#6E8798','#149BE0','#7FD8E8','Quicksand',22,'glass'],
+    ['coral','Coral','প্রবাল গোলাপি-কমলা উষ্ণতা',0,1,'#FFF3EF','#FFFFFF','#3B1F18','#9C7266','#FF6F61','#00A6A6','Nunito',22,'pop'],
+    ['mocha','Mocha','মোকা কফি-চকলেট লক্সারি',1,1,'#1A1411','#251D18','#F0E6DC','#A08B7A','#C6926B','#E3B58C','Cormorant Garamond',16,'lux'],
+    ['graphite','Graphite','গ্রাফাইট নিরপেক্ষ পেশাদার',1,1,'#1B1C1F','#242629','#E8E9EB','#909499','#A8B4C0','#4A90D9','Inter',8,'flat'],
   ];
   var THEMES=ORIG.concat(NEW).map(function(a){return{id:a[0],name:a[1],desc:a[2],dark:!!a[3],premium:!!a[4],bg:a[5],card:a[6],text:a[7],muted:a[8],accent:a[9],sec:a[10],font:a[11],radius:a[12],fx:a[13],orig:a[13]==='orig'};});
   function T(id){for(var i=0;i<THEMES.length;i++)if(THEMES[i].id===id)return THEMES[i];return THEMES[0];}
@@ -514,9 +528,9 @@ table{width:100%;font-size:.78rem}th,td{padding:8px;text-align:left}
   function mix(a,b,p){if(a.indexOf('rgba')===0)return a;var x=rgb(a),y=rgb(b);return hex([0,1,2].map(function(i){return x[i]*(1-p)+y[i]*p;}));}
   function solid(c,fallback){return c.indexOf('rgba')===0?fallback:c;}
 
-  /* ================= DESIGN ENGINE — 8 LAYERS ================= */
+  /* ================= DESIGN ENGINE — 9 LAYERS ================= */
   // key order for compact presets
-  var KEYS=['btnShape','btnStyle','btnSize','btnShadow','btnHover','btnIcon','icoShape','icoStyle','icoSize','icoStroke','icoAnim','navStyle','navLabels','navActive','headerStyle','spacing','align','typeScale','headWeight','headTrack','bodyLine','headCase','cardStyle','inputStyle','badgeShape','switchStyle','sheetStyle','tableStyle','animLevel','animGlow','loadAnim','desktop'];
+  var KEYS=['btnShape','btnStyle','btnSize','btnShadow','btnHover','btnIcon','icoShape','icoStyle','icoSize','icoStroke','icoAnim','navStyle','navLabels','navActive','headerStyle','spacing','align','typeScale','headWeight','headTrack','bodyLine','headCase','cardStyle','inputStyle','badgeShape','switchStyle','sheetStyle','tableStyle','animLevel','animGlow','loadAnim','desktop','archType','logoStyle'];
   function A(a){var o={};KEYS.forEach(function(k,i){o[k]=a[i];});return o;}
   var PRE={
     orig:{},
@@ -555,9 +569,17 @@ table{width:100%;font-size:.78rem}th,td{padding:8px;text-align:left}
     rose:{btnStyle:'gradient',icoStyle:'duo',cardStyle:'elevated',navStyle:'island'},
     deepspace:{cardStyle:'glass',headerStyle:'glass'},
     sunset:{headerStyle:'gradient',navStyle:'island'},
-    material:{navStyle:'dock',navActive:'filled',headerStyle:'flat'}
+    material:{navStyle:'dock',navActive:'filled',headerStyle:'flat'},
+    platinum:{fontHead:'Cormorant Garamond',icoStyle:'duo'},
+    sapphire:{fontHead:'Playfair Display',headerStyle:'glass'},
+    carbon:{headCase:'uppercase',cardStyle:'flat'},
+    'neo-brutalist':{headCase:'uppercase',headWeight:'900',cardStyle:'flat',btnStyle:'solid'},
+    editorial:{fontHead:'Playfair Display',cardStyle:'outline',btnStyle:'outline',animLevel:'none'},
+    synthwave:{headWeight:'700',navActive:'glow'},
+    vaporwave:{icoStyle:'duo',headerStyle:'gradient'},
+    mocha:{fontHead:'Cormorant Garamond'}
   };
-  var DEF_VIEW={btnShape:'pill',btnStyle:'gradient',icoShape:'circle',icoStyle:'filled',navStyle:'float',headerStyle:'card',cardStyle:'raised',inputStyle:'filled',navActive:'filled'};
+  var DEF_VIEW={btnShape:'pill',btnStyle:'gradient',icoShape:'circle',icoStyle:'filled',navStyle:'float',headerStyle:'card',cardStyle:'raised',inputStyle:'filled',navActive:'filled',archType:'auto',logoStyle:'auto'};
   function prof(id,over){var t=T(id),p={},k,s=PRE[t.fx]||{},o=OV[id]||{};for(k in s)p[k]=s[k];for(k in o)p[k]=o[k];if(over)for(k in over)if(over[k]!==''&&over[k]!=null)p[k]=over[k];return p;}
   function eff(id){var p=prof(id),k;for(k in DEF_VIEW)if(p[k]==null)p[k]=DEF_VIEW[k];return p;}
   function cleanEng(e){var o={},k;for(k in(e||{}))if(e[k]!==''&&e[k]!=null)o[k]=e[k];return o;}
@@ -579,7 +601,31 @@ table{width:100%;font-size:.78rem}th,td{padding:8px;text-align:left}
     var gl='0 0 18px rgba('+ar+',.6),0 0 3px rgba('+ar+',.9)';
 
     /* 1) BUTTONS */
-    if(p.btnShape)o+=R(BA,'border-radius:'+{pill:'999px',round:'18px',soft:'12px',square:'4px',cut:'0'}[p.btnShape]+'!important');
+    var RB={pill:'999px',round:'18px',soft:'12px',square:'4px',cut:'0',joined:'10px',segment:'10px',stack:'10px'};
+    if(p.btnShape==='joined'||p.btnShape==='segment'||p.btnShape==='stack'){
+      var GBT='.btn,.chip,.task-go,.seg button';
+      o+=R('.seg,.row2,.chips','gap:0!important'+(p.btnShape==='stack'?';flex-direction:column!important':''));
+      if(p.btnShape==='segment'){
+        o+=R('.seg,.row2,.chips','border:2px solid var(--text)!important;border-radius:12px!important;overflow:hidden!important;background:var(--card)!important');
+        o+=R(GBT,'border-radius:0!important;border:0!important;border-right:1px solid var(--line2)!important');
+        o+=R('.seg>*:last-child,.row2>*:last-child,.chips>*:last-child','border-right:0!important');
+        o+=R('.seg button.on,.chip.on','background:var(--accent)!important;color:var(--on-accent)!important');
+      }
+      if(p.btnShape==='joined'){
+        o+=R('.btn+.btn,.chip+.chip,.seg button+.seg button','margin-left:-2px!important');
+        o+=R(GBT+':not(:first-child):not(:last-child)','border-radius:0!important');
+        o+=R(GBT+':first-child','border-radius:10px 0 0 10px!important');
+        o+=R(GBT+':last-child','border-radius:0 10px 10px 0!important');
+        o+=R(GBT+':only-child','border-radius:10px!important');
+      }
+      if(p.btnShape==='stack'){
+        o+=R(GBT,'border-radius:0!important;width:100%!important');
+        o+=R(GBT+':first-child','border-radius:10px 10px 0 0!important');
+        o+=R(GBT+':last-child','border-radius:0 0 10px 10px!important');
+        o+=R(GBT+':only-child','border-radius:10px!important');
+        o+=R('.btn+.btn,.chip+.chip,.seg button+.seg button','margin-top:-2px!important');
+      }
+    }else if(p.btnShape)o+=R(BA,'border-radius:'+(RB[p.btnShape]||'12px')+'!important');
     if(p.btnSize){var bz={sm:[40,'.8rem'],md:[50,'.9rem'],lg:[60,'1rem']}[p.btnSize];o+=R('.btn','min-height:'+bz[0]+'px!important;font-size:'+bz[1]+'!important');}
     var shd={none:'none',soft:'0 8px 18px rgba('+ar+',.3)',glow:gl,hard:'4px 4px 0 var(--accent2)'}[p.btnShadow];
     var bs='';
@@ -589,6 +635,8 @@ table{width:100%;font-size:.78rem}th,td{padding:8px;text-align:left}
       case'outline':bs='background:transparent!important;color:var(--accent)!important;border:2px solid var(--accent)!important';break;
       case'glass':bs='background:rgba('+ar+',.16)!important;color:var(--text)!important;border:1px solid rgba('+ar+',.5)!important;backdrop-filter:blur(10px)';break;
       case'neon':bs='background:transparent!important;color:var(--accent)!important;border:1px solid var(--accent)!important;text-shadow:0 0 8px rgba('+ar+',.8)';break;
+      case'tonal':bs='background:rgba('+ar+',.15)!important;color:var(--accent)!important;border:0!important';break;
+      case'shine':bs='background:var(--accent)!important;color:var(--on-accent)!important;border:0!important;position:relative!important;overflow:hidden!important';break;
       case'3d':bs='background:var(--grad-accent)!important;color:var(--on-accent)!important;border:0!important';break;
     }
     if(p.btnStyle==='3d')bs+=';box-shadow:0 5px 0 var(--accent2)!important';
@@ -596,6 +644,10 @@ table{width:100%;font-size:.78rem}th,td{padding:8px;text-align:left}
     else if(p.btnStyle==='outline')bs+=';box-shadow:none!important';
     else if(shd!==undefined)bs+=';box-shadow:'+shd+'!important';
     if(bs)o+=R(BM,bs);
+    if(p.btnStyle==='shine'){
+      o+=R(BM+'::after','content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.6),transparent);transform:skewX(-20deg);transition:left .55s ease;pointer-events:none');
+      o+=M('(hover:hover)',R(BM+':hover::after','left:130%'));
+    }
     var hv={lift:'transform:translateY(-2px)',glow:'box-shadow:'+gl+'!important',scale:'transform:scale(1.04)'}[p.btnHover];
     if(hv)o+=M('(hover:hover)',R('.btn:hover',hv+';filter:brightness(1.07)'));
     if(p.btnShape||p.btnStyle){
@@ -725,6 +777,40 @@ table{width:100%;font-size:.78rem}th,td{padding:8px;text-align:left}
     if(p.desktop==='centered')o+=M('(min-width:760px)',R('body','max-width:560px;margin-left:auto!important;margin-right:auto!important;box-shadow:0 0 70px rgba(0,0,0,.22)')+R('.nav','width:100%!important;max-width:560px!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important')+H('background:'+(t.bg.indexOf('rgba')===0?'#111':t.bg)));
     if(p.desktop==='sidebar')o+=M('(min-width:1024px)',R('body','padding-left:116px!important;padding-bottom:24px!important')+R('.nav','position:fixed!important;left:0!important;top:0!important;bottom:0!important;right:auto!important;width:104px!important;padding:14px 10px!important;transform:none!important;background:transparent!important')+R('.nav-in','flex-direction:column!important;justify-content:flex-start!important;gap:8px!important;height:100%!important;max-width:none!important;width:100%!important;margin:0!important;border-radius:22px!important;border-width:1px!important;padding:12px 6px!important;overflow-y:auto')+R('.nv','flex:0 0 auto!important;width:100%'));
     if(p.btnShape||p.btnSize)o+=M('(max-width:480px)',R('.btn','min-height:48px'));
+
+    /* 9) ARCHETYPE (brutal / editorial) */
+    if(p.archType==='brutal'){
+      o+=R(BA,'border:2px solid var(--text)!important;border-radius:0!important;box-shadow:none!important');
+      o+=R(BM,'background:var(--accent)!important;color:var(--on-accent)!important;border:2px solid var(--text)!important;box-shadow:5px 5px 0 var(--text)!important;border-radius:0!important');
+      o+=M('(hover:hover)',R(BM+':hover','transform:translate(-2px,-2px)!important;box-shadow:8px 8px 0 var(--text)!important'));
+      o+=R(BM+':active','transform:translate(3px,3px)!important;box-shadow:1px 1px 0 var(--text)!important');
+      o+=R(CARD,'border:2.5px solid var(--text)!important;border-radius:0!important;box-shadow:none!important');
+      o+=R(HS,'text-transform:uppercase!important;letter-spacing:.03em');
+    }else if(p.archType==='editorial'){
+      o+=R(HS,'font-family:"Playfair Display","Hind Siliguri",Georgia,serif!important;text-transform:none!important');
+      o+=R(CARD,'border:1px solid var(--line)!important;border-radius:2px!important;box-shadow:none!important');
+      o+=R(CARD+':not(.hero)','border-top:3px double var(--accent)!important');
+      o+=R(BM,'border-radius:2px!important;box-shadow:none!important');
+    }
+
+    /* 9) LOGO & BRAND (11 styles) */
+    if(p.logoStyle&&p.logoStyle!=='auto'){
+      var LG='.logo,.avatar,.brand-logo,.app-logo,.mk-logo,.logo-mark';
+      var LO={
+        mono:R(LG,'background:transparent!important;border:0!important;box-shadow:none!important;color:var(--text)!important;text-shadow:none!important'),
+        ring:R(LG,'background:rgba('+ar+',.1)!important;border:2.5px solid var(--accent)!important;box-shadow:none!important;color:var(--accent)!important'),
+        duo:R(LG,'background:linear-gradient(135deg,var(--accent),var(--gold))!important;border:0!important;box-shadow:none!important;color:var(--on-accent)!important'),
+        hexagon:R(LG,'background:var(--accent)!important;border:0!important;border-radius:0!important;clip-path:polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);box-shadow:none!important;color:var(--on-accent)!important'),
+        diamond:R(LG,'background:linear-gradient(135deg,var(--accent),var(--gold))!important;border:0!important;border-radius:0!important;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);box-shadow:none!important;color:var(--on-accent)!important'),
+        shield:R(LG,'background:var(--accent)!important;border:0!important;border-radius:22% 22% 50% 50%/16% 16% 62% 62%!important;box-shadow:none!important;color:var(--on-accent)!important'),
+        leaf:R(LG,'background:linear-gradient(135deg,var(--accent),var(--gold))!important;border:0!important;border-radius:0 60% 0 60%!important;box-shadow:none!important;color:var(--on-accent)!important'),
+        ribbon:R(LG,'background:var(--grad-accent)!important;border:0!important;border-radius:8px!important;box-shadow:3px 3px 0 var(--gold)!important;color:var(--on-accent)!important'),
+        neon:R(LG,'background:transparent!important;border:1.5px solid var(--accent)!important;color:var(--accent)!important;box-shadow:0 0 12px rgba('+ar+',.6),inset 0 0 10px rgba('+ar+',.22)!important;text-shadow:0 0 8px rgba('+ar+',.8)'),
+        glass:R(LG,'background:'+(dk?'rgba(255,255,255,.12)':'rgba(255,255,255,.65)')+'!important;color:var(--accent)!important;border:1px solid rgba(255,255,255,.5)!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:none!important'),
+        outlined:R(LG,'background:transparent!important;border:0!important;box-shadow:none!important;color:transparent!important;-webkit-text-stroke:1.5px var(--accent)')
+      }[p.logoStyle];
+      if(LO)o+=LO;
+    }
     return o;
   }
 
@@ -777,7 +863,7 @@ table{width:100%;font-size:.78rem}th,td{padding:8px;text-align:left}
     if(t.fx==='metal')css+=S+' .top,'+S+' .card,'+S+' .nav-in{background:linear-gradient(180deg,#FFFFFF,#ECEEF1)!important}\n';
     if(t.fx==='flat')css+=S+' .card,'+S+' .qa,'+S+' .lrow{border-width:1px!important}\n';
     css+='@media(max-width:480px){'+S+' .card{border-radius:'+Math.max(4,t.radius-4)+'px}}\n';
-    // full redesign engine (8 layers) for this theme
+    // full redesign engine (9 layers) for this theme
     css+=engCss([S],t,prof(t.id));
     return css;
   }
@@ -961,7 +1047,7 @@ table{width:100%;font-size:.78rem}th,td{padding:8px;text-align:left}
   var cat='all';
   function thumb(t){
     var p=eff(t.id),A_=t.accent,S_=t.sec,ar=rgb(A_).join(','),c=solid(t.card,t.dark?mix(t.bg,'#ffffff',.08):'#ffffff');
-    var br={pill:'9px',round:'6px',soft:'4px',square:'1px',cut:'0'}[p.btnShape];
+    var br={pill:'9px',round:'6px',soft:'4px',square:'1px',cut:'0'}[p.btnShape]||'6px';
     var ir={circle:'50%',squircle:'35%',square:'2px',none:'0'}[p.icoShape];
     var ib={filled:'background:'+A_,soft:'background:rgba('+ar+',.28)',outline:'border:1.5px solid '+A_,duo:'background:linear-gradient(135deg,'+A_+','+S_+')',glass:'background:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.7)'}[p.icoStyle]||('background:'+A_);
     var bb={gradient:'background:linear-gradient(135deg,'+A_+','+mix(A_,'#000000',.35)+')',solid:'background:'+A_,outline:'border:1.5px solid '+A_,glass:'background:rgba('+ar+',.25);border:1px solid '+A_,neon:'border:1px solid '+A_+';box-shadow:0 0 6px '+A_,'3d':'background:'+A_+';box-shadow:0 2px 0 '+mix(A_,'#000000',.4)}[p.btnStyle]||('background:'+A_);
@@ -1030,17 +1116,19 @@ table{width:100%;font-size:.78rem}th,td{padding:8px;text-align:left}
   $('cmpA').innerHTML=opts;$('cmpB').innerHTML=opts;$('cmpB').value='obsidian';
   $('cmpGo').onclick=function(){$('cA').srcdoc=merge(base(),$('cmpA').value,{},{});$('cB').srcdoc=merge(base(),$('cmpB').value,{},{});};
 
-  /* ================= CUSTOMIZE (8 layers) ================= */
+  /* ================= CUSTOMIZE (9 layers) ================= */
   var COLS=[['primary','Primary'],['secondary','Secondary'],['accent','Accent (alt)'],['bg','Background'],['card','Surface / Card'],['text','Text'],['muted','Muted text'],['border','Border'],['btn','Button bg'],['btnText','Button text'],['icon','Icon color'],['iconBg','Icon background']];
   function defCol(k,t){var m={primary:t.accent,secondary:t.sec,accent:mix(t.accent,'#000000',.18),bg:t.bg,card:solid(t.card,'#ffffff'),text:t.text,muted:t.muted,border:t.dark?'#2a3140':'#e3e5eb',btn:t.accent,btnText:'#ffffff',icon:t.accent,iconBg:mix(solid(t.card,'#ffffff'),t.accent,.12)};var v=m[k];return v&&v.indexOf('#')===0&&v.length===7?v:'#888888';}
   var FIELDS=[
-    ['① Buttons',[['btnShape','Shape',['pill','round','soft','square','cut']],['btnStyle','Style',['gradient','solid','outline','glass','neon','3d']],['btnSize','Size',['sm','md','lg']],['btnShadow','Shadow',['none','soft','glow','hard']],['btnHover','Hover effect',['none','lift','glow','scale']],['btnIcon','Icon position',['left','right']]]],
+    ['① Buttons',[['btnShape','Shape',['pill','round','soft','square','cut','joined','segment','stack']],['btnStyle','Style',['gradient','solid','outline','glass','neon','tonal','shine','3d']],['btnSize','Size',['sm','md','lg']],['btnShadow','Shadow',['none','soft','glow','hard']],['btnHover','Hover effect',['none','lift','glow','scale']],['btnIcon','Icon position',['left','right']]]],
     ['② Icons',[['icoShape','Shape',['circle','squircle','square','none']],['icoStyle','Style',['filled','soft','outline','duo','glass']],['icoSize','Size',['sm','md','lg']],['icoStroke','Stroke thickness','r',0,2,0.5],['icoAnim','Animation',['none','lift','pulse','bounce','spin']]]],
     ['③ Layout',[['navStyle','Bottom nav',['float','dock','island','flat']],['navLabels','Nav labels',['show','hide']],['navActive','Active indicator',['filled','underline','dot','glow']],['headerStyle','Header',['card','flat','glass','gradient','bar']],['spacing','Spacing / density',['compact','normal','comfy']],['align','Heading align',['start','center']]]],
     ['④ Typography',[['fontBody','Body font',FONTS],['fontHead','Heading font',FONTS],['typeScale','Font scale','r',0.85,1.2,0.05],['headWeight','Heading weight',['500','600','700','800','900']],['headTrack','Heading letter-spacing (em)','r',-0.04,0.1,0.01],['bodyLine','Line height','r',1.3,1.9,0.1],['headCase','Heading case',['none','uppercase']]]],
     ['⑤ Components',[['cardStyle','Cards',['raised','flat','outline','glass','neu','accentbar','elevated']],['cardRadius','Card radius (px)','r',0,36,1],['inputStyle','Inputs / dropdowns',['filled','outline','underline','soft']],['badgeShape','Badges',['pill','square','tag']],['switchStyle','Switches',['ios','square']],['sheetStyle','Modals / sheets',['round','square','glass']],['tableStyle','Tables',['plain','striped','lined']]]],
     ['⑦ Animation & Effects',[['animLevel','Motion level',['none','subtle','lively','cinematic']],['animGlow','Glow effect',['off','on']],['loadAnim','Loading animation',['none','pulse','shimmer']]]],
-    ['⑧ Responsive',[['desktop','Desktop layout',['auto','centered','sidebar']]]]
+    ['⑧ Responsive',[['desktop','Desktop layout',['auto','centered','sidebar']]]],
+    ['⑨ Archetype',[['archType','Archetype',['auto','brutal','editorial']]]],
+    ['⑩ Logo & Brand',[['logoStyle','Logo style',['auto','mono','ring','duo','hexagon','diamond','shield','leaf','ribbon','neon','glass','outlined']]]]
   ];
   function buildCustomUI(){
     var h='<div class="grp">⑥ Complete Colors</div><div class="ctl">';
@@ -1137,7 +1225,7 @@ table{width:100%;font-size:.78rem}th,td{padding:8px;text-align:left}
       '<b>HTML body structure (IDs/markup):</b> '+ok(bodyOk)+'<br><b>Existing scripts ('+os.length+'):</b> '+ok(!lost)+(lost?' — '+lost+'টি পাওয়া যায়নি':'')+'<br><b>Existing CSS ('+oc.length+'):</b> '+ok(!lostC)+
       '<br><b>External dependencies ('+ext.length+'):</b> '+(extLost.length?'<span class="bad">✗ '+extLost.length+' হারিয়েছে</span>':'<span class="ok">✓ সব আছে</span>')+(ext.length?'<br><small>'+ext.slice(0,15).map(esc).join('<br>')+(ext.length>15?'<br>…':'')+'</small>':'')+
       '<br><b>Detected app features:</b> '+(feats.length?esc(feats.join(', ')):'—')+' <span class="ok">(কোড অপরিবর্তিত)</span>'+
-      '<br><b>Injected CSS:</b> &lt;style id="sw-light-design"&gt; '+(injCss/1024).toFixed(1)+' KB (আসল ৩ থিম + '+esc(tc.name)+' ৮-লেয়ার ডিজাইন সিস্টেম)'+(cc?' + &lt;style id="sw-studio-custom"&gt; '+(cc/1024).toFixed(1)+' KB (আপনার কাস্টম)':'')+
+      '<br><b>Injected CSS:</b> &lt;style id="sw-light-design"&gt; '+(injCss/1024).toFixed(1)+' KB (আসল ৩ থিম + '+esc(tc.name)+' ৩-লেয়ার ডিজাইন সিস্টেম)'+(cc?' + &lt;style id="sw-studio-custom"&gt; '+(cc/1024).toFixed(1)+' KB (আপনার কাস্টম)':'')+
       '<br><b>Injected JS:</b> &lt;script id="sw-light-fix"&gt; (Telegram/meta colour)'+(st.theme!=='crimson'?' + &lt;script id="sw-studio-theme"&gt; (শুধু data-theme সেট'+(st.lock&&!tc.orig?'/লক':'')+' করে)':'')+
       '<br><b>Injected fonts:</b> Google Fonts &lt;link&gt; (বাংলা: Hind Siliguri)'+
       '<br><b>Text replacements:</b> '+(changes.length?esc(changes.join('; ')):'নেই')+

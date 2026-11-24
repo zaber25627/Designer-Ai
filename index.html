@@ -9,7 +9,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-functions-compat.js"></script>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 
@@ -1056,177 +1055,61 @@ html[data-theme] .qa i{border-radius:16px}
 .bn-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;padding:6px 14px 14px}.bn-d{border-radius:12px;padding:8px 0;text-align:center;background:rgba(255,255,255,.05);color:var(--muted,#8b93a7);font-size:11px}.bn-d i{display:block;margin-top:4px;font-size:13px}.bn-d.on{background:linear-gradient(135deg,#f0b90b,#ff8a3d);color:#1a1200}.bn-d.today{outline:2px solid var(--accent,#795bff)}
 .wheel-pin{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-top:20px solid var(--gold,#ffb547);filter:drop-shadow(0 3px 4px rgba(0,0,0,.5))}
 </style>
-<style id="nxm-suite-css">
-/* =====================================================================
-   NEXAVAULT — ADVANCED MINING & REWARDS SUITE styles (nxm-*/nxq-*/nxp-*)
-   Scoped, additive, theme-aware (uses existing CSS variables)
-===================================================================== */
-
-/* ---------- Six-item bottom nav (All Pages) ---------- */
-#nav.nv-six .nv{padding:6px 1px}
-#nav.nv-six .nv i{font-size:.92rem}
-#nav.nv-six .nv span{font-size:.55rem;font-weight:700;letter-spacing:.1px}
-#nav.nv-six .nv.on::after{width:4px;height:4px}
-
-/* ---------- Mining hero ---------- */
-.nxm-hero{position:relative;overflow:hidden;margin:6px 16px 12px;padding:22px 20px;border-radius:26px;background:var(--grad-hero);border:1px solid var(--line2);box-shadow:var(--shadow)}
-.nxm-orbit,.nxm-orbit2{position:absolute;border-radius:50%;pointer-events:none}
-.nxm-orbit{right:-70px;top:-70px;width:210px;height:210px;background:radial-gradient(circle,var(--bgfx1),transparent 65%);animation:nxmSpin 14s linear infinite}
-.nxm-orbit2{left:-50px;bottom:-90px;width:180px;height:180px;border:1.5px solid var(--line2);border-top-color:var(--accent);animation:nxmSpin 9s linear infinite reverse;opacity:.5}
-@keyframes nxmSpin{to{transform:rotate(360deg)}}
-.nxm-hero-top{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.nxm-lv-badge{display:flex;align-items:center;gap:6px;background:var(--card3);border:1px solid var(--line2);border-radius:18px;padding:8px 14px;box-shadow:var(--glow)}
-.nxm-lv-num{font-family:'Sora',sans-serif;font-size:1.5rem;font-weight:800;background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.nxm-lv-max{font-size:.68rem;color:var(--faint);font-weight:700}
-.nxm-lv-badge>i{color:var(--accent);font-size:1.05rem;margin-left:2px}
-.nxm-lv-badge.big{animation:nxmFloat 4s ease-in-out infinite}
-@keyframes nxmFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-.nxm-lv-badge.gold{background:var(--grad-gold);border:none}
-.nxm-lv-badge.gold i{color:var(--on-accent)}
-.nxm-lv-badge.boost{background:linear-gradient(135deg,rgba(92,184,255,.2),rgba(92,184,255,.05));border-color:var(--info);animation:nxmPulse 2.4s ease-in-out infinite}
-.nxm-lv-badge.quiz{background:linear-gradient(135deg,rgba(217,178,107,.2),rgba(217,178,107,.05));border-color:var(--gold)}
-.nxm-lv-badge.fire{background:linear-gradient(135deg,rgba(255,122,26,.2),rgba(255,122,26,.05));border-color:var(--accent);animation:nxmPulse 2s ease-in-out infinite}
-@keyframes nxmPulse{0%,100%{box-shadow:0 0 0 0 var(--accent-soft)}50%{box-shadow:0 0 0 10px transparent}}
-.nxm-live{display:flex;align-items:center;gap:6px;font-size:.66rem;font-weight:800;letter-spacing:1.6px;color:var(--faint);text-transform:uppercase}
-.nxm-live span{width:8px;height:8px;border-radius:50%;background:var(--faint)}
-.nxm-live.on{color:var(--pos)}
-.nxm-live.on span{background:var(--pos);box-shadow:0 0 12px var(--pos);animation:nxmBlink 1.4s ease-in-out infinite}
-@keyframes nxmBlink{50%{opacity:.35}}
-.nxm-speed{position:relative;margin-top:14px;font-size:1rem;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:8px}
-.nxm-speed i{color:var(--accent)}
-.nxm-speed b{font-family:'Sora',sans-serif;font-size:1.7rem;font-weight:800;color:var(--text);background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.nxm-speed small{font-size:.74rem;color:var(--faint);font-weight:700}
-.nxm-hero-sub{position:relative;margin-top:8px;font-size:.74rem;color:var(--muted)}
-.nxm-prog{position:relative;margin-top:16px;height:11px;border-radius:99px;background:var(--card3);overflow:hidden;border:1px solid var(--line)}
-.nxm-prog b{display:block;height:100%;border-radius:99px;background:var(--grad-accent);box-shadow:0 0 16px var(--accent);transition:width 1s ease;position:relative;overflow:hidden}
-.nxm-prog b::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(255,255,255,.28) 0 7px,transparent 7px 15px);animation:nxmSweep 1.6s linear infinite}
-@keyframes nxmSweep{to{transform:translateX(15px)}}
-.nxm-prog span{position:absolute;inset:0;display:grid;place-items:center;font-size:.6rem;font-weight:800;color:var(--on-accent);mix-blend-mode:normal}
-.nxm-hero.nxm-hero-sm{padding:18px 18px;display:flex;align-items:center;gap:16px}
-.nxm-hero.nxm-hero-sm .nxm-speed{margin-top:0;flex-direction:column;align-items:flex-start;gap:2px}
-.nxm-hero.nxm-hero-boost{background:linear-gradient(145deg,#12233f 0%,#0b1528 60%,var(--bg2) 100%)}
-.nxm-hero.nxm-hero-fire{background:linear-gradient(145deg,#33180a 0%,#200f06 60%,var(--bg2) 100%)}
-
-/* ---------- Status badge ---------- */
-.nxm-badge{margin:0 16px 12px;display:flex;align-items:center;gap:9px;padding:12px 15px;border-radius:16px;font-size:.82rem;font-weight:800;border:1px solid var(--line2)}
-.nxm-badge i{font-size:1.05rem}
-.nxm-badge.pos{background:var(--pos-soft);border-color:color-mix(in srgb,var(--pos) 45%,transparent);color:var(--pos)}
-.nxm-badge.warn{background:var(--warn-soft);border-color:color-mix(in srgb,var(--warn) 45%,transparent);color:var(--warn)}
-.nxm-badge.neg{background:var(--neg-soft);border-color:color-mix(in srgb,var(--neg) 45%,transparent);color:var(--neg)}
-.nxm-badge.info{background:var(--info-soft);border-color:color-mix(in srgb,var(--info) 45%,transparent);color:var(--info)}
-.nxm-badge.gold{background:var(--gold-soft);border-color:color-mix(in srgb,var(--gold) 50%,transparent);color:var(--gold)}
-
-/* ---------- Stats & layout helpers ---------- */
-.nxm-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.nxm-stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:13px 15px}
-.nxm-st-l{font-size:.62rem;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;color:var(--faint);display:flex;align-items:center;gap:6px;margin-bottom:6px}
-.nxm-st-l i{color:var(--accent);font-size:.74rem}
-.nxm-stat>b{font-family:'Sora',sans-serif;font-size:1.02rem;font-weight:800}
-.nxm-stat>b small{font-size:.7rem;color:var(--faint);font-weight:700}
-.nxm-acts{display:flex;flex-direction:column;gap:9px}
-.nxm-rowlinks{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.nxm-claim-now{animation:nxmClaimGlow 1.1s ease-in-out infinite}
-@keyframes nxmClaimGlow{0%,100%{filter:brightness(1)}50%{filter:brightness(1.5)}}
-
-/* ---------- Lock card ---------- */
-.nxm-lock{text-align:center;padding:24px 20px}
-.nxm-lock-ic{width:70px;height:70px;margin:0 auto 14px;border-radius:24px;background:var(--neg-soft);border:1.5px solid var(--neg);display:grid;place-items:center;font-size:1.7rem;color:var(--neg)}
-.nxm-lock>b{font-size:1.02rem}
-.nxm-lock p{font-size:.78rem;color:var(--muted);line-height:1.6;margin-top:8px;text-align:center}
-
-/* ---------- Free upgrade banner ---------- */
-.nxm-free{margin-top:12px;padding:11px 13px;border-radius:14px;background:var(--gold-soft);border:1px dashed color-mix(in srgb,var(--gold) 60%,transparent);color:var(--gold);font-size:.74rem;font-weight:700;display:flex;gap:8px;align-items:center}
-
-/* ---------- Premium buttons ---------- */
-button.btn.xp{background:var(--grad-accent);color:var(--on-accent);font-weight:800;letter-spacing:.3px;box-shadow:var(--glow);border:none}
-button.btn.xp:active{transform:scale(.985)}
-button.btn.xp2{background:var(--card2);border:1px solid var(--line2);font-weight:700}
-button.nxm-suite-b.glow{animation:nxmSuiteGlow 1.6s ease-in-out infinite}
-@keyframes nxmSuiteGlow{0%,100%{box-shadow:0 0 0 0 var(--accent-soft)}50%{box-shadow:0 0 18px 4px var(--accent-soft)}}
-
-/* ---------- Suite card on existing tabs ---------- */
-.nxm-suite{margin:0 16px 12px}
-.nxm-suite .card-t{display:flex;align-items:center;gap:8px}
-.nxm-mini-dot{margin-left:auto;width:8px;height:8px;border-radius:50%;background:var(--faint)}
-.nxm-mini-dot.pos{background:var(--pos);box-shadow:0 0 10px var(--pos);animation:nxmBlink 1.4s infinite}
-.nxm-mini-dot.warn{background:var(--warn);box-shadow:0 0 10px var(--warn);animation:nxmBlink 1.4s infinite}
-.nxm-mini-dot.neg{background:var(--neg)}
-.nxm-mini-st{font-size:.62rem;font-weight:800;color:var(--pos);letter-spacing:1px}
-.nxm-suite-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
-.nxm-suite-b{display:flex;flex-direction:column;align-items:center;gap:6px;padding:13px 6px;border-radius:16px;background:var(--card2);border:1px solid var(--line);transition:transform .15s}
-.nxm-suite-b:active{transform:scale(.96)}
-.nxm-suite-b i{font-size:1.15rem;color:var(--accent)}
-.nxm-suite-b b{font-size:.68rem;font-weight:800;text-align:center}
-.nxm-suite-b small{font-size:.56rem;color:var(--faint);font-weight:600;text-align:center}
-.nxm-suite.compact .nxm-suite-grid{grid-template-columns:repeat(6,1fr)}
-.nxm-suite.compact .nxm-suite-b b{font-size:.58rem}
-
-/* ---------- 30-day streak calendar ---------- */
-.nxm-cal{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:14px}
-.nxm-day{position:relative;aspect-ratio:1;border-radius:15px;background:var(--card2);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;overflow:hidden}
-.nxm-day-n{font-family:'Sora',sans-serif;font-size:.92rem;font-weight:800;color:var(--muted)}
-.nxm-day-r{font-size:.5rem;font-weight:700;color:var(--faint);line-height:1.25;text-align:center;padding:0 3px}
-.nxm-day.done{background:var(--pos-soft);border-color:color-mix(in srgb,var(--pos) 40%,transparent)}
-.nxm-day.done .nxm-day-n{color:var(--pos)}
-.nxm-day.done .nxm-day-r{color:var(--pos)}
-.nxm-day.next{border:1.5px solid var(--accent);background:var(--accent-soft);box-shadow:var(--glow);animation:nxmNextPulse 1.8s ease-in-out infinite}
-.nxm-day.next .nxm-day-n{color:var(--text)}
-@keyframes nxmNextPulse{0%,100%{box-shadow:0 0 0 0 var(--accent-soft)}50%{box-shadow:0 0 14px 3px var(--accent-soft)}}
-.nxm-day-done{position:absolute;top:5px;right:6px;font-size:.55rem;color:var(--pos)}
-.nxm-day-bonus{position:absolute;top:5px;right:6px;font-size:.6rem;color:var(--gold)}
-
-/* ---------- Quiz ---------- */
-.nxq-hero{margin:6px 16px 12px;padding:18px 20px;border-radius:24px;background:var(--grad-hero);border:1px solid var(--line2);display:flex;align-items:center;gap:14px}
-.nxq-hb1{font-family:'Sora',sans-serif;font-size:1.06rem;font-weight:800}
-.nxq-hb2{font-size:.68rem;color:var(--muted);font-weight:600;margin-top:3px}
-.nxq-card{background:var(--card);border:1px solid var(--line2);border-radius:22px;padding:18px;box-shadow:var(--shadow)}
-.nxq-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
-.nxq-diff{font-size:.62rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:6px 11px;border-radius:99px;display:inline-flex;gap:6px;align-items:center}
-.nxq-diff.sim{background:var(--pos-soft);color:var(--pos)}
-.nxq-diff.adv{background:var(--neg-soft);color:var(--neg)}
-.nxq-timer{font-size:.74rem;font-weight:800;color:var(--warn);display:inline-flex;align-items:center;gap:6px;background:var(--warn-soft);padding:6px 11px;border-radius:99px}
-.nxq-timer i{animation:nxmBlink 1.6s infinite}
-.nxq-q{font-size:.94rem;font-weight:700;line-height:1.55;margin-bottom:14px}
-.nxq-opts{display:flex;flex-direction:column;gap:9px}
-.nxq-opt{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:13px 14px;border-radius:15px;background:var(--card2);border:1.5px solid var(--line);font-size:.84rem;font-weight:600;transition:border-color .15s,transform .1s}
-.nxq-opt:active{transform:scale(.985)}
-.nxq-opt:disabled{opacity:.75;cursor:default}
-.nxq-abc{width:30px;height:30px;flex-shrink:0;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-family:'Sora',sans-serif;font-size:.76rem;font-weight:800}
-.nxq-opt.pick{border-color:var(--accent)}
-.nxq-opt.right{border-color:var(--pos);background:var(--pos-soft)}
-.nxq-opt.right .nxq-abc{background:var(--pos);color:var(--on-accent)}
-.nxq-opt.wrong{border-color:var(--neg);background:var(--neg-soft)}
-.nxq-opt.wrong .nxq-abc{background:var(--neg);color:var(--on-accent)}
-.nxq-res{text-align:center;padding:10px 0}
-.nxq-res i{font-size:2.2rem;display:inline-block;margin-bottom:10px}
-.nxq-res.ok i{color:var(--pos)}
-.nxq-res.no i{color:var(--neg)}
-.nxq-res b{font-size:1.05rem;display:block}
-.nxq-res-r{margin-top:8px;font-weight:800;color:var(--pos)}
-
-/* ---------- All Pages directory ---------- */
-.nxp-search{display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--line2);border-radius:16px;padding:12px 14px}
-.nxp-search i{color:var(--faint);font-size:.9rem}
-.nxp-search input{flex:1;background:none;border:none;outline:none;font-size:.86rem;color:var(--text);min-width:0}
-.nxp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-.nxp-tile{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 6px 12px;border-radius:18px;background:var(--card);border:1px solid var(--line);cursor:pointer;transition:transform .12s}
-.nxp-tile:active{transform:scale(.95)}
-.nxp-tile>i{color:var(--accent)}
-.nxp-tile-ic{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;font-size:1.15rem;background:var(--accent-soft);color:var(--accent)}
-.nxp-tile.fav{border-color:color-mix(in srgb,var(--gold) 55%,transparent)}
-.nxp-tile.fav .nxp-tile-ic{background:var(--gold-soft);color:var(--gold)}
-.nxp-tile b{font-size:.66rem;font-weight:800;text-align:center;line-height:1.3}
-.nxp-tile small{font-size:.52rem;color:var(--faint);font-weight:600;text-align:center}
-.nxp-fav{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:9px;display:grid;place-items:center;color:var(--faint);font-size:.72rem;z-index:2}
-.nxp-fav .fa-star{color:var(--gold)}
-.nxp-new{position:absolute;top:-6px;left:-4px;background:var(--grad-accent);color:var(--on-accent);font-size:.5rem;font-weight:800;letter-spacing:.8px;padding:3px 8px;border-radius:99px;box-shadow:var(--glow);display:flex;align-items:center;gap:4px}
-.nxp-new i{width:5px;height:5px;border-radius:50%;background:var(--on-accent);animation:nxmBlink 1.3s infinite}
-@media (max-width:390px){
-  .nxp-grid{grid-template-columns:repeat(2,1fr)}
-  .nxm-suite-grid{gap:6px}
-  .nxm-suite.compact .nxm-suite-grid{grid-template-columns:repeat(3,1fr)}
-}
-
+<style id="mx-css">
+/* NEXAVAULT — Advanced Mining & Rewards module (all selectors prefixed mx-) */
+.mx-hero{margin:0 16px 14px;padding:18px;border-radius:26px;position:relative;overflow:hidden;background:radial-gradient(120% 90% at 100% 0%,var(--accent-soft),transparent 60%),var(--card);border:1px solid var(--line2);box-shadow:var(--shadow,0 16px 36px rgba(0,0,0,.4))}
+.mx-row{display:flex;align-items:center;gap:12px}.mx-between{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mx-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:99px;font-size:.66rem;font-weight:800;letter-spacing:.6px;text-transform:uppercase;background:var(--card3);color:var(--muted);border:1px solid var(--line)}
+.mx-chip.on{background:var(--accent-soft);color:var(--accent);border-color:var(--accent)}.mx-chip.ok{background:var(--pos-soft,rgba(43,217,139,.14));color:var(--pos);border-color:var(--pos)}
+.mx-chip.bad{background:var(--neg-soft,rgba(255,93,93,.14));color:var(--neg);border-color:var(--neg)}.mx-chip.warn{background:var(--warn-soft,rgba(245,184,75,.14));color:var(--warn);border-color:var(--warn)}
+.mx-ringw{position:relative;width:176px;height:176px;margin:8px auto 14px}
+.mx-ringw>svg{width:100%;height:100%;transform:rotate(-90deg)}
+.mx-ringw .bg{stroke:var(--card3);fill:none;stroke-width:11}.mx-ringw .fg{stroke:var(--accent);fill:none;stroke-width:11;stroke-linecap:round;transition:stroke-dashoffset .9s linear;filter:drop-shadow(0 0 6px var(--accent))}
+.mx-ringc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.mx-ringc b{font-size:1.5rem;font-weight:800;font-variant-numeric:tabular-nums}.mx-ringc small{font-size:.68rem;color:var(--muted);font-weight:700;margin-top:2px}
+.mx-cd{font-variant-numeric:tabular-nums}
+.mx-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 16px 14px}
+.mx-st{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 13px;min-width:0}
+.mx-st span{display:block;font-size:.64rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.7px}
+.mx-st b{display:block;font-size:.95rem;margin-top:5px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mx-bar{height:8px;border-radius:99px;background:var(--card3);overflow:hidden}.mx-bar i{display:block;height:100%;background:var(--grad-accent);border-radius:99px;transition:width .9s linear}
+.mx-act{margin:0 16px 14px;display:flex;flex-direction:column;gap:10px}
+.mx-lock{margin:0 16px 14px;padding:16px;border-radius:22px;background:var(--neg-soft,rgba(255,93,93,.12));border:1px solid var(--neg);color:var(--text)}
+.mx-lock h3{display:flex;gap:9px;align-items:center;color:var(--neg);font-size:.95rem;margin-bottom:8px}.mx-lock p{font-size:.78rem;line-height:1.55;color:var(--muted);margin-bottom:12px}
+.mx-mini{margin:0 16px 14px;padding:14px 16px;border-radius:22px;border:1px solid var(--line2);background:linear-gradient(135deg,var(--accent-soft),transparent 70%),var(--card);display:flex;align-items:center;gap:13px;cursor:pointer}
+.mx-mini .ic{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:var(--grad-accent);color:var(--on-accent);font-size:1.1rem;flex-shrink:0}
+.mx-mini .tx{flex:1;min-width:0}.mx-mini .tx b{display:block;font-size:.9rem}.mx-mini .tx small{font-size:.7rem;color:var(--muted);font-weight:600}
+.mx-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 16px 14px}
+.mx-strip button{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:7px;font-size:.7rem;font-weight:800;color:var(--text);position:relative}
+.mx-strip button i{font-size:1.15rem;color:var(--accent)}
+.mx-lv{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}.mx-lv:last-child{border:0}
+.mx-lv .n{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-weight:800;font-size:.82rem;background:var(--card3);color:var(--muted);flex-shrink:0}
+.mx-lv.cur .n{background:var(--grad-accent);color:var(--on-accent)}.mx-lv.own .n{background:var(--pos-soft,rgba(43,217,139,.14));color:var(--pos)}.mx-lv.nx .n{background:var(--accent-soft);color:var(--accent)}
+.mx-lv .m{flex:1;min-width:0;font-size:.78rem;font-weight:700}.mx-lv .m small{display:block;color:var(--muted);font-weight:600;font-size:.68rem;margin-top:2px}.mx-lv .r{font-size:.74rem;font-weight:800;text-align:right}
+.mx-cmp{display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:center}.mx-cmp>div{flex:1}.mx-cmp b{display:block;font-size:1.5rem}.mx-cmp small{font-size:.66rem;color:var(--muted);font-weight:700;text-transform:uppercase}.mx-cmp i{color:var(--accent)}
+.mx-cal{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin:0 16px 14px}
+.mx-day{aspect-ratio:1;border-radius:14px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;position:relative;color:var(--muted)}
+.mx-day small{font-size:.52rem;margin-top:1px;opacity:.85}.mx-day.done{background:var(--pos-soft,rgba(43,217,139,.14));border-color:var(--pos);color:var(--pos)}
+.mx-day.next{border-color:var(--accent);color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 2px var(--accent-soft)}.mx-day.big{grid-column:span 2;aspect-ratio:auto}
+.mx-q{margin:0 16px 10px;padding:14px;border-radius:20px;background:var(--card);border:1px solid var(--line)}.mx-q h4{font-size:.86rem;line-height:1.45;margin-bottom:9px}
+.mx-opt{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:13px 14px;border-radius:16px;background:var(--card2);border:1px solid var(--line2);color:var(--text);font-weight:700;font-size:.84rem;margin-bottom:9px}
+.mx-opt b{width:28px;height:28px;border-radius:9px;background:var(--card3);display:grid;place-items:center;font-size:.74rem;flex-shrink:0}
+.mx-opt.sel{border-color:var(--accent);background:var(--accent-soft)}.mx-opt.right{border-color:var(--pos);background:var(--pos-soft,rgba(43,217,139,.14))}.mx-opt.wrong{border-color:var(--neg);background:var(--neg-soft,rgba(255,93,93,.14))}
+.mx-ap{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px;padding:0 16px 14px}
+.mx-pg{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 8px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;position:relative;font-size:.7rem;font-weight:800;color:var(--text);min-height:98px}
+.mx-pg .ic{width:42px;height:42px;border-radius:14px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-size:1.05rem}
+.mx-pg .fv{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:9px;display:grid;place-items:center;color:var(--faint);font-size:.78rem}.mx-pg .fv.on{color:var(--warn)}
+.mx-new{position:absolute;top:7px;left:7px;font-size:.5rem;font-weight:900;letter-spacing:.5px;padding:2px 6px;border-radius:99px;background:var(--grad-accent);color:var(--on-accent)}
+.mx-search{margin:0 16px 12px;position:relative}.mx-search input{width:100%;padding:13px 14px 13px 40px;border-radius:16px;background:var(--card);border:1px solid var(--line2);color:var(--text);font-size:.86rem}.mx-search i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.mx-sk{height:84px;border-radius:22px;margin:0 16px 14px;background:linear-gradient(90deg,var(--card),var(--card2),var(--card));background-size:200% 100%;animation:mxsk 1.4s linear infinite}@keyframes mxsk{to{background-position:-200% 0}}
+.mx-empty{margin:0 16px 14px;padding:26px 16px;text-align:center;color:var(--muted);font-size:.8rem;font-weight:600;border-radius:22px;background:var(--card);border:1px dashed var(--line2)}.mx-empty i{display:block;font-size:1.6rem;margin-bottom:9px;color:var(--faint)}
+.mx-nvdot{position:absolute;top:4px;right:calc(50% - 18px);width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+.mx-h{display:flex;align-items:center;justify-content:space-between;padding:6px 18px 10px;font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+.mx-tabs{display:flex;gap:8px;overflow-x:auto;padding:0 16px 12px;scrollbar-width:none}.mx-tabs::-webkit-scrollbar{display:none}
+.mx-tabs button{flex-shrink:0;padding:9px 15px;border-radius:99px;background:var(--card);border:1px solid var(--line);font-size:.74rem;font-weight:700;color:var(--muted)}.mx-tabs button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.mx-box{margin:0 16px 14px;padding:16px;border-radius:22px;background:var(--card);border:1px solid var(--line)}.mx-box.flat{padding:4px 16px}
+.nav-in .nv{min-width:0}.nav-in .nv span{white-space:nowrap}
+@media (prefers-reduced-motion:reduce){.mx-ringw .fg,.mx-bar i,.mx-sk{transition:none;animation:none}}
 </style>
 </head>
 <body>
@@ -1351,6 +1234,7 @@ button.nxm-suite-b.glow{animation:nxmSuiteGlow 1.6s ease-in-out infinite}
   <button class="nv" data-act="tab" data-id="token"><i class="fas fa-coins"></i><span data-i18n="nav_token">Token</span></button>
   <button class="nv" data-act="tab" data-id="wallet"><i class="fas fa-wallet"></i><span data-i18n="nav_wallet">Wallet</span></button>
   <button class="nv" data-act="tab" data-id="profile"><i class="fas fa-user"></i><span data-i18n="nav_profile">Profile</span></button>
+  <button class="nv" data-act="allPages" data-id="allpages"><i class="fas fa-table-cells-large"></i><span id="mxNavLbl">All Pages</span></button>
 </div></nav>
 
 <div class="toast" id="toast"></div>
@@ -4784,1066 +4668,582 @@ function lbBump() {}
 </script>
 
 
-<script>
-/* =====================================================================
-   ADVANCED MINING & REWARDS SUITE — additive module (Phases 1–7)
-   Paths: users/{uid}/mining|streak30|quizAns|quizStats|quizDaily|quizWeekly|boost|boostPurchases|favPages
-   Nodes: miningHistory miningUpgrades dailyStreakClaims quizPool quizBoard
-   Cfg:   config/mining config/miningLevels config/miningBoost config/streak30 config/quiz config/allpages
-===================================================================== */
-/* =====================================================================
-   NEXAVAULT — ADVANCED MINING & REWARDS SUITE  (additive module)
-   Prefixes: CSS .nxm-* / JS window.NX_* — no existing symbol is touched
-===================================================================== */
-window.NX_BUSY = false;
+<script id="mx-core">
+/* GameCore — mining / streak / quiz engine. Pure logic over a Firebase-RTDB-like `db`.
+   Runs unchanged in the browser (client mode) and in Cloud Functions (secure mode). */
+(function (root, factory) { if (typeof module === 'object' && module.exports) module.exports = factory(); else root.GameCore = factory(); })(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+  const H = 3600000, DAY = 86400000;
+  const num = v => { v = Number(v); return isFinite(v) ? v : 0; };
+  const rnd = (v, d) => { const p = Math.pow(10, d == null ? 6 : d); return Math.round((num(v) + Number.EPSILON) * p) / p; };
+  const fail = (code, extra) => Object.assign({ ok: false, code, persist: false }, extra || {});
+  const rid = () => Math.random().toString(36).slice(2, 7).toUpperCase();
+  const obj = v => (v && typeof v === 'object') ? v : {};
+  const list = v => Array.isArray(v) ? v.filter(x => x != null) : Object.keys(obj(v)).map(k => v[k]);
 
-/* ---------------- Config readers (admin-configured, safe defaults) ---------------- */
-const NXM = () => (S.cfg && S.cfg.mining) || {};
-const nxmCfg = () => {
-  const m = NXM();
-  return {
-    enabled: m.enabled !== false,
-    sessionHours: num(m.sessionHours) > 0 ? num(m.sessionHours) : 24,
-    maxLevel: 100,
-    freeUpgrade: m.freeUpgrade !== false,
-    claimsAfterExpireHours: num(m.claimsAfterExpireHours) > 0 ? num(m.claimsAfterExpireHours) : 48
-  };
-};
-const nxmInact = () => {
-  const c = (NXM().inactivity) || {};
-  return { enabled: c.enabled !== false, thresholdHours: num(c.thresholdHours) > 0 ? num(c.thresholdHours) : 48, unlockFee: num(c.unlockFee) > 0 ? num(c.unlockFee) : 100 };
-};
-const nxmBoostCfg = () => {
-  const c = S.cfg.miningBoost || {};
-  return {
-    enabled: c.enabled !== false && NXM().boostEnabled !== false,
-    durationHours: num(c.durationHours) > 0 ? num(c.durationHours) : 24,
-    multiplier: num(c.multiplier) > 1 ? num(c.multiplier) : 2,
-    cost: num(c.cost) > 0 ? num(c.cost) : 50,
-    maxPerDay: num(c.maxPerDay) > 0 ? num(c.maxPerDay) : 2,
-    minLevel: num(c.minLevel) > 0 ? num(c.minLevel) : 5
-  };
-};
-
-/* ---------------- Default level generator (Level 1..100) ----------------
-   speed: 0.50 + 0.10 * (level-1) tokens per hour  (L1 = 0.50/h, L100 = 10.45/h)
-   cost : 60 * 1.09^(level-1) tokens to reach this level (rounded)          */
-function nxmDefLevels() {
-  const out = [];
-  for (let l = 1; l <= 100; l++) {
-    out[l] = {
-      level: l,
-      speed: Math.round((0.5 + 0.1 * (l - 1)) * 100) / 100,
-      cost: l === 1 ? 0 : Math.round(60 * Math.pow(1.09, l - 1) * 100) / 100,
-      enabled: true,
-      desc: ''
+  /* ---------- config normalisation ---------- */
+  function miningCfg(c) {
+    c = obj(c);
+    const L = c.levels, lv = n => { const x = Array.isArray(L) ? L[n] : obj(L)[n]; return x && typeof x === 'object' ? x : null; };
+    let hi = 0; for (let n = 1; n <= 100; n++) { const x = lv(n); if (x && num(x.speed) > 0) hi = n; }
+    const maxLevel = Math.max(1, Math.min(100, num(c.maxLevel) || hi || 1));
+    const lk = obj(c.lock), fu = obj(c.freeUpgrade), bo = obj(c.boost);
+    return {
+      enabled: c.enabled === true, sessionHours: num(c.sessionHours) > 0 ? num(c.sessionHours) : 24, maxLevel, level: lv,
+      configured: !!(lv(1) && num(lv(1).speed) > 0),
+      free: fu.enabled === true,
+      lock: { enabled: lk.enabled !== false, hours: num(lk.hours) > 0 ? num(lk.hours) : 48, fee: Math.max(0, num(lk.unlockFee)), forfeit: lk.forfeitReward !== false },
+      boost: { enabled: bo.enabled === true, packs: obj(bo.packs) }
     };
   }
-  return out;
-}
-function nxmLevels() {
-  const store = (S.cfg && S.cfg.miningLevels) || {};
-  const def = nxmDefLevels();
-  for (let l = 1; l <= 100; l++) {
-    const o = store[l] || store[String(l)];
-    if (o && typeof o === 'object') {
-      def[l] = { level: l, speed: num(o.speed) > 0 ? num(o.speed) : def[l].speed, cost: num(o.cost) >= 0 ? num(o.cost) : def[l].cost, enabled: o.enabled !== false, desc: o.desc || '' };
-    }
+  const D0 = m => (m && m.session) || null;
+
+  /* ---------- pure helpers ---------- */
+  function rewardOf(s) {
+    s = s || {}; const hrs = (num(s.endAt) - num(s.startAt)) / H, speed = num(s.speed);
+    const base = rnd(speed * hrs); let boost = 0;
+    list(s.boostSegs).forEach(g => { boost += speed * (num(g.mult) - 1) * Math.max(0, (num(g.to) - num(g.from)) / H); });
+    boost = rnd(boost); return { base, boost, total: rnd(base + boost), hours: hrs };
   }
-  return def;
-}
-const nxmLv = l => nxmLevels()[Math.max(1, Math.min(100, Math.floor(l)))];
-const nxmRate = lvl => num(nxmLv(lvl).speed);           /* base speed: tokens/hour */
-const nxmNextEnabled = l => { for (let i = l + 1; i <= 100; i++) if (nxmLv(i).enabled) return i; return 0; };
-
-/* ---------------- Mining state machine ----------------
-   db: users/{uid}/mining = { st, level, seq, upgSeq, sessStart, sessEnd, sessClaimed,
-                              sessBoost, totalMined, freeUpgradeUsed, lastClaimAt,
-                              lockOn, lockReason, lockAt }                        */
-const MINE = () => (S.user && S.user.mining) || {};
-function nxmStatus() {
-  const m = MINE(), c = nxmCfg(), now = nowMs();
-  if (!c.enabled) return { st: 'OFF' };
-  if (m.lockOn || nxmInactivityDue()) return { st: 'LOCKED' };
-  if (m.st === 'active') {
-    if (now < (m.sessEnd || nxmExp(m))) return { st: 'MINING_ACTIVE', level: m.level };
-    return { st: 'CLAIM_AVAILABLE', level: m.level };
+  function lockDueAt(m, mc) {
+    const s = D0(m); if (!mc.lock.enabled || !s || s.status !== 'active') return null;
+    return Math.max(num(s.endAt), num(s.unlockedAt)) + mc.lock.hours * H;
   }
-  if (m.st === 'claimed') return { st: 'CLAIMED', level: m.level };
-  if (m.level >= c.maxLevel) return { st: 'MAX_LEVEL_REACHED', level: m.level };
-  return { st: 'READY_TO_START', level: num(m.level) > 0 ? m.level : 1 };
-}
-const nxmExp = m => num(m.sessStart) + nxmCfg().sessionHours * 3600e3;
-function nxmInactivityDue() {
-  const m = MINE(), c = nxmInact();
-  if (!c.enabled || m.st !== 'active') return false;
-  return nowMs() > nxmExp(m) + c.thresholdHours * 3600e3;
-}
-function nxmRateNow(m) {
-  m = m || MINE();
-  let r = nxmRate(m.level || 1);
-  if (m.st === 'active' && m.sessBoost && num(m.sessBoost.mult) > 1 && (!m.sessBoost.expiresAt || nowMs() < num(m.sessBoost.expiresAt))) r *= num(m.sessBoost.mult);
-  return r;
-}
-function nxmSessEarned(m) {
-  m = m || MINE();
-  if (m.st !== 'active' || !m.sessStart) return 0;
-  const durH = nxmCfg().sessionHours;
-  const elapsed = Math.min(nowMs() - num(m.sessStart), durH * 3600e3) / 3600e3;
-  return rnd(nxmRateNow(m) * elapsed, 4);
-}
-function nxmProjected() {
-  const m = MINE();
-  return m.st === 'active' ? rnd(nxmRateNow(m) * nxmCfg().sessionHours, 4) : 0;
-}
-const nxmTotalMined = () => num(MINE().totalMined);
-
-/* ---------------- hms() lives with the countdown ticker in part 3 ---------------- */
-function hms(ms) {
-  ms = Math.max(0, ms);
-  const s = Math.floor(ms / 1000), d = Math.floor(s / 86400), hh = pad2(Math.floor(s % 86400 / 3600)), mm = pad2(Math.floor(s % 3600 / 60)), ss = pad2(s % 60);
-  return (d > 0 ? d + 'd ' : '') + hh + ':' + mm + ':' + ss;
-}
-
-/* ---------------- Transaction helpers (same trust model as platform) ---------------- */
-async function nxmCas(path, expect, fn) {
-  const t = await db.ref(path).transaction(cur => (cur === expect ? fn(cur) : undefined));
-  return t.committed;
-}
-async function nxmBusyWheel(on) { busy(on, on ? L2('Mining…', 'মাইনিং…') : ''); }
-
-/* =====================================================================
-   PHASE 1 — MINING PAGE
-===================================================================== */
-let MINE_HIST_LOADED = null;
-async function loadMineHistory() {
-  if (MINE_HIST_LOADED) return MINE_HIST_LOADED;
-  try {
-    const s = await db.ref('miningHistory/' + uid).orderByKey().limitToLast(30).once('value');
-    MINE_HIST_LOADED = []; s.forEach(c => { const v = c.val(); if (v) MINE_HIST_LOADED.push(Object.assign({ key: c.key }, v)); });
-    MINE_HIST_LOADED.reverse();
-  } catch (e) { MINE_HIST_LOADED = []; }
-  return MINE_HIST_LOADED;
-}
-
-function nxmStatusBadge(st) {
-  const map = {
-    READY_TO_START: ['fa-circle-play', L2('Ready to start', 'শুরু করার জন্য প্রস্তুত'), 'info'],
-    MINING_ACTIVE: ['fa-satellite-dish', L2('Mining active', 'মাইনিং চালু আছে'), 'pos'],
-    CLAIM_AVAILABLE: ['fa-unlock-keyhole', L2('Claim available', 'ক্লেইম উপলব্ধ'), 'warn'],
-    CLAIMED: ['fa-circle-check', L2('Claimed — start next session', 'ক্লেইম হয়েছে — পরের সেশন শুরু করুন'), 'pos'],
-    LOCKED: ['fa-lock', L2('Mining locked', 'মাইনিং লক করা'), 'neg'],
-    MAX_LEVEL_REACHED: ['fa-crown', L2('Max level reached', 'সর্বোচ্চ লেভেল'), 'gold'],
-    OFF: ['fa-power-off', L2('Mining disabled by admin', 'অ্যাডমিন মাইনিং বন্ধ করেছেন'), 'neg']
-  };
-  const m = map[st] || ['', st, ''];
-  return '<div class="nxm-badge ' + m[2] + '"><i class="fas ' + m[0] + '"></i> ' + m[1] + '</div>';
-}
-
-SUBS.mine = {
-  title: () => L2('Token Mining', 'টোকেন মাইনিং'), live: true,
-  after: () => { if (typeof nxmAutoLock === 'function') nxmAutoLock(); },
-  render: () => {
-    const c = nxmCfg(), m = MINE(), S1 = nxmStatus();
-    const lvl = num(m.level) > 0 ? m.level : 1, lv = nxmLv(lvl);
-    const t0 = num(m.sessStart), te = num(m.sessEnd) || nxmExp(m);
-    const active = S1.st === 'MINING_ACTIVE', canClaim = S1.st === 'CLAIM_AVAILABLE';
-    const earned = nxmSessEarned(), proj = nxmProjected();
-    let prog = 0;
-    if (t0 && (active || canClaim)) prog = Math.min(100, Math.max(0, (nowMs() - t0) / (c.sessionHours * 3600e3) * 100));
-
-    let h = '<div class="nxm-hero"><div class="nxm-orbit"></div><div class="nxm-orbit2"></div>' +
-      '<div class="nxm-hero-top">' +
-        '<div class="nxm-lv-badge"><span class="nxm-lv-num">' + lvl + '</span><span class="nxm-lv-max">/ ' + c.maxLevel + '</span><i class="fas fa-hat-wizard"></i></div>' +
-        '<div class="nxm-live' + (active ? ' on' : '') + '"><span></span>' + (active ? L2('LIVE', 'লাইভ') : L2('IDLE', 'অপেক্ষা')) + '</div>' +
-      '</div>' +
-      '<div class="nxm-speed"><i class="fas fa-bolt"></i> <b>' + fmt(nxmRateNow()) + '</b> <small>' + esc(tsym()) + '/' + L2('hour', 'ঘণ্টা') + '</small></div>' +
-      '<div class="nxm-hero-sub">' + esc(lv.desc || L2('Current mining level', 'বর্তমান মাইনিং লেভেল')) + '</div>' +
-      '<div class="nxm-prog"><b style="width:' + prog + '%"></b><span>' + (prog > 0 ? Math.round(prog) + '%' : '') + '</span></div>' +
-    '</div>';
-
-    h += nxmStatusBadge(S1.st);
-
-    if (S1.st === 'LOCKED') return h + nxmLockedCard(m);
-
-    h += '<div class="pad nxm-grid">' +
-      '<div class="nxm-stat"><div class="nxm-st-l"><i class="fab fa-bitcoin"></i> ' + L2('Session earnings', 'সেশন আয়') + '</div><b class="pos">' + (active || canClaim ? '+' + fmt(earned, 4) : '0.0000') + ' <small>' + esc(tsym()) + '</small></b></div>' +
-      '<div class="nxm-stat"><div class="nxm-st-l"><i class="fa-solid fa-money-bill-trend-up"></i> ' + L2('Total mined', 'মোট মাইন드') + '</div><b>' + fmt(nxmTotalMined(), 4) + ' <small>' + esc(tsym()) + '</small></b></div>' +
-    '</div>';
-
-    h += '<div class="card">' +
-      '<div class="card-t"><i class="fas fa-clock-rotate-left"></i> ' + L2('Session', 'সেশন') + '</div>';
-    if (t0) {
-      h += '<div class="kv"><span>' + L2('Start time', 'শুরুর সময়') + '</span><b>' + fdt(t0) + '</b></div>' +
-           '<div class="kv"><span>' + L2('Expiration', 'শেষ সময়') + '</span><b>' + fdt(te) + '</b></div>' +
-           '<div class="kv"><span>' + L2('Remaining time', 'বাকি সময়') + '</span><b class="pos" id="nxmCtd">—</b></div>' +
-           '<div class="kv"><span>' + L2('Next claim', 'পরের ক্লেইম') + '</span><b>' + (canClaim ? '+ ' + fmt(earned, 4) + ' ' + esc(tsym()) : '+ ' + fmt(proj, 4) + ' ' + esc(tsym()) + ' ' + L2('at expiry', 'শেষে')) + '</b></div>';
-      h += '<button class="btn ghost sm" style="margin-top:10px" data-act="mineRefreshT"><i class="fas fa-rotate"></i> ' + L2('Refresh timer', 'টাইমার রিফ্রেশ') + '</button>';
-    } else {
-      h += '<div class="empty" style="padding:16px 8px"><i class="fas fa-hourglass-start"></i><p>' + L2('No session started yet', 'এখনো কোনো সেশন শুরু হয়নি') + '</p></div>';
-    }
-    h += '</div>';
-
-    /* Actions */
-    h += '<div class="pad nxm-acts">';
-    if (active) h += '<button class="btn" disabled><i class="fas fa-hammer"></i> ' + L2('Claim at', 'ক্লেইম হবে') + ' ' + ftime(te) + '</button>';
-    else if (canClaim) h += '<button class="btn xp" data-act="mineClaim"><i class="fas fa-hammer"></i> ' + L2('CLAIM REWARD', 'ক্লেইম রিওয়ার্ড') + ' · +' + fmt(earned, 4) + ' ' + esc(tsym()) + '</button>';
-    else if (S1.st === 'CLAIMED' || S1.st === 'READY_TO_START' || S1.st === 'MAX_LEVEL_REACHED') h += '<button class="btn xp" data-act="mineStart"><i class="fas fa-circle-play"></i> ' + L2('START MINING', 'মাইনিং শুরু করুন') + ' · ' + c.sessionHours + 'h</button>';
-    h += '<div class="nxm-rowlinks"><button class="btn xp2" data-act="openSub" data-id="mineup"><i class="fas fa-arrow-up"></i> ' + L2('Upgrade Level', 'লেভেল আপগ্রেড') + '</button>' +
-      '<button class="btn xp2" data-act="openSub" data-id="mineboost"><i class="fas fa-rocket"></i> ' + L2('Mining Boost', 'মাইনিং বুস্ট') + '</button></div>';
-    h += '</div>';
-
-    /* History */
-    h += '<div class="sec"><span>' + L2('Mining history', 'মাইনিং হিস্টরি') + '</span></div><div class="pad"><div id="nxmHist">' + (MINE_HIST_LOADED ? nxmHistHtml(MINE_HIST_LOADED) : '<div class="empty"><i class="fas fa-circle-notch fa-spin"></i><p>…</p></div>') + '</div></div>';
-    return h;
+  function derive(m, mc, t) {
+    m = obj(m); const s = D0(m), level = num(m.level) || 1, out = { level, maxLevel: mc.maxLevel, isMax: level >= mc.maxLevel, speed: num(mc.level(level) && mc.level(level).speed), totalMined: num(m.total), sessions: num(m.sessions) };
+    const bo = m.boost && num(m.boost.until) > t ? m.boost : null; out.boost = bo;
+    out.boostMult = bo ? num(bo.mult) : 1; out.lock = m.lock || null; out.session = s;
+    if (!mc.enabled || !mc.configured) out.status = 'DISABLED';
+    else if (m.lock) out.status = 'LOCKED';
+    else if (lockDueAt(m, mc) != null && t >= lockDueAt(m, mc)) out.status = 'LOCKED', out.lockDue = true;
+    else if (s && s.status === 'active') out.status = t >= num(s.endAt) ? 'CLAIM_AVAILABLE' : 'MINING_ACTIVE';
+    else if (s && s.status === 'claimed') out.status = 'CLAIMED';
+    else out.status = 'READY_TO_START';
+    if (s && s.status === 'active') { out.remainingMs = Math.max(0, num(s.endAt) - t); out.progress = Math.min(1, Math.max(0, (t - num(s.startAt)) / Math.max(1, num(s.endAt) - num(s.startAt)))); out.pending = rewardOf(Object.assign({}, s, { boostSegs: s.boostSegs })); const ld = lockDueAt(m, mc); out.lockAt = ld; }
+    return out;
   }
-};
-function nxmHistHtml(list) {
-  if (!list || !list.length) return emptyHtml('fa-chart-area', L2('No mining history yet', 'এখনো মাইনিং হিস্টরি নেই'));
-  return list.map(r =>
-    '<div class="atask" style="margin-bottom:9px"><div class="row" style="padding:0;border:none;cursor:default"><div class="ico ' + (num(r.reward) > 0 ? 'pos' : 'neg') + '"><i class="fas ' + (num(r.reward) > 0 ? 'fa-hammer' : 'fa-ban') + '"></i></div>' +
-    '<div class="rm"><div class="rt1">' + L2('Level', 'লেভেল') + ' ' + esc(r.level) + ' · ' + esc(r.session || '') + '</div><div class="rt2">' + fdt(r.ts) + (r.note ? ' · ' + esc(r.note) : '') + '</div></div>' +
-    '<div class="rr"><div class="rv ' + (num(r.reward) > 0 ? 'pos' : 'neg') + '">' + (num(r.reward) > 0 ? '+' + fmt(r.reward, 4) : '—') + ' ' + esc(tsym()) + '</div></div></div></div>'
-  ).join('');
-}
-function nxmLockedCard(m) {
-  const ic = nxmInact(), due = m.lockAt;
-  let h = (m.lockOn && m.lockReason !== 'inactivity') ? ('<div class="card nxm-lock"><div class="nxm-lock-ic"><i class="fas fa-user-slash"></i></div><b>' + L2('Locked by admin', 'অ্যাডমিন কর্তৃক লক') + '</b><p>' + esc(m.lockNote || L2('Your mining has been locked by an administrator. Contact support if you believe this is an error.', 'অ্যাডমিন আপনার মাইনিং লক করেছেন।')) + '</p><a class="btn sm" style="margin-top:12px" href="https://t.me/' + esc((S.cfg.telegram || '').replace('@', '')) + '" target="_blank" rel="noopener">' + t('support') + '</a></div>')
-    : '<div class="card nxm-lock"><div class="nxm-lock-ic"><i class="fas fa-hourglass-end"></i></div><b>' + L2('Inactivity protection', 'অনিয়মিত ব্যবহার সুরক্ষা') + '</b><p>' + L2('A mining session stayed unclaimed beyond {0} hours, so mining was locked automatically.', '{0} ঘণ্টার বেশি সময় ধরে ক্লেইম না করায় স্বয়ংক্রিয়ভাবে মাইনিং লক হয়ে গেছে।').replace('{0}', ic.thresholdHours) + '</p>' +
-      '<div class="kv"><span>' + L2('Unlock fee', 'আনলক ফি') + '</span><b class="pos">' + fmt(ic.unlockFee) + ' ' + esc(tsym()) + '</b></div>' +
-      '<div class="kv"><span>' + L2('Locked at', 'লক হওয়ার সময়') + '</span><b>' + fdt(due) + '</b></div>' +
-      '<div class="kv"><span>' + L2('Token balance', 'টোকেন ব্যালেন্স') + '</span><b>' + fmt(S.user.tokenBalance, 4) + ' ' + esc(tsym()) + '</b></div>' +
-      '<button class="btn xp" style="margin-top:12px" data-act="mineUnlock"><i class="fas fa-unlock"></i> ' + L2('UNLOCK MINING', 'মাইনিং আনলক করুন') + '</button>' +
-      '<div class="hint" style="margin-top:8px">' + L2('Unclaimed rewards from the expired session are void and will not be paid twice.', 'অব্যবহৃত রিওয়ার্ড বাতিল এবং দ্বিতীয়বার দেওয়া হবে না।') + '</div></div>';
-  return '<div class="pad">' + h + '</div>';
-}
+  const dayNum = (t, tz) => Math.floor((t + num(tz) * 60000) / DAY);
+  const weekNum = (t, tz) => Math.floor((dayNum(t, tz) + 3) / 7);
 
-/* =====================================================================
-   PHASE 2 — 100-LEVEL UPGRADE PAGE
-===================================================================== */
-SUBS.mineup = {
-  title: () => L2('Mining Upgrade', 'মাইনিং আপগ্রেড'), live: true,
-  render: () => {
-    const m = MINE(), c = nxmCfg();
-    const lvl = num(m.level) > 0 ? m.level : 1;
-    const maxed = lvl >= c.maxLevel;
-    let h = '<div class="nxm-hero nxm-hero-sm"><div class="nxm-lv-badge big"><span class="nxm-lv-num">' + lvl + '</span><span class="nxm-lv-max">/ ' + c.maxLevel + '</span><i class="fas fa-arrow-up"></i></div>' +
-      '<div class="nxm-speed"><i class="fas fa-bolt"></i> <b>' + fmt(nxmRate(lvl)) + '</b> <small>' + esc(tsym()) + '/' + L2('h', 'ঘ') + '</small></div></div>';
-
-    if (nxmStatus().st === 'LOCKED') return h + '<div class="pad">' + nxmLockedCard(m) + '</div>';
-
-    if (maxed) {
-      h += '<div class="pad"><div class="card hero" style="text-align:center"><div class="nxm-lv-badge gold" style="margin:0 auto 14px"><i class="fas fa-crown"></i></div><h3>' + L2('Maximum level reached', 'সর্বোচ্চ লেভেল অর্জিত') + '</h3><p class="tiny">' + L2('You are at level 100 — the highest mining tier.', 'আপনি সর্বোচ্চ ১০০ লেভেলে আছেন।') + '</p>' +
-        '<div class="kv"><span>' + L2('Total mined', 'মোট মাইনড') + '</span><b class="pos">' + fmt(nxmTotalMined(), 4) + ' ' + esc(tsym()) + '</b></div></div></div>';
-    } else {
-      const nx = nxmNextEnabled(lvl);
-      if (!nx) {
-        h += '<div class="pad"><div class="empty"><i class="fas fa-lock"></i><p>' + L2('No further levels enabled', 'আর কোনো লেভেল চালু নেই') + '</p></div></div>';
-      } else {
-        const nl = nxmLv(nx), bal = num(S.user.tokenBalance);
-        const freeAvail = c.freeUpgrade && !m.freeUpgradeUsed;
-        const need = freeAvail ? 0 : nl.cost;
-        const canPay = bal >= need;
-        h += '<div class="pad"><div class="card hero" style="margin-top:6px">' +
-          '<div class="bal-lab"><i class="fas fa-hat-wizard"></i> ' + L2('Next level', 'পরের লেভেল') + '</div>' +
-          '<div class="bal-amt">' + nx + ' <small>' + esc(tsym()) + '/' + L2('h', 'ঘ') + '</small></div>' +
-          '<div class="tiny">' + esc(nl.desc || '') + '</div>' +
-          '<div class="sp"></div>' +
-          '<div class="kv"><span>' + L2('Speed', 'গতি') + '</span><b class="pos">' + fmt(nxmRate(lvl)) + ' → ' + fmt(nl.speed) + ' ' + esc(tsym()) + '/' + L2('h', 'ঘ') + '</b></div>' +
-          '<div class="kv"><span>' + L2('Upgrade cost', 'আপগ্রেড খরচ') + '</span><b>' + (freeAvail ? L2('FREE — one-time gift', 'ফ্রি — এককালীন উপহার') : fmt(need) + ' ' + esc(tsym())) + '</b></div>' +
-          '<div class="kv"><span>' + L2('Token balance', 'টোকেন ব্যালেন্স') + '</span><b class="' + (bal >= need ? 'pos' : 'neg') + '">' + fmt(bal, 4) + ' ' + esc(tsym()) + '</b></div>' +
-          (freeAvail ? '<div class="nxm-free"><i class="fas fa-gift"></i> ' + L2('Free upgrade available — your first upgrade costs nothing!', 'ফ্রি আপগ্রেড উপলব্ধ — প্রথম আপগ্রেড একদম ফ্রি!') + '</div>' : '') +
-          '<div class="sp"></div>' +
-          (canPay ?
-            '<button class="btn xp" data-act="mineUpgrade" data-id="' + (freeAvail ? 'free' : 'pay') + '"><i class="fas ' + (freeAvail ? 'fa-gift' : 'fa-arrow-trend-up') + '"></i> ' + (freeAvail ? L2('CLAIM FREE UPGRADE', 'ফ্রি আপগ্রেড নিন') : L2('UPGRADE TO LEVEL {0}', 'লেভেল {0} আপগ্রেড করুন').replace('{0}', nx)) + '</button>' :
-            '<div class="qerr" style="display:block;margin-bottom:10px"><i class="fas fa-triangle-exclamation"></i> ' + L2('Insufficient balance — you need {0} more tokens.', 'অপর্যাপ্ত ব্যালেন্স — আরও {0} টোকেন প্রয়োজন।').replace('{0}', fmt(need - bal, 4)) + '</div>' +
-            '<div class="nxm-rowlinks"><button class="btn" data-act="openOp" data-id="buy"><i class="fas fa-cart-plus"></i> ' + L2('BUY TOKEN', 'টোকেন কিনুন') + '</button><button class="btn ghost" data-act="openSub" data-id="deposit"><i class="fas fa-arrow-down"></i> ' + L2('Deposit route', 'ডিপোজিট') + '</button></div>') +
-        '</div></div>';
-      }
-    }
-
-    h += '<div class="sec"><span>' + L2('Upgrade history', 'আপগ্রেড হিস্টরি') + '</span></div><div class="pad"><div id="nxmUpgH">' + (S.upHist ? nxmUpgHtml(S.upHist) : '<div class="empty"><i class="fas fa-circle-notch fa-spin"></i><p>…</p></div>') + '</div></div>';
-    return h;
+  function streakCfg(c) {
+    c = obj(c); const days = obj(c.days), cb = obj(c.completion);
+    return { enabled: c.enabled === true, tz: num(c.tzOffsetMin), grace: Math.max(0, Math.floor(num(c.graceDays))), resetOnMiss: c.resetOnMiss !== false, repeat: c.repeat !== false, from: c.claimFromHour == null ? 0 : num(c.claimFromHour), to: c.claimToHour == null ? 24 : num(c.claimToHour), day: n => { const d = days[n]; return d && typeof d === 'object' ? { type: ['main', 'token', 'both'].includes(d.type) ? d.type : 'main', main: Math.max(0, num(d.main)), token: Math.max(0, num(d.token)) } : null; }, completion: { type: ['main', 'token', 'both'].includes(cb.type) ? cb.type : 'main', main: Math.max(0, num(cb.main)), token: Math.max(0, num(cb.token)) } };
   }
-};
-SUBS.mineup.after = () => { loadMineUpgrades().then(list => { S.upHist = list; const el = $('nxmUpgH'); if (el) el.innerHTML = nxmUpgHtml(list); }); };
-function nxmUpgHtml(list) {
-  if (!list || !list.length) return emptyHtml('fa-arrow-trend-up', L2('No upgrades yet', 'এখনো আপগ্রেড নেই'));
-  return list.map(r =>
-    '<div class="atask" style="margin-bottom:9px"><div class="row" style="padding:0;border:none;cursor:default"><div class="ico ' + (r.free ? 'warn' : 'gold') + '"><i class="fas ' + (r.free ? 'fa-gift' : 'fa-arrow-up') + '"></i></div>' +
-    '<div class="rm"><div class="rt1">' + L2('Level', 'লেভেল') + ' ' + esc(r.from) + ' → ' + esc(r.to) + '</div><div class="rt2">' + fdt(r.ts) + (r.free ? ' · ' + L2('Free', 'ফ্রি') : '') + '</div></div>' +
-    '<div class="rr"><div class="rv ' + (r.free ? 'warn' : 'neg') + '">' + (r.free ? L2('FREE', 'ফ্রি') : '-' + fmt(r.cost) + ' ' + esc(tsym())) + '</div></div></div></div>'
-  ).join('');
-}
-async function loadMineUpgrades() {
-  try {
-    const s = await db.ref('miningUpgrades/' + uid).orderByKey().limitToLast(30).once('value');
-    const list = []; s.forEach(c => { const v = c.val(); if (v) list.push(Object.assign({ key: c.key }, v)); });
-    list.reverse(); return list;
-  } catch (e) { return []; }
-}
-
-/* =====================================================================
-   PHASE 3 — BOOST PAGE + INVALIDATION
-===================================================================== */
-const nxmMyBoost = () => {
-  const o = (S.user && S.user.boost) || null;
-  if (!o || typeof o !== 'object') return null;
-  if (num(o.expiresAt) && nowMs() >= num(o.expiresAt)) return null;
-  return o;
-};
-SUBS.mineboost = {
-  title: () => L2('Mining Boost', 'মাইনিং বুস্ট'), live: true,
-  after: () => { if (typeof nxmAutoLock === 'function') nxmAutoLock(); },
-  render: () => {
-    const bc = nxmBoostCfg(), m = MINE(), cur = nxmMyBoost();
-    const lvl = num(m.level) > 0 ? m.level : 1;
-    const used = ((S.user.boostPurchases || {})[todayStr()] || 0);
-    if (!bc.enabled || NXM().boostEnabled === false) return '<div class="pad">' + emptyHtml('fa-rocket', L2('Boost system is currently disabled', 'বুস্ট সিস্টেম বর্তমানে বন্ধ')) + '</div>';
-    let h = '<div class="nxm-hero nxm-hero-sm nxm-hero-boost"><div class="nxm-lv-badge boost"><i class="fas fa-rocket"></i></div>' +
-      '<div class="nxm-speed"><i class="fas fa-gauge-high"></i> <b>' + bc.multiplier + '×</b> <small>' + L2('mining speed', 'মাইনিং গতি') + '</small></div></div>';
-    h += '<div class="pad"><div class="card hero" style="margin-top:6px">' +
-      '<div class="bal-lab"><i class="fas fa-bolt"></i> ' + L2('Temporary speed multiplier', 'সাময়িক গতি গুণক') + '</div>' +
-      '<div class="kv"><span>' + L2('Duration', 'সময়কাল') + '</span><b>' + bc.durationHours + ' ' + L2('hours', 'ঘণ্টা') + '</b></div>' +
-      '<div class="kv"><span>' + L2('Cost', 'খরচ') + '</span><b class="pos">' + fmt(bc.cost) + ' ' + esc(tsym()) + '</b></div>' +
-      '<div class="kv"><span>' + L2('Purchases today', 'আজকের ক্রয়') + '</span><b>' + used + ' / ' + bc.maxPerDay + '</b></div>' +
-      '<div class="kv"><span>' + L2('Required level', 'প্রয়োজনীয় লেভেল') + '</span><b>' + bc.minLevel + '+</b></div>' +
-      (cur ? '<div class="kv"><span>' + L2('Active boost', 'চালু বুস্ট') + '</span><b class="pos">' + cur.mult + '× · ' + hms(num(cur.expiresAt) - nowMs()) + '</b></div>' : '') +
-      '</div>';
-    let btnHtml = '';
-    if (cur) btnHtml = '<button class="btn xp" data-act="boostBuy"><i class="fas fa-layer-group"></i> ' + L2('Stack another boost', 'আরেকটি বুস্ট কিনুন') + '</button>';
-    if (lvl < bc.minLevel) btnHtml = '<button class="btn" disabled><i class="fas fa-lock"></i> ' + L2('Requires level {0}+', '{0}+ লেভেল প্রয়োজন').replace('{0}', bc.minLevel) + '</button>';
-    if (used >= bc.maxPerDay) btnHtml = '<button class="btn" disabled><i class="fas fa-hourglass-half"></i> ' + L2('Daily purchase limit reached', 'দৈনিক সীমা শেষ') + '</button>';
-    if (btnHtml) h += '<div class="nxm-acts" style="padding:14px 0 4px">' + btnHtml + '</div>';
-    h += '<div class="hint" style="margin-top:10px">' + L2('Base speed and boost multiplier are always calculated separately for exact rewards. Boost applies to the currently running mining session and expires automatically.', 'গতি এবং বুস্ট আলাদাভাবে গণনা হয়। বুস্ট স্বয়ংক্রিয়ভাবে শেষ হয়।') + '</div></div>';
-    return h;
+  function streakView(st, sc, t) {
+    st = obj(st); const today = dayNum(t, sc.tz), last = st.lastDay == null ? null : num(st.lastDay);
+    let cur = num(st.cur), next = cur + 1, broken = false;
+    if (last != null) { const gap = today - last; if (gap > 1 + sc.grace && sc.resetOnMiss) { broken = true; next = 1; cur = 0; } }
+    if (next > 30) next = 1;
+    return { cur, next, today, last, claimedToday: last === today, broken, best: num(st.best), cycles: num(st.cycles), claims: obj(st.claims) };
   }
-};
-
-/* =====================================================================
-   PHASE 4 — 30-DAY DAILY LOGIN STREAK
-===================================================================== */
-const NXS_CFG = () => {
-  const c = (S.cfg && S.cfg.streak30) || {};
-  return {
-    enabled: c.enabled !== false,
-    graceHours: num(c.graceHours) > 0 ? num(c.graceHours) : 4,
-    resetMissed: c.resetMissed !== false,
-    bonusMain: num(c.bonusMain), bonusToken: num(c.bonusToken),
-    days: (c.days && typeof c.days === 'object') ? c.days : {}
-  };
-};
-const nxsDayCfg = (d) => {
-  const c = NXS_CFG(), o = c.days[d] || c.days[String(d)] || {};
-  const type = o.type || 'main';
-  return { type, main: o.main !== undefined ? num(o.main) : (type === 'token' ? 0 : 0.05 * d), token: o.token !== undefined ? num(o.token) : (type === 'token' || type === 'both' ? 2 * d : 0) };
-};
-function nxsState() {
-  const m = (S.user && S.user.streak30) || {};
-  return { day: num(m.day) || 1, lastKey: m.lastKey || '', best: num(m.best), history: m.history || {}, historyKeys: m.historyKeys || {} };
-}
-const nxsDueToday = () => nxsState().lastKey !== todayStr();
-function nxsBroken() {
-  const st = nxsState(), yKey = new Date(nowMs() - 864e5).toISOString().slice(0, 10);
-  return st.lastKey !== '' && st.lastKey !== todayStr() && st.lastKey !== yKey;
-}
-async function loadStreakClaims() {
-  try {
-    const s = await db.ref('dailyStreakClaims/' + uid).orderByKey().limitToLast(40).once('value');
-    const list = []; s.forEach(c => { const v = c.val(); if (v) list.push(Object.assign({ key: c.key }, v)); });
-    list.reverse(); return list;
-  } catch (e) { return []; }
-}
-const nxsHistHtml = (list) => {
-  if (!list || !list.length) return emptyHtml('fa-gift', L2('No claims yet', 'এখনো কোনো ক্লেইম নেই'));
-  return list.slice(0, 20).map(r =>
-    '<div class="atask" style="margin-bottom:9px"><div class="row" style="padding:0;border:none;cursor:default"><div class="ico warn"><i class="fas fa-gift"></i></div>' +
-    '<div class="rm"><div class="rt1">' + L2('Day', 'দিন') + ' ' + num(r.day) + '</div><div class="rt2">' + fdt(r.ts) + '</div></div>' +
-    '<div class="rr"><div class="rv pos">' + (num(r.main) > 0 ? '+' + fmt(r.main) + ' ' + esc(sym()) : '') + (num(r.main) > 0 && num(r.token) > 0 ? '<br>' : '') + (num(r.token) > 0 ? '+' + fmt(r.token, 4) + ' ' + esc(tsym()) : '') + '</div></div></div></div>'
-  ).join('');
-};
-SUBS.streak30 = {
-  title: () => L2('30-Day Login Streak', '৩০ দিনের লগইন স্ট্রিক'), live: true,
-  after: () => { loadStreakClaims().then(l => { const el = $('nxsHist'); if (el) el.innerHTML = nxsHistHtml(l); }); },
-  render: () => {
-    const c = NXS_CFG();
-    if (!c.enabled) return '<div class="pad">' + emptyHtml('fa-fire', L2('Login streak is currently disabled', 'লগইন স্ট্রিক বর্তমানে বন্ধ')) + '</div>';
-    const st = nxsState(), claimed = !nxsDueToday(), brk = c.resetMissed && nxsBroken() && !claimed;
-    const day = brk ? 1 : (st.lastKey === '' ? 1 : (claimed ? num(st.day) : num(st.day)));
-    const done30 = claimed && num(st.day) >= 30;
-    const nextRw = nxsDayCfg(brk ? 1 : done30 ? 1 : day);
-    let grid = '<div class="nxm-cal">';
-    for (let i = 1; i <= 30; i++) {
-      const isClaimed = !!st.history[i];
-      const isNext = !claimed && !brk && i === day;
-      const dc = nxsDayCfg(i);
-      grid += '<div class="nxm-day' + (isClaimed ? ' done' : '') + (isNext ? ' next' : '') + '">' +
-        '<span class="nxm-day-n">' + i + '</span>' +
-        '<span class="nxm-day-r">' + (num(dc.main) > 0 ? '+' + fmt(dc.main, 2) + ' ' + esc(sym()) : '') + (num(dc.token) > 0 ? (num(dc.main) > 0 ? '<br>' : '') + '+' + fmt(dc.token, 2) + ' ' + esc(tsym()) : '') + '</span>' +
-        (i === 30 ? '<i class="fas fa-crown nxm-day-bonus"></i>' : (isClaimed ? '<i class="fas fa-check nxm-day-done"></i>' : '')) +
-      '</div>';
-    }
-    grid += '</div>';
-    let h = '<div class="nxm-hero nxm-hero-sm nxm-hero-fire"><div class="nxm-lv-badge fire"><i class="fas fa-fire"></i></div>' +
-      '<div class="nxm-speed"><i class="fas fa-calendar-check"></i> <b>' + (claimed ? Math.max(0, day - (done30 ? 0 : 1)) : Math.max(0, day - 1)) + '</b> <small>' + L2('day streak', 'দিনের স্ট্রিক') + '</small></div></div>' +
-      '<div class="pad"><div class="card" style="margin-top:6px">' +
-        '<div class="kv"><span>' + L2('Current streak', 'বর্তমান স্ট্রিক') + '</span><b>' + (claimed ? day + ' / 30' : Math.max(0, day - 1) + ' / 30') + '</b></div>' +
-        '<div class="kv"><span>' + L2('Best streak', 'সেরা স্ট্রিক') + '</span><b>' + st.best + ' / 30</b></div>' +
-        '<div class="kv"><span>' + L2('Next reward', 'পরের রিওয়ার্ড') + '</span><b class="pos">' + (num(nextRw.main) > 0 ? '+' + fmt(nextRw.main) + ' ' + esc(sym()) : '') + (num(nextRw.token) > 0 ? (num(nextRw.main) > 0 ? ' + ' : '') + '+' + fmt(nextRw.token) + ' ' + esc(tsym()) : '') + '</b></div>' +
-        (num(c.bonusMain) || num(c.bonusToken) ? '<div class="kv"><span>' + L2('Day-30 completion bonus', '৩০ দিন সম্পূর্ণ বোনাস') + '</span><b class="pos">' + (num(c.bonusMain) ? '+' + fmt(c.bonusMain) + ' ' + esc(sym()) : '') + (num(c.bonusMain) && num(c.bonusToken) ? ' + ' : '') + (num(c.bonusToken) ? '+' + fmt(c.bonusToken) + ' ' + esc(tsym()) : '') + '</b></div>' : '') +
-        '<div class="kv"><span>' + L2('Missed day rule', 'মিসড ডে রুল') + '</span><b>' + (c.resetMissed ? L2('Streak resets', 'স্ট্রিক রিসেট') : L2('Streak pauses', 'স্ট্রিক পজ')) + '</b></div>' +
-      '</div>' +
-      (brk ? '<div class="note w" style="margin-top:10px"><i class="fas fa-triangle-exclamation"></i><span>' + L2('You missed a day — streak restarted from Day 1.', 'একটি দিন মিস হয়েছে — স্ট্রিক ১ দিন থেকে শুরু।') + '</span></div>' : '') +
-      (claimed ? '<div class="note" style="margin-top:10px"><i class="fas fa-circle-check"></i><span>' + L2("Today's reward claimed — come back tomorrow!", 'আজকের রিওয়ার্ড নেওয়া হয়েছে — আগামীকাল আসুন!') + '</span></div>' : '<button class="btn xp" style="margin-top:12px" data-act="streakClaim"><i class="fas fa-gift"></i> ' + L2('CLAIM DAY {0} REWARD', 'দিন {0} এর রিওয়ার্ড নিন').replace('{0}', day) + '</button>') +
-      '<div class="sp"></div>' + grid + '</div>' +
-      '<div class="sec"><span>' + L2('Reward history', 'রিওয়ার্ড হিস্টরি') + '</span></div><div class="pad"><div id="nxsHist"><div class="empty"><i class="fas fa-circle-notch fa-spin"></i><p>…</p></div></div></div>';
-    return h;
+  function credit(u, type, main, token) {
+    if ((type === 'main' || type === 'both') && main > 0) { u.balance = rnd(num(u.balance) + main); u.totalEarned = rnd(num(u.totalEarned) + main); }
+    if ((type === 'token' || type === 'both') && token > 0) u.tokenBalance = rnd(num(u.tokenBalance) + token);
   }
-};
 
-/* =====================================================================
-   PHASE 5 — QUIZ EARNING  (secure server-side grading)
-===================================================================== */
-const NXQ_CFG = () => {
-  const c = (S.cfg && S.cfg.quiz) || {};
-  const rw = c.rewards || {};
-  return {
-    enabled: c.enabled !== false,
-    dailyLimit: num(c.dailyLimit) > 0 ? num(c.dailyLimit) : 10,
-    weeklyLimit: num(c.weeklyLimit) > 0 ? num(c.weeklyLimit) : 30,
-    timeSec: num(c.timeSec) || 30, timeSecAdv: num(c.timeSecAdv) || 45,
-    rewardOnCorrect: c.rewardOnCorrect !== false,
-    catOn: { simple: c.simpleEnabled !== false, advanced: c.advancedEnabled !== false },
-    rewards: {
-      simple: { main: num((rw.simple || {}).main), token: num((rw.simple || {}).token) },
-      advanced: { main: num((rw.advanced || {}).main), token: num((rw.advanced || {}).token) }
-    }
-  };
-};
-const NXQ_DAILY_SET = 5;
-const NXQ = window.NXQ = window.NXQ || { Q: '', C: 'All' };
-NXQ.Q = ''; NXQ.C = 'All';
-window.NXQ_POOL = null; window.NXQ_BOARD = null;
-let NXQ_CAT = 'simple';
-let NXQ_CUR = null, NXQ_PICK = null, NXQ_RES = null, NXQ_TLEFT = 0, NXQ_TIV = null;
-function nxqPool() {
-  if (window.NXQ_POOL !== null) return window.NXQ_POOL;
-  window.NXQ_POOL = [];
-  db.ref('quizPool').on('value', s => {
-    const o = s.exists() ? s.val() || {} : {};
-    window.NXQ_POOL = Object.keys(o).map(k => Object.assign({ id: k }, o[k])).filter(q => q && q.q && q.enabled !== false);
-    if (S.booted && subStack.length && subStack[subStack.length - 1].id === 'quiz') { if (!(subStack[subStack.length-1].params || {}).noReset) renderSub(false); }
-  }, () => { window.NXQ_POOL = []; });
-  return window.NXQ_POOL;
-}
-function nxqBoard() {
-  if (window.NXQ_BOARD !== null) return window.NXQ_BOARD;
-  window.NXQ_BOARD = [];
-  db.ref('quizBoard').orderByChild('t').limitToLast(300).on('value', s => {
-    const o = s.exists() ? s.val() || {} : {};
-    window.NXQ_BOARD = Object.keys(o).map(k => Object.assign({ id: k }, o[k])).filter(u => u && num(u.correct) > 0);
-    window.NXQ_BOARD.sort((a, b) => num(b.correct) - num(a.correct) || num(b.token) - num(a.token));
-    if (S.booted && subStack.length && subStack[subStack.length - 1].id === 'quiz') renderSub(false);
-  }, () => { window.NXQ_BOARD = []; });
-  return window.NXQ_BOARD;
-}
-function nxqDailySet(cat) {
-  const pool = (window.NXQ_POOL || []).filter(q => (q.diff || 'simple') === cat && (q.enabled !== false));
-  pool.sort((a, b) => String(a.id).localeCompare(String(b.id)));
-  const dayIdx = Math.floor(nowMs() / 864e5);
-  const out = [];
-  for (let i = 0; i < pool.length && out.length < NXQ_DAILY_SET; i++) {
-    const q = pool[(dayIdx * NXQ_DAILY_SET + i) % pool.length];
-    if (q && !((S.user.quizAns || {})[q.id])) out.push(q);
-  }
-  return out;
-}
-const nxqWeekKey = () => {
-  const d = new Date(nowMs()), day = (d.getUTCDay() + 6) % 7;
-  const mon = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - day));
-  return mon.toISOString().slice(0, 10);
-};
-function nxqCounters() {
-  const u = S.user || {};
-  return { day: num((u.quizDaily || {})[todayStr()] || 0), wk: num((u.quizWeekly || {})[nxqWeekKey()] || 0) };
-}
-SUBS.quiz = {
-  title: () => L2('Quiz Earning', 'কুইজ আর্নিং'), live: false,
-  after: () => { nxqPool(); nxqBoard(); nxqQtick(true); },
-  render: () => {
-    const c = NXQ_CFG();
-    if (!c.enabled) return '<div class="pad">' + emptyHtml('fa-circle-question', L2('Quiz is currently disabled', 'কুইজ বর্তমানে বন্ধ')) + '</div>';
-    const counters = nxqCounters(), stats = (S.user.quizStats);
-    const nPx = (window.NXQ_POOL || []).length;
-    let h = '<div class="nxq-hero"><div class="nxm-lv-badge quiz"><i class="fas fa-brain"></i></div>' +
-      '<div class="nxq-hb"><div class="nxq-hb1">' + L2('Answer & earn', 'উত্তর দিন ও আয় করুন') + '</div><div class="nxq-hb2">' + L2('Secure server-side grading', 'সুরক্ষিত সার্ভার-গ্রেডিং') + '</div></div></div>';
-    h += '<div class="pad nxm-grid">' +
-      '<div class="nxm-stat"><div class="nxm-st-l"><i class="fas fa-circle-check"></i> ' + L2('Correct', 'সঠিক') + '</div><b class="pos">' + num((stats || {}).correct) + ' / ' + num((stats || {}).total) + '</b></div>' +
-      '<div class="nxm-stat"><div class="nxm-st-l"><i class="fas fa-list-ol"></i> ' + L2('Attempts today', 'আজকের চেষ্টা') + '</div><b>' + counters.day + ' / ' + c.dailyLimit + '</b></div>' +
-      '<div class="nxm-stat"><div class="nxm-st-l"><i class="fas fa-calendar-week"></i> ' + L2('Weekly', 'সাপ্তাহিক') + '</div><b>' + counters.wk + ' / ' + c.weeklyLimit + '</b></div>' +
-      '<div class="nxm-stat"><div class="nxm-st-l"><i class="fas fa-database"></i> ' + L2('Question bank', 'প্রশ্ন ব্যাংক') + '</div><b>' + nPx + '</b></div></div>';
-    h += '<div class="pad"><div class="chips">' + [
-      ['simple', 'fa-seedling', L2('Simple', 'সহজ')],
-      ['advanced', 'fa-brain', L2('Advanced', 'কঠিন')]
-    ].filter(x => c.catOn[x[0]]).map(x => '<button class="chip ' + (NXQ_CAT === x[0] ? 'on' : '') + '" data-act="quizCat" data-id="' + x[0] + '"><i class="fas ' + x[1] + '"></i> ' + x[2] + '</button>').join('') +
-      '<button class="chip' + (NXQ_HIST_ON ? ' on' : '') + '" data-act="quizHist"><i class="fas fa-clock-rotate-left"></i> ' + L2('History', 'হিস্টরি') + '</button></div></div>';
-    if (NXQ_HIST_ON) {
-      h += '<div class="pad">' + nxqHistHtml(Object.values((S.user.quizAns) || {})) + '</div>';
-      return h + '<div class="sec"><span>' + L2('Leaderboard', 'লিডারবোর্ড') + '</span></div><div class="pad nxq-board">' + nxqBoardHtml() + '</div>';
-    }
-    if (!c.catOn[NXQ_CAT]) return h + '<div class="pad">' + emptyHtml('fa-circle-minus', L2('This category is currently off', 'এই ক্যাটাগরি বন্ধ')) + '</div>';
-    if (!window.NXQ_POOL) return h + '<div class="pad"><div class="empty"><i class="fas fa-circle-notch fa-spin"></i><p>…</p></div></div>';
-    if (!NXQ_CUR) { const set = nxqDailySet(NXQ_CAT); NXQ_CUR = set.length ? set[0] : false; NXQ_PICK = null; NXQ_RES = null; }
-    if (!NXQ_CUR) h += '<div class="pad">' + emptyHtml('fa-clipboard-question', L2('All caught up! New questions arrive daily.', 'সব শেষ! নতুন প্রশ্ন প্রতিদিন আসে।')) + '</div>';
-    else {
-      const secs = num(NXQ_CUR.timer) || (NXQ_CAT === 'advanced' ? c.timeSecAdv : c.timeSec);
-      if (!NXQ_TLEFT) NXQ_TLEFT = secs;
-      const diffCls = (NXQ_CUR.diff || NXQ_CAT) === 'advanced' ? 'adv' : 'sim';
-      h += '<div class="pad"><div class="nxq-card" id="nxqCard">' +
-        '<div class="nxq-top"><span class="nxq-diff ' + diffCls + '"><i class="fas fa-signal"></i> ' + (diffCls === 'adv' ? L2('Advanced', 'কঠিন') : L2('Simple', 'সহজ')) + '</span><span class="nxq-timer" id="nxqT"><i class="fas fa-stopwatch"></i> <b id="nxqS">' + NXQ_TLEFT + '</b>s</span></div>' +
-        '<div class="nxq-qp"><b class="nxq-qp-num"></b>' + (NXQ_RES ? nxqResHtml() : nxqQHtml(NXQ_CUR)) + '</div>' +
-        (NXQ_RES ? '' : '<div class="nxq-opts" id="nxqOpts"></div>') +
-      '</div></div>';
-      h += '<div class="pad"><div class="hint">' + L2('Reward on correct', 'সঠিক উত্তরে রিওয়ার্ড') + ': +' + fmt((c.rewards[NXQ_CAT] || {}).main) + ' ' + esc(sym()) + ' / +' + fmt((c.rewards[NXQ_CAT] || {}).token, 4) + ' ' + esc(tsym()) + '</div></div>';
-    }
-    h += '<div class="sec"><span>' + L2('Leaderboard', 'লিডারবোর্ড') + '</span></div><div class="pad nxq-board">' + nxqBoardHtml() + '</div>';
-    return h;
-  }
-};
-function nxqQHtml(q) {
-  return '<div class="nxq-q">' + esc(q.q) + '</div>' +
-    '<div class="nxq-opts">' + ((q.opts && q.opts.length) ? q.opts.map((o, i) =>
-      '<button class="nxq-opt' + (NXQ_PICK === i ? ' pick' : '') + '" data-act="quizPick" data-k="' + i + '"><span class="nxq-abc">' + 'ABCD'.charAt(i) + '</span><span>' + esc(o) + '</span></button>').join('') : '') + '</div>';
-}
-function nxqResHtml() {
-  const r = NXQ_RES || {}, c = NXQ_CFG(), rc = c.rewards[NXQ_CAT] || {};
-  return '<div class="nxq-res ' + (r.ok ? 'ok' : 'no') + '">' +
-    '<i class="fas ' + (r.ok ? 'fa-circle-check' : 'fa-circle-xmark') + '"></i>' +
-    '<b>' + (r.ok ? L2('Correct!', 'সঠিক!') : L2('Wrong answer', 'ভুল উত্তর')) + '</b>' +
-    '<div class="nxq-res-r">' + (num(r.main) > 0 ? '+' + fmt(r.main) + ' ' + esc(sym()) + ' ' : '') + (num(r.token) > 0 ? '+' + fmt(r.token, 4) + ' ' + esc(tsym()) : '') + (!num(r.main) && !num(r.token) ? (r.timeout ? L2('Time up — no reward', 'সময় শেষ — কোনো রিওয়ার্ড নেই') : L2('No reward', 'কোনো রিওয়ার্ড নেই')) : '') + '</div>' +
-    (r.ok ? '' : '<div class="tiny" style="margin-top:6px">' + L2('Each question can only be answered once', 'প্রতিটি প্রশ্নের উত্তর একবারই দেওয়া যায়') + '</div>') +
-    '<button class="btn sm" style="margin-top:12px" data-act="quizNext"><i class="fas fa-forward"></i> ' + L2('Next question', 'পরের প্রশ্ন') + '</button></div>';
-}
-function nxqBoardHtml() {
-  const board = window.NXQ_BOARD || [];
-  if (!board.length) return '<div class="card flat">' + emptyHtml('fa-trophy', L2('Leaderboard is empty — be the first!', 'লিডারবোর্ড খালি — প্রথম হোন!')) + '</div>';
-  return '<div class="card flat">' + board.slice(0, 20).map((u, i) =>
-    '<div class="link-row" style="padding:10px 0">' +
-    '<div class="ico ' + (i === 0 ? 'gold' : i === 1 ? 'info' : i === 2 ? 'warn' : '') + '"><b style="font-family:\'Sora\',sans-serif">' + (i + 1) + '</b></div>' +
-    '<div class="rm"><b>' + esc((u.name || 'User').slice(0, 18)) + (u.id === uid ? ' (' + L2('you', 'আপনি') + ')' : '') + '</b><small>' + L2('correct', 'সঠিক') + ': ' + num(u.correct) + ' / ' + num(u.total) + '</small></div>' +
-    '<div class="rr"><div class="rv pos">' + fmt(u.token || 0, 2) + ' ' + esc(tsym()) + '</div></div></div>').join('') + '</div>';
-}
-const nxqHistHtml = (list) => {
-  const arrx = (list || []).filter(Boolean).sort((a, b) => num(b.ts) - num(a.ts)).slice(0, 20);
-  if (!arrx.length) return emptyHtml('fa-clock-rotate-left', L2('No quiz answers yet', 'এখনো কোনো উত্তর নেই'));
-  return '<div class="card flat">' + arrx.map(r =>
-    '<div class="link-row" style="padding:10px 0">' +
-    '<div class="ico ' + (r.ok ? 'pos' : 'neg') + '"><i class="fas ' + (r.ok ? 'fa-check' : 'fa-xmark') + '"></i></div>' +
-    '<div class="rm"><b>' + esc((window.NXQ_POOL || []).reduce((f, p) => p.id === r.qid ? p : f, ({})).q || r.qid || '') + '</b><small>' + fdt(r.ts) + '</small></div>' +
-    '<div class="rr"><div class="rv ' + (r.ok ? 'pos' : '') + '">' + (num(r.main) > 0 ? '+' + fmt(r.main) + ' ' + esc(sym()) + '<br>' : '') + (num(r.token) > 0 ? '+' + fmt(r.token, 4) + ' ' + esc(tsym()) : '') + (!num(r.main) && !num(r.token) ? '—' : '') + '</div></div></div>').join('') + '</div>';
-};
-function nxqQtick(restart) {
-  clearInterval(NXQ_TIV); NXQ_TIV = null;
-  if (restart) NXQ_TLEFT = NXQ_TLEFT || 0;
-  const el = () => $('nxqS');
-  NXQ_TIV = setInterval(() => {
-    if (!el()) { clearInterval(NXQ_TIV); NXQ_TIV = null; if (NXQ_CUR && !NXQ_RES && NXQ_PICK !== null && !window.NXQ_IN) nxqSubmit(NXQ_TLEFT <= 0 ? -1 : NXQ_PICK); return; }
-    if (NXQ_PICK !== null || window.NXQ_IN) return;
-    NXQ_TLEFT--;
-    if (NXQ_TLEFT < 0) NXQ_TLEFT = 0;
-    el().innerText = NXQ_TLEFT;
-    if (NXQ_TLEFT <= 0 && !NXQ_RES && !window.NXQ_IN) { nxqSubmit(-1); }
-    if (NXQ_TLEFT <= 0) { clearInterval(NXQ_TIV); NXQ_TIV = null; }
-  }, 1000);
-}
-ACT.quizHist = () => { NXQ_HIST_ON = !NXQ_HIST_ON; renderSub(false); };
-ACT.quizCat = d => { NXQ_CAT = d.id; NXQ_CUR = null; NXQ_PICK = null; NXQ_RES = null; NXQ_TLEFT = 0; renderSub(false); };
-ACT.quizPick = d => {
-  if (window.NXQ_IN || NXQ_RES) return;
-  NXQ_PICK = num(d.k);
-  nxqSubmit(NXQ_PICK);
-};
-ACT.quizNext = () => {
-  NXQ_CUR = null; NXQ_PICK = null; NXQ_RES = null; NXQ_TLEFT = 0; NXQ_HIST_ON = false;
-  renderSub(false);
-};
-let NXQ_HIST_ON = false;
-window.NXQ_IN = false;
-async function nxqSubmit(pick) {
-  const c = NXQ_CFG();
-  if (window.NXQ_IN || !NXQ_CUR || NXQ_RES) return;
-  const counters = nxqCounters();
-  if (counters.day >= c.dailyLimit) { NXQ_CUR = null; renderSub(false); return toast(L2('Daily answer limit reached', 'দৈনিক সীমা শেষ')); }
-  if (counters.wk >= c.weeklyLimit) { NXQ_CUR = null; renderSub(false); return toast(L2('Weekly answer limit reached', 'সাপ্তাহিক সীমা শেষ')); }
-  const q = NXQ_CUR;
-  if (pick >= 0) NXQ_PICK = pick;
-  window.NXQ_IN = true;
-  clearInterval(NXQ_TIV); NXQ_TIV = null;
-  const ses = num(NXQ_TLEFT);
-  window.NXQ_IN = true;
-  /* mark picked visual */
-  const btns = document.querySelectorAll('#nxqCard .nxq-opt');
-  btns.forEach((b, i) => { if (i === pick) b.classList.add('pick'); b.disabled = true; });
-  busy(true, L2('Checking answer…', 'উত্তর যাচাই হচ্ছে…'));
-  let res = null;
-  if (typeof window.NXQ_CF === 'function') {
-    try { res = await window.NXQ_CF({ qid: q.id, pick: pick }); } catch (e) { res = null; }
-  }
-  if (!res && (S.cfg.quiz || {}).fallbackPool === true) {
-    const fq = (window.NXQ_POOL || []).find(p => p.id === q.id) || {};
-    const ci = fq.correct !== undefined ? num(fq.correct) : -1;
-    res = { correct: (pick === ci), correctIdx: ci, local: true };
-  }
-  busy(false);
-  if (!res || typeof res.correct !== 'boolean') {
-    btns.forEach(b => { b.disabled = false; b.classList.remove('pick'); });
-    window.NXQ_IN = false;
-    NXQ_TLEFT = ses;
-    toast(L2('Grading service unavailable — deploy Cloud Functions or enable fallback in Admin', 'গ্রেডিং পরিষেবা নেই — ক্লাউড ফাংশন ডিপ্লয় করুন বা অ্যাডমিনে ফলব্যাক চালু করুন'));
-    nxqQtick(false);
-    return;
-  }
-  const rc = c.rewards[NXQ_CAT] || { main: 0, token: 0 };
-  let pm = 0, pt = 0;
-  if (res.correct && c.rewardOnCorrect) {
-    if (rc.main > 0) {
-      const okM = await earn(rc.main, 'quiz', q.id, 'earning');
-      if (okM) pm = rc.main;
-    }
-    if (rc.token > 0) {
-      const okT = await adjust('users/' + uid + '/' + FIELD.token, rc.token);
-      if (okT) { pt = rc.token; await logLedger({ cat: 'reward', source: 'quiz', amount: rc.token, unit: 'token', ref: q.id }); }
-    }
-  }
-  const durPaid = res.correct || (pick >= 0);
-  await db.ref('users/' + uid + '/quizAns/' + q.id).set({ qid: q.id, pick: pick, ok: !!res.correct, main: pm, token: pt, ts: nowMs() });
-  await adjust('users/' + uid + '/quizStats/total', 1);
-  if (res.correct) await adjust('users/' + uid + '/quizStats/correct', 1);
-  if (pick >= 0) await adjust('users/' + uid + '/quizDaily/' + todayStr(), 1);
-  if (pick >= 0) await adjust('users/' + uid + '/quizWeekly/' + nxqWeekKey(), 1);
-  await db.ref('quizBoard/' + uid).transaction(cur => {
-    const c0 = cur || {};
-    return { id: uid, name: (tgUser && tgUser.first_name) || (S.user.name || 'User'), correct: num(c0.correct) + (res.correct ? 1 : 0), total: num(c0.total) + (pick >= 0 ? 1 : 0), token: rnd(num(c0.token) + pt, 4), main: rnd(num(c0.main) + pm, 4), t: nowMs() };
-  });
-  window.NXQ_BOARD = null;
-  NXQ_RES = { ok: !!res.correct, main: pm, token: pt, timeout: pick < 0, correctIdx: typeof res.correctIdx === 'number' ? res.correctIdx : -1 };
-  window.NXQ_IN = false;
-  renderSub(false);
-  toast(res.correct ? L2('Correct! +', 'সঠিক! +') + [pm ? fmt(pm) + ' ' + sym() : '', pt ? fmt(pt, 4) + ' ' + tsym() : ''].filter(Boolean).join(' + ') : (pick < 0 ? L2('Time is up', 'সময় শেষ') : L2('Wrong answer', 'ভুল উত্তর')));
-  haptic(); renderAll();
-  const fb = document.querySelectorAll('#nxqCard .nxq-opt');
-  fb.forEach((b, i) => {
-    if (NXQ_RES.ok && i === NXQ_PICK) b.classList.add('right');
-    else if (!NXQ_RES.ok && i === NXQ_PICK) b.classList.add('wrong');
-    else if (!NXQ_RES.ok && num(NXQ_RES.correctIdx) === i) b.classList.add('right');
-  });
-}
-
-/* =====================================================================
-   PHASE 6 — ALL PAGES BOTTOM-NAV DISCOVERY
-===================================================================== */
-const NXP_PAGES = [
-  { id: 'home',     n: ['Home', 'হোম'],                i: 'fas fa-house',        cat: 'Dashboard',  act: ['tab', 'home'] },
-  { id: 'profile',  n: ['Profile', 'প্রোফাইল'],          i: 'fas fa-user',         cat: 'Dashboard',  act: ['tab', 'profile'] },
-  { id: 'notifications', n: ['Notifications', 'নোটিফিকেশন'], i: 'fas fa-bell',   cat: 'Dashboard',  sub: 'notifications' },
-  { id: 'token',    n: ['Token Market', 'টোকেন মার্কেট'], i: 'fas fa-coins',        cat: 'Token Ecosystem', act: ['tab', 'token'] },
-  { id: 'mine',     n: ['Token Mining', 'টোকেন মাইনিং'],  i: 'fas fa-hat-wizard',   cat: 'Token Ecosystem', sub: 'mine', isNew: true, gate: 'mining' },
-  { id: 'mineup',   n: ['Mining Upgrade', 'মাইনিং আপগ্রেড'], i: 'fas fa-arrow-trend-up', cat: 'Token Ecosystem', sub: 'mineup', isNew: true, gate: 'mining' },
-  { id: 'mineboost',n: ['Mining Boost', 'মাইনিং বুস্ট'],   i: 'fas fa-rocket',       cat: 'Token Ecosystem', sub: 'mineboost', isNew: true, gate: 'mining' },
-  { id: 'opBuy',    n: ['Token Buy', 'টোকেন কিনুন'],      i: 'fas fa-cart-plus',    cat: 'Token Ecosystem', op: 'buy' },
-  { id: 'opSell',   n: ['Token Sell', 'টোকেন বিক্রি'],     i: 'fas fa-hand-holding-dollar', cat: 'Token Ecosystem', op: 'sell' },
-  { id: 'opSwap',   n: ['Token Swap', 'টোকেন সোয়াপ'],      i: 'fas fa-right-left',   cat: 'Token Ecosystem', op: 'swap' },
-  { id: 'opTransfer', n: ['Token Transfer', 'টোকেন ট্রান্সফার'], i: 'fas fa-paper-plane', cat: 'Token Ecosystem', op: 'transfer' },
-  { id: 'tokhist',  n: ['Token History', 'টোকেন হিস্টরি'], i: 'fas fa-clock-rotate-left', cat: 'Token Ecosystem', sub: 'tokendetail' },
-  { id: 'earn',     n: ['Daily Rewards', 'ডেইলি রিওয়ার্জ'], i: 'fas fa-gift',      cat: 'Rewards & Earnings', act: ['tab', 'earn'] },
-  { id: 'streak30', n: ['30-Day Login Streak', '৩০ দিনের স্ট্রিক'], i: 'fas fa-fire', cat: 'Rewards & Earnings', sub: 'streak30', isNew: true, gate: 'streak30' },
-  { id: 'quiz',     n: ['Quiz Earning', 'কুইজ আর্নিং'],   i: 'fas fa-brain',        cat: 'Rewards & Earnings', sub: 'quiz', isNew: true, gate: 'quiz' },
-  { id: 'tasks',    n: ['Tasks', 'টাস্ক'],               i: 'fas fa-list-check',   cat: 'Rewards & Earnings', earn: 'task' },
-  { id: 'refer',    n: ['Referral', 'রেফারেল'],           i: 'fas fa-user-plus',    cat: 'Rewards & Earnings', earn: 'refer' },
-  { id: 'top',      n: ['Leaderboard', 'লিডারবোর্ড'],      i: 'fas fa-trophy',       cat: 'Rewards & Earnings', earn: 'top' },
-  { id: 'achievements', n: ['Achievements', 'অ্যাচিভমেন্ট'], i: 'fas fa-award',     cat: 'Rewards & Earnings', sub: 'achievements' },
-  { id: 'wallet',   n: ['Main Wallet', 'মেইন ওয়ালেট'],    i: 'fas fa-wallet',       cat: 'Wallet & Finance', act: ['tab', 'wallet'] },
-  { id: 'tokbal',   n: ['Token Wallet', 'টোকেন ওয়ালেট'],  i: 'fas fa-coins',        cat: 'Wallet & Finance', act: ['tab', 'token'] },
-  { id: 'deposit',  n: ['Deposit', 'ডিপোজিট'],           i: 'fas fa-arrow-down',   cat: 'Wallet & Finance', sub: 'deposit' },
-  { id: 'withdraw', n: ['Withdrawal', 'উত্তোলন'],          i: 'fas fa-arrow-up',     cat: 'Wallet & Finance', sub: 'withdraw' },
-  { id: 'history',  n: ['Transaction History', 'ট্রানজেকশন হিস্টরি'], i: 'fas fa-receipt', cat: 'Wallet & Finance', sub: 'history' },
-  { id: 'security', n: ['Security', 'সিকিউরিটি'],         i: 'fas fa-shield-halved', cat: 'Account & Support', sub: 'security' },
-  { id: 'support',  n: ['Support Center', 'সাপোর্ট সেন্টার'], i: 'fas fa-headset',   cat: 'Account & Support', sub: 'support' },
-  { id: 'ann',      n: ['Announcements', 'ঘোষণা'],         i: 'fas fa-bullhorn',     cat: 'Account & Support', sub: 'notifications' },
-  { id: 'appinfo',  n: ['Settings', 'সেটিংস'],            i: 'fas fa-circle-info',  cat: 'Account & Support', act: ['tab', 'profile'] },
-  { id: 'allpages', n: ['All Pages', 'সব পেজ'],           i: 'fas fa-grip',         cat: 'Dashboard', sub: 'allpages', isNew: true }
-];
-function nxpVisible(p) {
-  if (p.id === 'allpages') return true;
-  if (p.sub && !SUBS[p.sub]) return false;
-  if (p.gate) {
-    const cfgKey = ((S.cfg || {}).features || {})[p.gate];
-    if (cfgKey === false) return false;
-    const mod = p.gate === 'mining' ? nxmCfg() : p.gate === 'streak30' ? NXS_CFG() : NXQ_CFG();
-    if (mod.enabled === false) return false;
-  }
-  if (p.op) {
-    const t2 = (S.cfg || {}).token || {};
-    if (t2.enabled === false || !t2[p.op] || t2[p.op].enabled === false) return false;
-  }
-  const o = (((S.cfg || {}).allpages || {})[p.id]) || {};
-  if (o.visible === false) return false;
-  return true;
-}
-SUBS.allpages = {
-  title: () => L2('All Pages', 'সব পেজ'), live: false, after: () => {},
-  render: () => {
-    const fav = (S.user && S.user.favPages) || {};
-    const list = NXP_PAGES.filter(nxpVisible);
-    const cats = []; list.forEach(p => { if (!cats.includes(p.cat)) cats.push(p.cat); });
-    let show = list;
-    if (NXQ.C === 'Fav') show = list.filter(p => !!fav[p.id]);
-    else if (NXQ.C && NXQ.C !== 'All') show = list.filter(p => p.cat === NXQ.C);
-    if (NXQ.Q) { const ql = NXQ.Q.toLowerCase(); show = show.filter(p => p.n[0].toLowerCase().includes(ql) || String(p.n[1] || '').includes(NXQ.Q) || p.cat.toLowerCase().includes(ql)); }
-    let h = '<div class="pad" style="margin-top:4px"><div class="nxp-search"><i class="fas fa-magnifying-glass"></i><input id="nxpSearch" data-in="nxpSearch" type="text" placeholder="' + L2('Search pages…', 'পেজ খুঁজুন…') + '" value="' + esc(NXQ.Q) + '"></div>' +
-      '<div class="chips" style="margin-top:10px"><button class="chip ' + (NXQ.C === 'All' ? 'on' : '') + '" data-act="nxpCat" data-id="All"><i class="fas fa-border-all"></i> ' + L2('All', 'সব') + '</button>' +
-      '<button class="chip ' + (NXQ.C === 'Fav' ? 'on' : '') + '" data-act="nxpCat" data-id="Fav"><i class="fas fa-star"></i> ' + L2('Favorites', 'প্রিয়') + '</button>' +
-      cats.map(c2 => '<button class="chip ' + (NXQ.C === c2 ? 'on' : '') + '" data-act="nxpCat" data-id="' + esc(c2) + '">' + esc(c2) + '</button>').join('') + '</div></div>';
-    h += '<div class="pad nxp-grid">' + (show.length ? show.map(p =>
-      '<div class="nxp-tile' + (fav[p.id] ? ' fav' : '') + '" data-act="' + (p.act ? p.act[0] : p.op ? 'openOp' : p.earn ? 'goEarn' : 'openSub') + '" data-id="' + esc(p.act ? p.act[1] : (p.op || p.earn || p.sub)) + '">' +
-      '<button class="nxp-fav" data-act="nxpFav" data-id="' + p.id + '"><i class="' + (fav[p.id] ? 'fas fa-star' : 'far fa-star') + '"></i></button>' +
-      (p.isNew ? '<span class="nxp-new"><i></i>' + L2('NEW', 'নতুন') + '</span>' : '') +
-      '<div class="nxp-tile-ic"><i class="' + p.i + '"></i></div>' +
-      '<b>' + (LANG === 'bn' ? p.n[1] : p.n[0]) + '</b>' +
-      '<small>' + esc(p.cat) + '</small>' +
-      '</div>').join('') : emptyHtml('fa-magnifying-glass', L2('No pages match your search', 'কোনো পেজ মেলেনি'))) + '</div>';
-    return h;
-  }
-};
-ACT.nxpCat = d => { NXQ.C = d.id; NXQ.Q = ''; renderSub(false); };
-INP.nxpSearch = el => { NXQ.Q = el.value || ''; clearTimeout(window._nxpQ); window._nxpQ = setTimeout(() => renderSub(false), 260); };
-ACT.nxpFav = async (d, el) => {
-  const cur = !!(((S.user || {}).favPages || {})[d.id]);
-  try { await db.ref('users/' + uid + '/favPages/' + d.id).set(cur ? null : 1); } catch (e) {}
-  const tile = el && el.closest ? el.closest('.nxp-tile') : null;
-  if (tile) { tile.classList.toggle('fav', !cur); const f = tile.querySelector('.nxp-fav i'); if (f) f.className = cur ? 'far fa-star' : 'fas fa-star'; }
-};
-
-/* =====================================================================
-   PHASE 1–3 — MINING / UPGRADE / BOOST / UNLOCK ACTIONS
-   All sensitive paths use RTDB transactions + server-derived timestamps.
-   A compare-and-set nonce (mining/seq, mining/upgSeq) makes every
-   state transition single-winner: rejects double taps and repeated claims.
-===================================================================== */
-ACT.mineRefreshT = () => renderSub(false);
-
-ACT.mineStart = async () => {
-  const c = nxmCfg();
-  if (!c.enabled) return toast(L2('Mining is disabled', 'মাইনিং বন্ধ আছে'));
-  const S1 = nxmStatus();
-  if (S1.st === 'LOCKED') return refreshSub();
-  if (S1.st !== 'READY_TO_START' && S1.st !== 'CLAIMED') return refreshSub();
-  if (window.NXQ_IN) return;
-  window.NXQ_IN = true;
-  busy(true, L2('Starting mining…', 'মাইনিং শুরু হচ্ছে…'));
-  try {
-    const m = MINE(), seq = num(m.seq);
-    const bc = nxmBoostCfg();
-    const bobj = (S.user && S.user.boost) || null;
-    const boost = (bc.enabled && bobj && typeof bobj === 'object' && num(bobj.mult) > 1 && (!bobj.expiresAt || nowMs() < num(bobj.expiresAt))) ? { mult: num(bobj.mult), expiresAt: num(bobj.expiresAt) } : null;
-    const ok = await nxmCas('users/' + uid + '/mining/seq', seq, () => seq + 1);
-    if (!ok) { busy(false); window.NXQ_IN = false; return toast(L2('Session state changed — reloading', 'সেশন পরিবর্তন হয়েছে — রিফ্রেশ')); }
-    await db.ref('users/' + uid + '/mining').update({
-      st: 'active', seq: seq + 1,
-      sessClaimed: null,
-      sessStart: firebase.database.ServerValue.TIMESTAMP,
-      sessEnd: firebase.database.ServerValue.TIMESTAMP + c.sessionHours * 3600e3,
-      sessBoost: boost || null
-    });
-    toast(L2('Mining started · {0}h session', 'মাইনিং শুরু · {0} ঘণ্টা সেশন').replace('{0}', c.sessionHours));
-    haptic(); renderSub(false); renderAll();
-  } catch (e) { toast(L2('Could not start mining', 'মাইনিং শুরু করা যায়নি')); }
-  window.NXQ_IN = false; busy(false);
-};
-
-ACT.mineClaim = async () => {
-  const c = nxmCfg(), m = MINE();
-  const S1 = nxmStatus();
-  if (S1.st === 'LOCKED') return refreshSub();
-  if (m.st !== 'active' || !m.sessStart) return refreshSub();
-  if (nowMs() < num(m.sessEnd || nxmExp(m))) return toast(L2('Session not finished yet', 'সেশন এখনো শেষ হয়নি'));
-  if (window.NXQ_IN) return;
-  window.NXQ_IN = true;
-  busy(true, L2('Claiming reward…', 'রিওয়ার্ড ক্লেইম হচ্ছে…'));
-  try {
-    const reward = nxmSessEarned(m);
-    if (!(reward > 0)) { busy(false); window.NXQ_IN = false; return toast(L2('Nothing to claim', 'ক্লেইম করার কিছু নেই')); }
-    const seq = num(m.seq);
-    const ok = await nxmCas('users/' + uid + '/mining/seq', seq, () => seq + 1);
-    if (!ok) { busy(false); window.NXQ_IN = false; return toast(L2('Already being claimed', 'ইতিমধ্যে ক্লেইম হচ্ছে')); }
-    await db.ref('users/' + uid + '/mining').update({
-      st: 'claimed', seq: seq + 1, sessClaimed: true,
-      lastClaimAt: firebase.database.ServerValue.TIMESTAMP,
-      totalMined: rnd(num(m.totalMined) + reward, 4)
-    });
-    const okBal = await adjUser(FIELD.token, reward);
-    if (!okBal) {
-      await db.ref('users/' + uid + '/mining').update({ st: 'active', seq: seq, sessClaimed: false, totalMined: num(m.totalMined) });
-      busy(false); window.NXQ_IN = false; return toast(L2('Could not credit balance — try again', 'ব্যালেন্স যোগ করা যায়নি — আবার চেষ্টা করুন'));
-    }
-    await logLedger({ cat: 'reward', source: 'mining', amount: reward, unit: 'token', ref: 'lvl' + (num(m.level) || 1) });
-    nxmLogHistory({ level: num(m.level) || 1, reward: reward, ts: nowMs(), session: c.sessionHours + 's' + 'h' });
-    MINE_HIST_LOADED = null;
-    toast('+' + fmt(reward, 4) + ' ' + tsym() + ' ' + L2('claimed!', 'ক্লেইম হয়েছে!'));
-    haptic(); try { if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
-    renderSub(false); renderAll();
-  } catch (e) { toast(L2('Claim failed — try again', 'ক্লেইম ব্যর্থ — আবার চেষ্টা করুন')); }
-  window.NXQ_IN = false; busy(false);
-};
-
-ACT.mineUnlock = async () => {
-  const lc = nxmInact(), m = MINE();
-  if (!m.lockOn && !nxmInactivityDue()) return;
-  if (window.NXQ_IN) return;
-  window.NXQ_IN = true;
-  busy(true, L2('Unlocking mining…', 'মাইনিং আনলক হচ্ছে…'));
-  try {
-    const fee = num(lc.unlockFee);
-    if (fee > 0) {
-      const okBal = await adjUser(FIELD.token, -fee);
-      if (!okBal) { busy(false); window.NXQ_IN = false; return toast(L2('Insufficient token balance (need {0})', 'পর্যাপ্ত টোকেন নেই ({0} প্রয়োজন)').replace('{0}', fmt(fee))); }
-      await logLedger({ cat: 'other', source: 'mining_unlock', amount: -fee, unit: 'token' });
-    }
-    await db.ref('users/' + uid + '/mining').update({
-      lockOn: null, lockReason: null, lockAt: null, lockNote: null,
-      st: 'ready', sessStart: null, sessEnd: null, sessClaimed: null, sessBoost: null
-    });
-    await nxmLogHistory({ level: num(m.level) || 1, reward: 0, ts: nowMs(), session: '', note: 'unlock · fee ' + fmt(fee) + ' ' + tsym() });
-    toast(L2('Mining unlocked — start a new session!', 'মাইনিং আনলক হয়েছে — নতুন সেশন শুরু করুন!'));
-    haptic(); renderSub(false); renderAll();
-  } catch (e) { toast(L2('Unlock failed', 'আনলক ব্যর্থ')); }
-  window.NXQ_IN = false; busy(false);
-};
-
-ACT.mineUpgrade = async () => {
-  const c = nxmCfg(), m = MINE();
-  if (nxmStatus().st === 'LOCKED') return refreshSub();
-  const lvl = num(m.level) > 0 ? m.level : 1;
-  if (lvl >= c.maxLevel) return toast(L2('Maximum level reached', 'সর্বোচ্চ লেভেলে আছেন'));
-  const nx = nxmNextEnabled(lvl);
-  if (!nx) return toast(L2('No further levels enabled', 'আর কোনো লেভেল চালু নেই'));
-  const freeAvail = c.freeUpgrade && !m.freeUpgradeUsed;
-  const payTokens = freeAvail ? 0 : nxmLv(nx).cost;
-  if (payTokens > 0 && num(S.user.tokenBalance) < payTokens) {
-    toast(L2('Insufficient token balance (need {0})', 'পর্যাপ্ত টোকেন নেই ({0} প্রয়োজন)').replace('{0}', fmt(payTokens)));
-    return;
-  }
-  if (window.NXQ_IN) return;
-  window.NXQ_IN = true;
-  busy(true, L2('Upgrading to level {0}…', 'লেভেল {0} আপগ্রেড হচ্ছে…').replace('{0}', nx));
-  try {
-    const prev = num(MINE().upgSeq);
-    const okSeq = await nxmCas('users/' + uid + '/mining/upgSeq', prev, () => prev + 1);
-    if (!okSeq) { busy(false); window.NXQ_IN = false; return toast(L2('Upgrade already in progress', 'আপগ্রেড ইতিমধ্যে চলছে')); }
-    let okBal = true;
-    if (payTokens > 0) okBal = await adjUser(FIELD.token, -payTokens);
-    if (!okBal) { busy(false); window.NXQ_IN = false; return toast(L2('Insufficient token balance', 'পর্যাপ্ত টোকেন নেই')); }
-    const okLvl = await nxmCas('users/' + uid + '/mining/level', lvl, () => nx);
-    if (!okLvl) {
-      if (payTokens > 0) await adjUser(FIELD.token, payTokens);
-      busy(false); window.NXQ_IN = false; return toast(L2('Level changed concurrently — reloaded', 'লেভেল পরিবর্তন হয়েছিল — রিলোড'));
-    }
-    await db.ref('users/' + uid + '/mining/freeUpgradeUsed').set(true);
-    const rec = { from: lvl, to: nx, cost: payTokens, free: payTokens <= 0, ts: firebase.database.ServerValue.TIMESTAMP };
-    await db.ref('miningUpgrades/' + uid + '/' + ('U' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6))).set(rec);
-    if (payTokens > 0) await logLedger({ cat: 'other', source: 'mining_upgrade', amount: -payTokens, unit: 'token', ref: 'lvl' + nx });
-    await nxmLogHistory({ level: nx, reward: 0, ts: nowMs(), session: '', note: 'upgrade ' + lvl + '→' + nx + (payTokens <= 0 ? ' (free)' : ' · -' + fmt(payTokens) + ' ' + tsym()) });
-    toast(L2('Level {0} unlocked · speed {1}/h', 'লেভেল {0} আনলক · গতি {1}/ঘণ্টা').replace('{0}', nx).replace('{1}', fmt(nxmLv(nx).speed)));
-    haptic();
-    S.upHist = null; renderSub(false); renderAll();
-  } catch (e) { toast(L2('Upgrade failed', 'আপগ্রেড ব্যর্থ')); }
-  window.NXQ_IN = false; busy(false);
-};
-
-ACT.boostBuy = async () => {
-  const bc = nxmBoostCfg();
-  if (!bc.enabled) return toast(L2('Boost disabled', 'বুস্ট বন্ধ'));
-  const lvl = num(MINE().level) > 0 ? MINE().level : 1;
-  if (lvl < bc.minLevel) return toast(L2('Requires level {0}+', '{0}+ লেভেল প্রয়োজন').replace('{0}', bc.minLevel));
-  const used = num(((S.user.boostPurchases) || {})[todayStr()] || 0);
-  if (used >= bc.maxPerDay) return toast(L2('Daily purchase limit reached', 'দৈনিক সীমা শেষ'));
-  if (window.NXQ_IN) return;
-  window.NXQ_IN = true;
-  busy(true, L2('Purchasing boost…', 'বুস্ট কেনা হচ্ছে…'));
-  try {
-    const okBal = await adjUser(FIELD.token, -bc.cost);
-    if (!okBal) { busy(false); window.NXQ_IN = false; return toast(L2('Insufficient token balance (need {0})', 'পর্যাপ্ত টোকেন নেই ({0} প্রয়োজন)').replace('{0}', fmt(bc.cost))); }
-    const cur2 = (S.user.boost && typeof S.user.boost === 'object' && num(S.user.boost.expiresAt) > nowMs()) ? num(S.user.boost.expiresAt) : nowMs();
-    const exp = cur2 + bc.durationHours * 3600e3;
-    await db.ref('users/' + uid + '/boost').update({ mult: bc.multiplier, expiresAt: exp });
-    if (MINE().st === 'active' && MINE().sessStart) {
-      const baseR = nxmRate(MINE().level || 1);
-      const remain = Math.max(0, num(MINE().sessEnd || nxmExp(MINE())) - nowMs()) / 3600e3;
-      await db.ref('users/' + uid + '/mining/sessBoost').set({ mult: bc.multiplier, expiresAt: exp, from: nowMs(), remainH: rnd(remain, 4), baseNote: 'boost stacks over base speed of ' + baseR + '/h' });
-    }
-    await db.ref('users/' + uid + '/boostPurchases/' + todayStr()).transaction(cur2x => num(cur2x) + 1);
-    await logLedger({ cat: 'other', source: 'mining_boost', amount: -bc.cost, unit: 'token' });
-    toast(L2('{0}× boost active for {1}h!', '{0}× বুস্ট {1} ঘণ্টার জন্য চালু!').replace('{0}', bc.multiplier).replace('{1}', bc.durationHours));
-    haptic(); renderSub(false); renderAll();
-  } catch (e) { toast(L2('Boost purchase failed', 'বুস্ট কেনা ব্যর্থ')); }
-  window.NXQ_IN = false; busy(false);
-};
-
-/* =====================================================================
-   PHASE 4 — STREAK CLAIM  (compare-and-set per-day key = duplicate-proof)
-===================================================================== */
-ACT.streakClaim = async () => {
-  const c = NXS_CFG();
-  if (!c.enabled) return;
-  if (window.NXQ_IN) return;
-  window.NXQ_IN = true;
-  busy(true, L2('Claiming streak reward…', 'স্ট্রিক রিওয়ার্ড নেওয়া হচ্ছে…'));
-  try {
-    const day = todayStr(), st = nxsState();
-    if (st.lastKey === day) { busy(false); window.NXQ_IN = false; return toast(L2('Already claimed today', 'আজ ক্লেইম হয়েছে')); }
-    const g = await db.ref('users/' + uid + '/streak30/claims/' + day).transaction(cur => cur ? undefined : firebase.database.ServerValue.TIMESTAMP);
-    if (!g.committed) { busy(false); window.NXQ_IN = false; return toast(L2('Already claimed today', 'আজ ক্লেইম হয়েছে')); }
-    const yKey = new Date(nowMs() - 864e5).toISOString().slice(0, 10);
-    const lv = num(st.lastKey) ? new Date(st.lastKey + 'T00:00:00Z').getTime() : 0;
-    const withinWindow = st.lastKey === yKey || (st.lastKey && c.graceHours > 0 && nowMs() < lv + (24 + c.graceHours) * 3600e3 && st.day < 30);
-    let nd = (st.lastKey === '' || (!withinWindow && c.resetMissed)) ? 1 : num(st.day) + 1;
-    if (!c.resetMissed && st.lastKey && st.lastKey !== yKey) nd = num(st.day) + 1;
-    if (nd > 30) nd = 1;
-    const rw = nxsDayCfg(nd);
-    const recs = [];
-    if (rw.main > 0) {
-      const okM = await earn(rw.main, 'streak', null, 'reward');
-      if (okM) recs.push('+' + fmt(rw.main) + ' ' + sym());
-    }
-    if (rw.token > 0) {
-      const okT = await adjust('users/' + uid + '/' + FIELD.token, rw.token);
-      if (okT) { await logLedger({ cat: 'reward', source: 'streak', amount: rw.token, unit: 'token' }); recs.push('+' + fmt(rw.token, 4) + ' ' + tsym()); }
-    }
-    let bonus = [];
-    if (nd === 30 && (num(c.bonusMain) > 0 || num(c.bonusToken) > 0)) {
-      if (num(c.bonusMain) > 0) {
-        const okB = await earn(num(c.bonusMain), 'streak_bonus', null, 'reward');
-        if (okB) bonus.push('+' + fmt(c.bonusMain) + ' ' + sym() + ' bonus');
-      }
-      if (num(c.bonusToken) > 0) {
-        const okB2 = await adjust('users/' + uid + '/' + FIELD.token, num(c.bonusToken));
-        if (okB2) { await logLedger({ cat: 'reward', source: 'streak_bonus', amount: num(c.bonusToken), unit: 'token' }); bonus.push('+' + fmt(c.bonusToken, 4) + ' ' + tsym() + ' bonus'); }
-      }
-    }
-    await db.ref('users/' + uid + '/streak30').update({
-      day: nd, lastKey: day, best: Math.max(num(st.best), nd),
-      ['history/' + nd]: day, ['historyKeys/' + day]: nd
-    });
-    await db.ref('dailyStreakClaims/' + uid + '/' + day).set({ day: nd, main: rw.main, token: rw.token, bonusMain: num(c.bonusMain) && nd === 30 ? num(c.bonusMain) : 0, bonusToken: num(c.bonusToken) && nd === 30 ? num(c.bonusToken) : 0, ts: nowMs() });
-    toast((recs.concat(bonus).join(' + ') || L2('Claimed', 'ক্লেইম হয়েছে')) + ' · ' + L2('Day', 'দিন') + ' ' + nd);
-    haptic(); try { if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
-    renderSub(false); renderAll();
-  } catch (e) { toast(L2('Streak claim failed', 'স্ট্রিক ক্লেইম ব্যর্থ')); }
-  window.NXQ_IN = false; busy(false);
-};
-
-/* ---------------- Lazy inactivity lock (works even before scheduler deploy) ---------------- */
-async function nxmAutoLock() {
-  try {
-    const m = MINE();
-    if (m.lockOn || m.st !== 'active') return;
-    if (!nxmInactivityDue()) return;
-    await db.ref('users/' + uid + '/mining').update({
-      lockOn: true, lockReason: 'inactivity', lockAt: firebase.database.ServerValue.TIMESTAMP,
-      st: 'ready', sessStart: null, sessEnd: null, sessClaimed: null, sessBoost: null
-    });
-    await nxmLogHistory({ level: num(m.level) || 1, reward: 0, ts: nowMs(), session: '', note: 'auto-locked · inactivity' });
-  } catch (e) {}
-}
-
-/* periodic lazy inactivity lock sweep (60s) — complements the Cloud Functions scheduler */
-setInterval(() => { if (S.booted && S.userReady) nxmAutoLock(); }, 60000);
-
-/* =====================================================================
-   COUNTDOWN TICKER — updates #nxmCtd every second while readable
-===================================================================== */
-setInterval(() => {
-  const el = document.getElementById('nxmCtd');
-  if (!el) return;
-  const m = MINE();
-  if (m.st !== 'active' || !m.sessStart) { el.innerText = '—'; return; }
-  const left = num(m.sessEnd || nxmExp(m)) - nowMs();
-  el.innerText = left <= 0 ? L2('READY TO CLAIM ✓', 'ক্লেইমের জন্য প্রস্তুত ✓') : hms(left);
-  if (left <= 0) { MINE_HIST_LOADED = null; el.classList.add('nxm-claim-now'); }
-}, 1000);
-
-/* =====================================================================
-   INTEGRATION WRAPPERS — additive cards on existing tabs
-===================================================================== */
-function nxmSuiteCardHtml(compact) {
-  const S1 = nxmStatus();
-  const items = [
-    ['mine', 'fas fa-hat-wizard', L2('Token Mining', 'টোকেন মাইনিং'), nxmCfg().enabled ? L2('24h auto mining', '২৪ ঘণ্টা স্বয়ংক্রিয়') : L2('Disabled', 'বন্ধ')],
-    ['mineup', 'fas fa-arrow-trend-up', L2('Upgrade', 'আপগ্রেড'), L2('Level {0} / 100', 'লেভেল {0} / ১০০').replace('{0}', num(MINE().level) || 1)],
-    ['mineboost', 'fas fa-rocket', L2('Boost', 'বুস্ট'), L2('Multiply speed', 'গতি বাড়ান')],
-    ['streak30', 'fas fa-fire', L2('30-Day Streak', '৩০ দিনের স্ট্রিক'), L2('Daily rewards', 'দৈনিক রিওয়ার্ড')],
-    ['quiz', 'fas fa-brain', L2('Quiz', 'কুইজ'), L2('Answer & earn', 'উত্তর ও আয়')],
-    ['allpages', 'fas fa-grip', L2('All Pages', 'সব পেজ'), L2('Full directory', 'সম্পূর্ণ ডিরেক্টরি')]
-  ];
-  const states = { MINING_ACTIVE: 'pos', CLAIM_AVAILABLE: 'warn', LOCKED: 'neg' };
-  return '<div class="card nxm-suite' + (compact ? ' compact' : '') + '">' +
-    '<div class="card-t"><i class="fas fa-gem"></i> ' + L2('Mining & Rewards', 'মাইনিং ও রিওয়ার্ডস') +
-    (S1.st && states[S1.st] ? '<span class="nxm-mini-dot ' + states[S1.st] + '"></span><span class="nxm-mini-st">' + { MINING_ACTIVE: L2('MINING', 'চলছে'), CLAIM_AVAILABLE: L2('CLAIM!', 'ক্লেইম!'), LOCKED: L2('LOCKED', 'লকড') }[S1.st] + '</span>' : '') + '</div>' +
-    '<div class="nxm-suite-grid">' + items.map(it =>
-      '<button class="nxm-suite-b' + (it[0] === 'mine' && S1.st === 'CLAIM_AVAILABLE' ? ' glow' : '') + '" data-act="openSub" data-id="' + it[0] + '"><i class="' + it[1] + '"></i><b>' + it[2] + '</b><small>' + it[3] + '</small></button>').join('') +
-    '</div></div>';
-}
-try {
-  const _nxRenderProfile = renderProfile;
-  renderProfile = function () {
-    _nxRenderProfile();
-    if (!nxmCfg().enabled && NXQ_CFG().enabled === false && NXS_CFG().enabled === false) return;
-    const host = $('tab-profile');
-    if (!host || host.querySelector('.nxm-suite')) return;
-    host.insertAdjacentHTML('afterbegin', nxmSuiteCardHtml());
-  };
-} catch (e) {}
-try {
-  const _nxRenderToken = renderToken;
-  renderToken = function () {
-    _nxRenderToken();
-    if (!nxmCfg().enabled) return;
-    const host = $('tab-token');
-    if (!host || host.querySelector('.nxm-suite')) return;
-    host.insertAdjacentHTML('beforeend', nxmSuiteCardHtml(true));
-  };
-} catch (e) {}
-
-/* ---------------- Bottom nav: add ALL PAGES item ---------------- */
-try {
-  (function nxmNavBtn() {
-    const nav = $('nav'); if (!nav) return;
-    nav.querySelector('.nav-in').insertAdjacentHTML('beforeend',
-      '<button class="nv" data-act="openSub" data-id="allpages"><i class="fas fa-grip"></i><span data-i18n="nav_allpages">All Pages</span></button>');
-    nav.classList.add('nv-six');
-  })();
-} catch (e) {}
-D.nav_allpages = ['All Pages', 'সব পেজ'];
-
-/* ---------------- Optional Cloud Functions adapter (secure quiz grading + scheduler) ---------------- */
-try {
-  (function () {
-    if (typeof firebase.functions !== 'function') return;
-    var fns = firebase.app().functions('us-central1');
-    window.NXQ_CF = function (payload) {
-      return new Promise(function (resolve, reject) {
-        try {
-          fns.httpsCallable('nxQuizSubmit')(payload)
-            .then(function (r) {
-              var v = (r && r.data) || {};
-              if (v && typeof v.correct === 'boolean' && v.ok !== false) resolve(v); else resolve(null);
-            })
-            .catch(function (e) { console.warn('nxQuizSubmit unavailable', e && e.code); reject(e); });
-        } catch (e) { reject(e); }
+  /* ---------- engine ---------- */
+  function createEngine(db, o) {
+    o = o || {}; const now = o.now || (() => Date.now());
+    const cfgOf = async k => { const s = await db.ref('config/' + k).once('value'); return s.val() || {}; };
+    async function userTxn(uid, fn) {
+      let res = null;
+      const r = await db.ref('users/' + uid).transaction(u => {
+        res = null; if (u === null || typeof u !== 'object') return u;
+        const out = fn(u); res = out || fail('ERR'); if (res.persist === false) return; return u;
       });
+      if (res === null) return fail('NO_USER');
+      if (!r.committed && res.persist !== false) return fail('CONFLICT');
+      return res;
+    }
+    async function after(uid, res) {
+      if (!res || !res.writes) return;
+      for (const w of res.writes) { try { await db.ref(w[0]).set(w[1]); } catch (e) {} }
+    }
+    const ledger = (uid, id, amt, unit, src, t, note) => ['ledger/' + uid + '/' + id, { id, cat: 'earning', source: src, amount: rnd(amt), unit, ref: '', status: 'completed', note: note || '', timestamp: t }];
+    const notif = (uid, key, title, body, t) => ['userNotifications/' + uid + '/' + key, { cat: 'security', title, body, ts: t, read: false }];
+    const flag = async (uid, code) => { try { const t = now(); await db.ref('miningFlags/' + uid + '/' + code + '_' + Math.floor(t / 60000)).set({ code, ts: t }); } catch (e) {} };
+    const SUS = ['EARLY_CLAIM', 'NOT_ACTIVE', 'ALREADY_UPGRADED', 'QUIZ_REPLAY', 'STREAK_DUP', 'NOT_CLAIMABLE'];
+    const run = async (uid, fn) => { const r = await userTxn(uid, fn); await after(uid, r); if (!r.ok && SUS.includes(r.code)) flag(uid, r.code); delete r.writes; delete r.persist; return r; };
+
+    /* apply inactivity lock to m if due (mutates). returns lock rec or null */
+    function lazyLock(u, mc, t) {
+      const m = u.mining; if (!m || m.lock) return null; const ld = lockDueAt(m, mc); if (ld == null || t < ld) return null;
+      const s = m.session, lost = rewardOf(s).total;
+      m.lock = { at: t, reason: 'inactivity', by: 'system', fee: mc.lock.fee, forfeited: mc.lock.forfeit ? lost : 0 };
+      if (mc.lock.forfeit) { s.status = 'forfeited'; s.forfeited = lost; }
+      return { id: 'LK' + t, type: 'lock', reason: 'inactivity', ts: t, forfeited: m.lock.forfeited, sessionId: s.id };
+    }
+    const getM = u => { if (!u.mining || typeof u.mining !== 'object') u.mining = {}; if (!u.mining.level) u.mining.level = 1; return u.mining; };
+    const ready = mc => mc.enabled && mc.configured;
+    const lockRes = (u, mc, t, lk) => { const w = [['miningHistory/' + u.id + '/' + lk.id, lk]]; return { ok: false, code: 'LOCKED', persist: true, writes: w.concat([notif(String(u.id), 'mlock_' + lk.id, 'Mining locked', 'No claim for ' + mc.lock.hours + 'h. Pay the unlock fee to resume.', t)]) }; };
+
+    const api = {
+      derive, miningCfg, rewardOf,
+      async mState(uid) { const [mc, u] = [miningCfg(await cfgOf('mining')), (await db.ref('users/' + uid + '/mining').once('value')).val()]; return derive(u, mc, now()); },
+
+      start(uid) { return cfgOf('mining').then(raw => { const mc = miningCfg(raw), t = now(); return run(uid, u => {
+        if (!ready(mc)) return fail('MINING_OFF'); const m = getM(u); u.id = u.id || uid;
+        const lk = lazyLock(u, mc, t); if (lk) return lockRes(u, mc, t, lk); if (m.lock) return fail('LOCKED');
+        if (m.session && m.session.status === 'active') return fail('NOT_CLAIMED');
+        const lvl = mc.level(m.level); if (!lvl || num(lvl.speed) <= 0) return fail('LEVEL_NOT_SET');
+        const s = { id: 'S' + t + rid(), startAt: t, endAt: t + mc.sessionHours * H, speed: num(lvl.speed), level: m.level, status: 'active' };
+        if (m.boost && num(m.boost.until) > t) s.boostSegs = [{ mult: num(m.boost.mult), from: t, to: Math.min(num(m.boost.until), s.endAt) }];
+        m.session = s; m.sessions = num(m.sessions) + 1; if (m.boost && num(m.boost.until) <= t) m.boost = null;
+        return { ok: true, persist: true, session: s, writes: [['miningHistory/' + uid + '/start_' + s.id, { id: 'start_' + s.id, type: 'start', sessionId: s.id, level: s.level, speed: s.speed, ts: t, endAt: s.endAt }]] };
+      }); }); },
+
+      claim(uid) { return cfgOf('mining').then(raw => { const mc = miningCfg(raw), t = now(); return run(uid, u => {
+        if (!ready(mc)) return fail('MINING_OFF'); const m = getM(u); u.id = u.id || uid;
+        const lk = lazyLock(u, mc, t); if (lk) return lockRes(u, mc, t, lk); if (m.lock) return fail('LOCKED');
+        const s = m.session; if (!s || s.status !== 'active') return fail('NOT_ACTIVE');
+        if (t < num(s.endAt)) return fail('EARLY_CLAIM', { remainingMs: num(s.endAt) - t });
+        const r = rewardOf(s); if (!(r.total > 0)) return fail('ZERO_REWARD');
+        u.tokenBalance = rnd(num(u.tokenBalance) + r.total); m.total = rnd(num(m.total) + r.total);
+        s.status = 'claimed'; s.reward = r.total; s.claimedAt = t; m.lastClaimAt = t;
+        return { ok: true, persist: true, reward: r.total, base: r.base, boost: r.boost, writes: [
+          ['miningHistory/' + uid + '/claim_' + s.id, { id: 'claim_' + s.id, type: 'claim', sessionId: s.id, level: s.level, speed: s.speed, base: r.base, boost: r.boost, amount: r.total, ts: t }],
+          ledger(uid, 'MC_' + s.id, r.total, 'token', 'mining', t, 'Mining reward')] };
+      }); }); },
+
+      upgrade(uid, toLevel) { return cfgOf('mining').then(raw => { const mc = miningCfg(raw), t = now(); return run(uid, u => {
+        if (!ready(mc)) return fail('MINING_OFF'); const m = getM(u); u.id = u.id || uid; toLevel = Math.floor(num(toLevel));
+        if (m.level >= mc.maxLevel) return fail('MAX_LEVEL');
+        if (toLevel !== m.level + 1) return fail('ALREADY_UPGRADED');
+        const lv = mc.level(toLevel); if (!lv || lv.enabled === false || num(lv.speed) <= 0) return fail('LEVEL_UNAVAILABLE');
+        const freeOk = mc.free && !m.freeUsed; let cost = freeOk ? 0 : rnd(num(lv.cost));
+        if (!freeOk && !(cost > 0)) return fail('LEVEL_COST_NOT_SET');
+        if (cost > 0 && num(u.tokenBalance) + 1e-9 < cost) return fail('INSUFFICIENT', { need: cost, have: num(u.tokenBalance) });
+        const from = m.level; if (cost > 0) u.tokenBalance = rnd(num(u.tokenBalance) - cost); if (freeOk) m.freeUsed = true; m.level = toLevel;
+        const id = 'up_' + t + '_' + from + '_' + toLevel;
+        return { ok: true, persist: true, from, to: toLevel, cost, free: freeOk, balance: num(u.tokenBalance), writes: [['miningUpgrades/' + uid + '/' + id, { id, from, to: toLevel, cost, free: freeOk, ts: t }]].concat(cost > 0 ? [[ 'ledger/' + uid + '/MU_' + id, { id: 'MU_' + id, cat: 'spend', source: 'mining_upgrade', amount: -cost, unit: 'token', ref: '', status: 'completed', note: 'Mining level ' + from + ' → ' + toLevel, timestamp: t }]] : []) };
+      }); }); },
+
+      unlock(uid) { return cfgOf('mining').then(raw => { const mc = miningCfg(raw), t = now(); return run(uid, u => {
+        if (!ready(mc)) return fail('MINING_OFF'); const m = getM(u); u.id = u.id || uid; lazyLock(u, mc, t);
+        if (!m.lock) return fail('NOT_LOCKED'); if (m.lock.by === 'admin') return fail('ADMIN_LOCKED');
+        const fee = rnd(mc.lock.fee); if (fee > 0 && num(u.tokenBalance) + 1e-9 < fee) return fail('INSUFFICIENT', { need: fee, have: num(u.tokenBalance) });
+        if (fee > 0) u.tokenBalance = rnd(num(u.tokenBalance) - fee);
+        m.lock = null; if (m.session && m.session.status === 'active') m.session.unlockedAt = t;
+        const id = 'unlock_' + t; return { ok: true, persist: true, fee, writes: [['miningHistory/' + uid + '/' + id, { id, type: 'unlock', fee, ts: t }]].concat(fee > 0 ? [['ledger/' + uid + '/MK_' + t, { id: 'MK_' + t, cat: 'spend', source: 'mining_unlock', amount: -fee, unit: 'token', ref: '', status: 'completed', note: 'Mining unlock fee', timestamp: t }]] : []) };
+      }); }); },
+
+      buyBoost(uid, packId) { return cfgOf('mining').then(raw => { const mc = miningCfg(raw), t = now(); return run(uid, u => {
+        if (!ready(mc) || !mc.boost.enabled) return fail('BOOST_OFF'); const m = getM(u); u.id = u.id || uid;
+        const lk = lazyLock(u, mc, t); if (lk) return lockRes(u, mc, t, lk); if (m.lock) return fail('LOCKED');
+        const p = obj(mc.boost.packs[packId]); if (!p.mult || p.enabled === false) return fail('BOOST_UNAVAILABLE');
+        const mult = num(p.mult), hrs = num(p.hours), cost = rnd(num(p.cost)); if (!(mult > 1) || !(hrs > 0)) return fail('BOOST_UNAVAILABLE');
+        if (num(p.minLevel) > m.level || (num(p.maxLevel) > 0 && m.level > num(p.maxLevel))) return fail('BOOST_LEVEL');
+        if (m.boost && num(m.boost.until) > t) return fail('BOOST_ACTIVE');
+        const bb = obj(m.boostBuys); if (num(p.maxPurchases) > 0 && num(bb[packId]) >= num(p.maxPurchases)) return fail('BOOST_MAX');
+        if (cost > 0 && num(u.tokenBalance) + 1e-9 < cost) return fail('INSUFFICIENT', { need: cost, have: num(u.tokenBalance) });
+        if (cost > 0) u.tokenBalance = rnd(num(u.tokenBalance) - cost);
+        const b = { id: 'B' + t, packId: String(packId), name: p.name || '', mult, startAt: t, until: t + hrs * H }; m.boost = b; bb[packId] = num(bb[packId]) + 1; m.boostBuys = bb;
+        const s = m.session; if (s && s.status === 'active' && num(s.endAt) > t) { const segs = list(s.boostSegs); segs.push({ mult, from: t, to: Math.min(b.until, num(s.endAt)) }); s.boostSegs = segs; }
+        return { ok: true, persist: true, boost: b, cost, writes: [['miningBoosts/' + uid + '/' + b.id, { id: b.id, packId: b.packId, mult, hours: hrs, cost, ts: t, until: b.until }]].concat(cost > 0 ? [['ledger/' + uid + '/MB_' + b.id, { id: 'MB_' + b.id, cat: 'spend', source: 'mining_boost', amount: -cost, unit: 'token', ref: '', status: 'completed', note: 'Mining boost', timestamp: t }]] : []) };
+      }); }); },
+
+      /* scheduler: lock overdue sessions, clear expired boosts */
+      async sweep() {
+        const t = now(), mc = miningCfg(await cfgOf('mining')); let locked = 0, boosts = 0; if (!mc.enabled) return { locked, boosts };
+        const maxHrs = 24 * 30, cutoff = t - mc.lock.hours * H;
+        const snap = await db.ref('users').orderByChild('mining/session/endAt').endAt(cutoff).once('value'); const ids = []; snap.forEach(c => { const m = (c.val() || {}).mining; if (m && m.session && m.session.status === 'active' && !m.lock) ids.push(c.key); });
+        for (const uid of ids) { const r = await run(uid, u => { u.id = u.id || uid; const lk = lazyLock(u, mc, t); return lk ? lockRes(u, mc, t, lk) : fail('NOOP'); }); if (r.code === 'LOCKED') locked++; }
+        const bs = await db.ref('users').orderByChild('mining/boost/until').endAt(t).once('value'); const bi = []; bs.forEach(c => bi.push(c.key));
+        for (const uid of bi) { const r = await run(uid, u => { const m = u.mining; if (!m || !m.boost || num(m.boost.until) > t) return fail('NOOP'); m.boost = null; return { ok: true, persist: true }; }); if (r.ok) boosts++; }
+        return { locked, boosts };
+      },
+
+      adminLock(uid, by, reason) { const t = now(); return run(uid, u => { const m = getM(u); if (m.lock) return fail('ALREADY_LOCKED'); m.lock = { at: t, reason: reason || 'admin', by: 'admin', admin: by || '' }; return { ok: true, persist: true, writes: [['miningHistory/' + uid + '/alock_' + t, { id: 'alock_' + t, type: 'lock', reason: 'admin', by: by || '', ts: t }]] }; }); },
+      adminUnlock(uid, by) { const t = now(); return run(uid, u => { const m = getM(u); if (!m.lock) return fail('NOT_LOCKED'); m.lock = null; if (m.session && m.session.status === 'active') m.session.unlockedAt = t; return { ok: true, persist: true, writes: [['miningHistory/' + uid + '/aunlock_' + t, { id: 'aunlock_' + t, type: 'unlock', by: by || '', fee: 0, ts: t }]] }; }); },
+      adminResetLevel(uid, by, to) { const t = now(); return run(uid, u => { const m = getM(u); const from = m.level; m.level = Math.max(1, Math.floor(num(to)) || 1); return { ok: true, persist: true, from, to: m.level, writes: [['miningUpgrades/' + uid + '/reset_' + t, { id: 'reset_' + t, from, to: m.level, cost: 0, free: false, reset: true, by: by || '', ts: t }]] }; }); },
+
+      /* ---------- 30-day streak ---------- */
+      streakClaim(uid) { return cfgOf('streak').then(raw => { const sc = streakCfg(raw), t = now(); return run(uid, u => {
+        if (!sc.enabled) return fail('STREAK_OFF'); u.id = u.id || uid;
+        const hr = ((t + sc.tz * 60000) % DAY) / H; if (hr < sc.from || hr >= sc.to) return fail('STREAK_WINDOW');
+        const st = u.streak && typeof u.streak === 'object' ? u.streak : (u.streak = {}), v = streakView(st, sc, t);
+        if (v.claimedToday) return fail('STREAK_DUP'); const day = v.next, rw = sc.day(day); if (!rw) return fail('STREAK_NOT_CONFIGURED');
+        if (v.broken) { st.cur = 0; st.claims = {}; }
+        let cl = obj(st.claims); if (day === 1) cl = {}; cl[day] = t; st.claims = cl; st.cur = day; st.lastDay = v.today; st.best = Math.max(num(st.best), day); st.total = num(st.total) + 1;
+        credit(u, rw.type, rw.main, rw.token); let bonus = null;
+        if (day === 30) { const c = sc.completion; if (c.main > 0 || c.token > 0) { credit(u, c.type, c.main, c.token); bonus = c; } st.cycles = num(st.cycles) + 1; if (!sc.repeat) st.done = true; }
+        const hid = 'sk_' + v.today; const w = [['streakHistory/' + uid + '/' + hid, { id: hid, day, type: rw.type, main: rw.main, token: rw.token, bonus: bonus || null, ts: t }]];
+        if ((rw.type !== 'token') && rw.main > 0) w.push(ledger(uid, 'SKM_' + v.today, rw.main + (bonus && bonus.type !== 'token' ? bonus.main : 0), 'main', 'streak', t, 'Streak day ' + day));
+        if (rw.type !== 'main' && (rw.token > 0 || (bonus && bonus.token > 0))) w.push(ledger(uid, 'SKT_' + v.today, rw.token + (bonus && bonus.type !== 'main' ? bonus.token : 0), 'token', 'streak', t, 'Streak day ' + day));
+        return { ok: true, persist: true, day, reward: rw, bonus, completed: day === 30, writes: w };
+      }); }); },
+
+      /* ---------- quiz (secure mode only: needs quizAnswers) ---------- */
+      quizStart(uid, qid) { return cfgOf('quiz').then(async qc => { const t = now(); if (qc.enabled !== true) return fail('QUIZ_OFF');
+        const q = (await db.ref('quizQuestions/' + qid).once('value')).val(); if (!q || q.enabled === false) return fail('QUIZ_UNAVAILABLE');
+        if (num(q.startAt) > t || (num(q.endAt) > 0 && num(q.endAt) < t)) return fail('QUIZ_SCHEDULE');
+        const cat = obj(obj(qc.categories)[q.category]); if (cat.enabled === false) return fail('QUIZ_UNAVAILABLE');
+        const tz = num(qc.tzOffsetMin), dk = dayNum(t, tz), per = q.challenge === 'daily' ? 'd' + dk : q.challenge === 'weekly' ? 'w' + weekNum(t, tz) : 'x', key = String(qid) + '_' + per;
+        const timer = Math.max(5, Math.min(600, num(q.timer) || num(qc.defaultTimer) || 30));
+        return run(uid, u => { u.id = u.id || uid; const z = u.quiz && typeof u.quiz === 'object' ? u.quiz : (u.quiz = {});
+          if (obj(z.done)[key]) return fail('QUIZ_DONE'); const day = obj(z.day); const dn = day.k === dk ? num(day.n) : 0;
+          if (z.open && num(z.open.expiresAt) + 3000 > t) { if (z.open.qid === String(qid)) return { ok: true, persist: false, attemptId: z.open.id, expiresAt: z.open.expiresAt, timer, resumed: true }; return fail('QUIZ_OPEN'); }
+          const lim = num(qc.dailyAttempts) > 0 ? num(qc.dailyAttempts) : 20; if (dn >= lim) return fail('QUIZ_LIMIT');
+          const qa = obj(z.q); const mx = q.challenge ? 1 : (num(q.maxAttempts) > 0 ? num(q.maxAttempts) : 1); if (num(obj(qa[qid]).n) >= mx && !q.challenge) return fail('QUIZ_MAX_ATTEMPTS');
+          const aid = 'A' + t + rid(); z.open = { id: aid, qid: String(qid), key, startedAt: t, expiresAt: t + timer * 1000 }; z.day = { k: dk, n: dn + 1 }; qa[qid] = { n: num(obj(qa[qid]).n) + 1 }; z.q = qa;
+          return { ok: true, persist: true, attemptId: aid, expiresAt: z.open.expiresAt, timer }; }); }); },
+
+      quizSubmit(uid, attemptId, choice) { return cfgOf('quiz').then(async qc => { const t = now(); choice = Math.floor(num(choice));
+        const cur = (await db.ref('users/' + uid + '/quiz/open').once('value')).val(); if (!cur || cur.id !== attemptId) return flagRet(uid, fail('QUIZ_REPLAY'));
+        const q = obj((await db.ref('quizQuestions/' + cur.qid).once('value')).val()), a = obj((await db.ref('quizAnswers/' + cur.qid).once('value')).val());
+        if (a.correct == null) return fail('QUIZ_UNAVAILABLE'); const right = num(a.correct) === choice;
+        return run(uid, u => { u.id = u.id || uid; const z = obj(u.quiz); if (!z.open || z.open.id !== attemptId) return fail('QUIZ_REPLAY');
+          const late = t > num(z.open.expiresAt) + 3000, ok = right && !late && choice >= 0 && choice < 4, done = obj(z.done); let paid = { main: 0, token: 0 };
+          const key = z.open.key; if (ok && !done[key]) { const type = ['main', 'token', 'both'].includes(q.rewardType) ? q.rewardType : 'main'; paid = { main: Math.max(0, num(q.main)), token: Math.max(0, num(q.token)) }; credit(u, type, paid.main, paid.token); done[key] = t; z.done = done; paid.type = type; }
+          z.open = null; z.stats = { total: num(obj(z.stats).total) + 1, correct: num(obj(z.stats).correct) + (ok ? 1 : 0) }; u.quiz = z;
+          const pts = ok ? (num(q.points) || ({ easy: 1, medium: 2, hard: 3 }[q.difficulty] || 1)) : 0;
+          const rec = { id: attemptId, qid: String(cur.qid), category: q.category || '', difficulty: q.difficulty || '', choice, correct: ok, timeout: late, main: paid.main, token: paid.token, ts: t };
+          return { ok: true, persist: true, correct: ok, timeout: late, correctIndex: late ? null : num(a.correct), explanation: a.explanation || '', reward: paid, points: pts, writes: [['quizAttempts/' + uid + '/' + attemptId, rec]].concat(paid.main > 0 ? [ledger(uid, 'QZM_' + attemptId, paid.main, 'main', 'quiz', t, 'Quiz reward')] : []).concat(paid.token > 0 ? [ledger(uid, 'QZT_' + attemptId, paid.token, 'token', 'quiz', t, 'Quiz reward')] : []), _lb: { pts, ok, name: u.name || '' } }; })
+          .then(async r => { return r; }); }); },
     };
-  })();
-} catch (e) {}
+    function flagRet(uid, r) { flag(uid, r.code); return r; }
+    /* leaderboard bump (best-effort, non-financial) */
+    api.quizLb = async function (uid, name, pts, ok) { const t = now(), wk = weekNum(t, 0); try { await db.ref('quizLeaderboard/' + uid).transaction(c => { c = c || {}; c.name = name || c.name || ''; c.score = num(c.score) + pts; c.correct = num(c.correct) + (ok ? 1 : 0); c.attempts = num(c.attempts) + 1; if (c.wk !== wk) { c.wk = wk; c.wkScore = 0; } c.wkScore = num(c.wkScore) + pts; c.updatedAt = t; return c; }); } catch (e) {} };
+    return api;
+  }
+  return { createEngine, miningCfg, streakCfg, streakView, derive, rewardOf, lockDueAt, dayNum, weekNum, H, DAY };
+});
+
+</script>
+<script id="mx-module">
+/* NEXAVAULT — Advanced Mining & Rewards module (user panel). Appended after all existing scripts; does not edit them. */
+(function () {
+  'use strict';
+  const GC = window.GameCore, H = GC.H;
+  const MX = { hist: {}, qs: null, att: [], lb: [], l: {}, q: { tab: 'simple', play: null }, busy: {}, apQ: '', apCat: 'all', upAll: false, lastKey: '' };
+  const E = GC.createEngine(db, { now: () => nowMs() });
+  const cfg = k => (S.cfg || {})[k] || {};
+  const mcfg = () => GC.miningCfg(cfg('mining'));
+  const mst = () => GC.derive((S.user || {}).mining, mcfg(), nowMs());
+  const tk = () => { try { return tsym(); } catch (e) { return 'TOKEN'; } };
+  const tbal = () => num((S.user || {}).tokenBalance);
+  const f4 = v => fmt(v, 4);
+  const T2 = (e, b) => L2(e, b);
+  const dt = ts => ts ? fdate(ts) + ' ' + ftime(ts) : '—';
+  const secure = () => cfg('gameServer').secure === true;
+
+  /* ---------- error messages (code → [en, bn]) ---------- */
+  const ERR = {
+    MINING_OFF: ['Mining is currently unavailable.', 'মাইনিং বর্তমানে বন্ধ আছে।'], NOT_CLAIMED: ['Claim your current session reward first.', 'আগে বর্তমান সেশনের রিওয়ার্ড ক্লেইম করুন।'],
+    LOCKED: ['Mining is locked. Unlock it to continue.', 'মাইনিং লক হয়েছে। চালিয়ে যেতে আনলক করুন।'], NOT_ACTIVE: ['No claimable session.', 'ক্লেইমযোগ্য কোনো সেশন নেই।'], EARLY_CLAIM: ['The session has not finished yet.', 'সেশন এখনও শেষ হয়নি।'],
+    ZERO_REWARD: ['Nothing to claim.', 'ক্লেইম করার মতো কিছু নেই।'], MAX_LEVEL: ['You are at the maximum level.', 'আপনি সর্বোচ্চ লেভেলে আছেন।'], ALREADY_UPGRADED: ['This upgrade was already applied. Refreshing…', 'এই আপগ্রেড আগেই হয়েছে।'],
+    LEVEL_UNAVAILABLE: ['This level is not available yet.', 'এই লেভেল এখনও চালু হয়নি।'], LEVEL_NOT_SET: ['Level is not configured.', 'লেভেল কনফিগার করা নেই।'], LEVEL_COST_NOT_SET: ['Upgrade cost is not configured.', 'আপগ্রেড খরচ সেট করা নেই।'],
+    INSUFFICIENT: ['Insufficient token balance.', 'টোকেন ব্যালান্স অপর্যাপ্ত।'], NOT_LOCKED: ['Mining is not locked.', 'মাইনিং লক নেই।'], ADMIN_LOCKED: ['Locked by admin. Please contact support.', 'অ্যাডমিন লক করেছে। সাপোর্টে যোগাযোগ করুন।'],
+    BOOST_OFF: ['Boosts are unavailable.', 'বুস্ট বন্ধ আছে।'], BOOST_UNAVAILABLE: ['This boost is unavailable.', 'এই বুস্টটি পাওয়া যাচ্ছে না।'], BOOST_LEVEL: ['Your level is not eligible for this boost.', 'আপনার লেভেল এই বুস্টের জন্য প্রযোজ্য নয়।'],
+    BOOST_ACTIVE: ['A boost is already active.', 'একটি বুস্ট আগে থেকেই চালু আছে।'], BOOST_MAX: ['Purchase limit reached for this boost.', 'এই বুস্টের কেনার সীমা শেষ।'],
+    STREAK_OFF: ['Daily streak is unavailable.', 'ডেইলি স্ট্রিক বন্ধ আছে।'], STREAK_DUP: ['Already claimed today.', 'আজকের বোনাস নেওয়া হয়ে গেছে।'], STREAK_WINDOW: ['Outside today’s claim window.', 'আজকের ক্লেইম সময়ের বাইরে।'], STREAK_NOT_CONFIGURED: ['Reward for this day is not configured.', 'এই দিনের রিওয়ার্ড সেট করা নেই।'],
+    QUIZ_OFF: ['Quiz is unavailable.', 'কুইজ বন্ধ আছে।'], QUIZ_UNAVAILABLE: ['This question is unavailable.', 'এই প্রশ্নটি পাওয়া যাচ্ছে না।'], QUIZ_SCHEDULE: ['This question is not open right now.', 'এই প্রশ্ন এখন খোলা নেই।'], QUIZ_DONE: ['You already completed this question.', 'আপনি এই প্রশ্ন আগেই সম্পন্ন করেছেন।'],
+    QUIZ_OPEN: ['Finish your open question first.', 'আগে চলমান প্রশ্নটি শেষ করুন।'], QUIZ_LIMIT: ['Daily attempt limit reached.', 'আজকের চেষ্টার সীমা শেষ।'], QUIZ_MAX_ATTEMPTS: ['No attempts left for this question.', 'এই প্রশ্নে আর চেষ্টা বাকি নেই।'], QUIZ_REPLAY: ['This attempt is already closed.', 'এই চেষ্টাটি বন্ধ হয়ে গেছে।'],
+    QUIZ_NEEDS_SERVER: ['Quiz needs the secure server (Cloud Function) to be enabled by the admin.', 'কুইজ চালাতে অ্যাডমিনকে সিকিউর সার্ভার (Cloud Function) চালু করতে হবে।'],
+    TIMEOUT: ['Server did not respond. Please try again.', 'সার্ভার সাড়া দেয়নি। আবার চেষ্টা করুন।'], AUTH: ['Telegram verification failed. Reopen the app from Telegram.', 'টেলিগ্রাম ভেরিফিকেশন ব্যর্থ। অ্যাপটি টেলিগ্রাম থেকে আবার খুলুন।'], CONFLICT: ['Busy, please try again.', 'ব্যস্ত, আবার চেষ্টা করুন।']
+  };
+  const em = r => { const e = ERR[r && r.code]; return e ? T2(e[0], e[1]) : T2('Something went wrong. Please try again.', 'কিছু ভুল হয়েছে। আবার চেষ্টা করুন।'); };
+
+  /* ---------- transport: secure (Cloud Function) or local engine ---------- */
+  function srv(op, params) {
+    return new Promise(res => {
+      const oid = 'G' + Date.now() + rid(), ref = db.ref('gameOrders/' + uid + '/' + oid); let done = false;
+      const fin = v => { if (done) return; done = true; try { ref.child('result').off(); } catch (e) {} res(v); };
+      setTimeout(() => fin({ ok: false, code: 'TIMEOUT' }), 25000);
+      ref.child('result').on('value', s => { if (s.exists()) fin(s.val()); });
+      ref.set({ op, params: params || {}, initData: (tg && tg.initData) || '', ts: firebase.database.ServerValue.TIMESTAMP }).catch(() => fin({ ok: false, code: 'TIMEOUT' }));
+    });
+  }
+  const LOCAL = { 'mining.start': () => E.start(uid), 'mining.claim': () => E.claim(uid), 'mining.upgrade': p => E.upgrade(uid, p.to), 'mining.unlock': () => E.unlock(uid), 'mining.boost': p => E.buyBoost(uid, p.pack), 'streak.claim': () => E.streakClaim(uid) };
+  async function act(op, params, label) {
+    if (MX.busy[op]) return null; MX.busy[op] = true; busy(true, label || t('processing'), 40);
+    try {
+      let r;
+      if (secure()) r = await srv(op, params);
+      else if (LOCAL[op]) r = await LOCAL[op](params || {});
+      else r = { ok: false, code: 'QUIZ_NEEDS_SERVER' };
+      return r;
+    } catch (e) { console.error(e); return { ok: false, code: 'TIMEOUT' }; }
+    finally { MX.busy[op] = false; busy(false); renderAll(); }
+  }
+  const res = (r, okMsg) => { if (r && r.ok) { toast(okMsg); return true; } if (r) toast(em(r)); return false; };
+
+  /* ---------- tiny UI helpers ---------- */
+  const st = (l, v) => '<div class="mx-st"><span>' + l + '</span><b>' + v + '</b></div>';
+  const empty = (ic, m) => '<div class="mx-empty"><i class="fas ' + ic + '"></i>' + m + '</div>';
+  const chip = (c, x) => '<span class="mx-chip ' + c + '">' + x + '</span>';
+  const SL = { READY_TO_START: ['Ready', 'প্রস্তুত', 'on'], MINING_ACTIVE: ['Mining', 'মাইনিং চলছে', 'on'], CLAIM_AVAILABLE: ['Claim ready', 'ক্লেইম প্রস্তুত', 'ok'], CLAIMED: ['Claimed', 'ক্লেইম হয়েছে', 'ok'], LOCKED: ['Locked', 'লকড', 'bad'], DISABLED: ['Paused', 'বন্ধ', 'warn'], MAX_LEVEL_REACHED: ['Max level', 'সর্বোচ্চ লেভেল', 'ok'] };
+  const stChip = s => { const x = SL[s] || SL.DISABLED; return chip(x[2], T2(x[0], x[1])); };
+  const rw = r => { const a = []; if (r.type !== 'token' && num(r.main) > 0) a.push(fmt(r.main) + ' ' + sym()); if (r.type !== 'main' && num(r.token) > 0) a.push(f4(r.token) + ' ' + tk()); return a.join(' + ') || '—'; };
+  const cd = (end, flip) => '<span class="mx-cd" data-mx-cd="' + end + '"' + (flip ? ' data-mx-flip="1"' : '') + '>' + cdText(end - nowMs()) + '</span>';
+  const hist = k => MX.hist[k] || [];
+  function listen(key, path, lim) {
+    if (MX.l[key]) return; MX.l[key] = true;
+    db.ref(path).limitToLast(lim || 30).on('value', s => { const a = []; s.forEach(c => { const v = c.val(); if (v && typeof v === 'object') a.push(Object.assign({ _k: c.key }, v)); }); MX.hist[key] = a.sort((p, q) => num(q.ts) - num(p.ts)); renderAll(); }, () => {});
+  }
+
+  /* ---------- TOKEN MINING page ---------- */
+  function ring(s) {
+    const R = 76, C = 2 * Math.PI * R, p = s.status === 'CLAIM_AVAILABLE' || s.status === 'CLAIMED' ? 1 : (s.progress || 0);
+    const mid = s.status === 'MINING_ACTIVE' ? '<b data-mx-cd="' + s.session.endAt + '" class="mx-cd" data-mx-flip="1">' + cdText(s.remainingMs) + '</b><small>' + T2('remaining', 'বাকি') + '</small>' : s.status === 'CLAIM_AVAILABLE' ? '<b><i class="fas fa-gift"></i></b><small>' + T2('Reward ready', 'রিওয়ার্ড প্রস্তুত') + '</small>' : s.status === 'LOCKED' ? '<b><i class="fas fa-lock"></i></b><small>' + T2('Locked', 'লকড') + '</small>' : s.status === 'CLAIMED' ? '<b><i class="fas fa-check"></i></b><small>' + T2('Claimed', 'ক্লেইম হয়েছে') + '</small>' : '<b><i class="fas fa-bolt"></i></b><small>' + T2('Ready', 'প্রস্তুত') + '</small>';
+    return '<div class="mx-ringw"><svg viewBox="0 0 176 176"><circle class="bg" cx="88" cy="88" r="' + R + '"/><circle class="fg" id="mxFg" cx="88" cy="88" r="' + R + '" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (C * (1 - p)).toFixed(1) + '" ' + (s.status === 'MINING_ACTIVE' ? 'data-mx-ring="' + s.session.startAt + ',' + s.session.endAt + '"' : '') + '/></svg><div class="mx-ringc">' + mid + '</div></div>';
+  }
+  SUBS.mining = {
+    title: () => T2('Token Mining', 'টোকেন মাইনিং'), live: true,
+    render() {
+      listen('mining', 'miningHistory/' + uid, 20);
+      const mc = mcfg(), s = mst(), sy = tk();
+      if (!S.cfgReady) return '<div class="mx-sk"></div><div class="mx-sk"></div>';
+      if (!mc.enabled) return empty('fa-pause', T2('Mining is currently paused by the admin. Please check back later.', 'মাইনিং বর্তমানে অ্যাডমিন বন্ধ রেখেছে। পরে আবার দেখুন।'));
+      if (!mc.configured) return empty('fa-gear', T2('Mining is not configured yet.', 'মাইনিং এখনও কনফিগার করা হয়নি।'));
+      const sess = s.session, lastRw = sess && sess.status === 'claimed' ? num(sess.reward) : 0;
+      let h = '<div class="mx-hero"><div class="mx-between"><div class="mx-row">' + stChip(s.status) + (s.isMax ? chip('ok', T2('Max level', 'সর্বোচ্চ লেভেল')) : '') + '</div><div class="mx-chip on"><i class="fas fa-layer-group"></i> ' + T2('Level', 'লেভেল') + ' ' + s.level + '/' + s.maxLevel + '</div></div>' + ring(s) +
+        '<div class="mx-between" style="font-size:.8rem;font-weight:800"><span>' + T2('Speed', 'গতি') + ': <b style="color:var(--accent)">' + f4(s.speed) + ' ' + sy + '/' + T2('hr', 'ঘণ্টা') + '</b></span>' + (s.boost ? '<span class="mx-chip warn"><i class="fas fa-bolt"></i> ×' + s.boostMult + ' · ' + cd(s.boost.until) + '</span>' : '') + '</div>' +
+        '<div class="mx-bar" style="margin-top:12px"><i id="mxBar" style="width:' + Math.round((s.status === 'CLAIM_AVAILABLE' || s.status === 'CLAIMED' ? 1 : (s.progress || 0)) * 100) + '%"></i></div></div>';
+      if (s.status === 'LOCKED') {
+        const lk = s.lock || {}, byAdmin = lk.by === 'admin', fee = mc.lock.fee, short = fee > tbal();
+        h += '<div class="mx-lock"><h3><i class="fas fa-lock"></i>' + T2('Mining locked', 'মাইনিং লক হয়েছে') + '</h3><p>' + (byAdmin ? T2('An administrator locked your mining.', 'অ্যাডমিন আপনার মাইনিং লক করেছে।') + (lk.reason && lk.reason !== 'admin' ? ' — ' + esc(lk.reason) : '') : T2('You did not claim your reward for ' + mc.lock.hours + ' hours, so mining was locked automatically. Your level is safe.', mc.lock.hours + ' ঘণ্টা রিওয়ার্ড ক্লেইম না করায় মাইনিং স্বয়ংক্রিয়ভাবে লক হয়েছে। আপনার লেভেল নিরাপদ আছে।')) + (num(lk.forfeited) > 0 ? '<br>' + T2('Unclaimed session reward expired', 'ক্লেইম না করা সেশনের রিওয়ার্ড মেয়াদোত্তীর্ণ') + ': ' + f4(lk.forfeited) + ' ' + sy : '') + '</p>' +
+          (byAdmin ? '<button class="btn ghost" data-act="openSub" data-id="support"><i class="fas fa-headset"></i> ' + t('support') + '</button>' : '<div class="mx-between" style="margin-bottom:10px;font-size:.8rem;font-weight:800"><span>' + T2('Unlock fee', 'আনলক ফি') + '</span><b>' + f4(fee) + ' ' + sy + '</b></div>' + (short ? '<div class="note bad"><i class="fas fa-circle-exclamation"></i><span>' + T2('Insufficient balance', 'ব্যালান্স অপর্যাপ্ত') + ': ' + f4(tbal()) + ' ' + sy + '</span></div><button class="btn" data-act="mxBuy"><i class="fas fa-cart-plus"></i> ' + T2('BUY TOKEN', 'টোকেন কিনুন') + '</button>' : '<button class="btn" data-act="mxUnlock"><i class="fas fa-unlock"></i> ' + T2('UNLOCK MINING', 'মাইনিং আনলক করুন') + '</button>')) + '</div>';
+      } else {
+        h += '<div class="mx-act">' + (s.status === 'MINING_ACTIVE' ? '<button class="btn" disabled><i class="fas fa-hourglass-half"></i> ' + T2('Mining in progress', 'মাইনিং চলছে') + '</button>' : s.status === 'CLAIM_AVAILABLE' ? '<button class="btn" data-act="mxClaim"><i class="fas fa-gift"></i> ' + T2('CLAIM REWARD', 'রিওয়ার্ড ক্লেইম করুন') + ' · ' + f4(s.pending.total) + ' ' + sy + '</button>' : '<button class="btn" data-act="mxStart"><i class="fas fa-play"></i> ' + T2('START MINING', 'মাইনিং শুরু করুন') + '</button>') + '</div>';
+      }
+      h += '<div class="mx-grid">' + st(T2('Session earnings', 'সেশন আয়'), s.pending && sess.status === 'active' ? f4(s.pending.total) + ' ' + sy : lastRw ? f4(lastRw) + ' ' + sy : '—') + st(T2('Total mined', 'মোট মাইন'), f4(s.totalMined) + ' ' + sy) +
+        st(T2('Started', 'শুরু'), sess ? dt(sess.startAt) : '—') + st(T2('Expires', 'শেষ'), sess && sess.status === 'active' ? dt(sess.endAt) : '—') +
+        st(T2('Next claim', 'পরবর্তী ক্লেইম'), s.status === 'MINING_ACTIVE' ? cd(sess.endAt, true) : s.status === 'CLAIM_AVAILABLE' ? T2('Now', 'এখনই') : '—') + st(T2('Auto-lock at', 'অটো-লক'), s.lockAt && mc.lock.enabled ? dt(s.lockAt) : T2('Off', 'বন্ধ')) + '</div>';
+      if (s.pending && sess.status === 'active' && s.pending.boost > 0) h += '<div class="note"><i class="fas fa-bolt"></i><span>' + T2('Base', 'বেস') + ' ' + f4(s.pending.base) + ' + ' + T2('Boost', 'বুস্ট') + ' ' + f4(s.pending.boost) + ' ' + sy + '</span></div>';
+      h += '<div class="mx-mini" data-act="openSub" data-id="mxupgrade"><div class="ic"><i class="fas fa-arrow-up-right-dots"></i></div><div class="tx"><b>' + T2('Upgrade level', 'লেভেল আপগ্রেড') + '</b><small>' + (s.isMax ? T2('Maximum level reached', 'সর্বোচ্চ লেভেলে পৌঁছেছেন') : T2('Level', 'লেভেল') + ' ' + s.level + ' → ' + (s.level + 1)) + '</small></div><i class="fas fa-chevron-right"></i></div>';
+      if (mc.boost.enabled) h += '<div class="mx-mini" data-act="openSub" data-id="mxboost"><div class="ic"><i class="fas fa-bolt"></i></div><div class="tx"><b>' + T2('Mining Boost', 'মাইনিং বুস্ট') + '</b><small>' + (s.boost ? T2('Active', 'চালু') + ' ×' + s.boostMult : T2('Temporarily increase your speed', 'সাময়িকভাবে গতি বাড়ান')) + '</small></div><i class="fas fa-chevron-right"></i></div>';
+      const hs = hist('mining'); h += '<div class="mx-h"><span>' + T2('Session history', 'সেশন ইতিহাস') + '</span></div>' + (hs.length ? '<div class="mx-box flat">' + hs.slice(0, 12).map(x => '<div class="mx-lv"><div class="n"><i class="fas fa-' + ({ claim: 'gift', start: 'play', lock: 'lock', unlock: 'unlock' }[x.type] || 'circle') + '"></i></div><div class="m">' + ({ claim: T2('Reward claimed', 'রিওয়ার্ড ক্লেইম'), start: T2('Session started', 'সেশন শুরু'), lock: T2('Mining locked', 'মাইনিং লক'), unlock: T2('Mining unlocked', 'মাইনিং আনলক') }[x.type] || x.type) + '<small>' + dt(x.ts) + '</small></div><div class="r">' + (x.type === 'claim' ? '+' + f4(x.amount) : x.type === 'unlock' && num(x.fee) > 0 ? '-' + f4(x.fee) : '') + '</div></div>').join('') + '</div>' : empty('fa-clock-rotate-left', T2('No sessions yet', 'এখনও কোনো সেশন নেই')));
+      return h;
+    }
+  };
+  ACT.mxStart = async () => { const r = await act('mining.start'); res(r, T2('Mining started', 'মাইনিং শুরু হয়েছে')); };
+  ACT.mxClaim = async () => { const r = await act('mining.claim'); if (res(r, '')) { openSheet('<div class="res"><div class="big ok"><i class="fas fa-check"></i></div><h3>' + T2('Reward claimed', 'রিওয়ার্ড ক্লেইম হয়েছে') + '</h3></div><div class="qbox">' + kv(T2('Base', 'বেস'), f4(r.base) + ' ' + tk()) + (r.boost > 0 ? kv(T2('Boost', 'বুস্ট'), f4(r.boost) + ' ' + tk(), 'pos') : '') + kv(T2('Credited to Token Wallet', 'টোকেন ওয়ালেটে জমা'), f4(r.reward) + ' ' + tk(), 'pos') + '</div><div class="btns"><button class="btn" data-act="mxStart2">' + T2('START NEXT SESSION', 'পরবর্তী সেশন শুরু') + '</button></div>'); } };
+  ACT.mxStart2 = async () => { closeSheet(); await ACT.mxStart(); };
+  ACT.mxUnlock = async () => { const r = await act('mining.unlock'); res(r, T2('Mining unlocked', 'মাইনিং আনলক হয়েছে')); };
+  ACT.mxBuy = () => { if (!featOn('token')) return toast(t('feat_off')); initOp('buy'); openSub('tokenop', { p: 'buy' }); };
+
+  /* ---------- LEVEL UPGRADE page ---------- */
+  SUBS.mxupgrade = {
+    title: () => T2('Upgrade Mining Level', 'মাইনিং লেভেল আপগ্রেড'), live: true,
+    render() {
+      listen('upg', 'miningUpgrades/' + uid, 20);
+      const mc = mcfg(), s = mst(), sy = tk(); if (!mc.enabled || !mc.configured) return empty('fa-pause', T2('Mining is unavailable.', 'মাইনিং বন্ধ আছে।'));
+      const m = ((S.user || {}).mining) || {}, lvl = s.level, nxt = lvl + 1, nl = mc.level(nxt), freeOk = mc.free && !m.freeUsed;
+      let h = '';
+      if (s.isMax) h += '<div class="mx-hero" style="text-align:center"><div class="mx-chip ok" style="margin-bottom:10px">MAX_LEVEL_REACHED</div><h3>' + T2('Maximum level reached', 'সর্বোচ্চ লেভেলে পৌঁছেছেন') + '</h3><p class="tiny" style="margin-top:6px">' + T2('Level', 'লেভেল') + ' ' + lvl + ' · ' + f4(s.speed) + ' ' + sy + '/' + T2('hr', 'ঘণ্টা') + '</p></div>';
+      else if (!nl || nl.enabled === false || num(nl.speed) <= 0) h += '<div class="mx-hero" style="text-align:center"><i class="fas fa-hourglass-half" style="font-size:1.6rem;color:var(--warn)"></i><h3 style="margin-top:8px">' + T2('Next level not available yet', 'পরবর্তী লেভেল এখনও চালু হয়নি') + '</h3></div>';
+      else {
+        const cost = freeOk ? 0 : num(nl.cost), short = cost > tbal();
+        h += '<div class="mx-hero"><div class="mx-cmp"><div><small>' + T2('Level', 'লেভেল') + ' ' + lvl + '</small><b>' + f4(s.speed) + '</b><small>' + sy + '/' + T2('hr', 'ঘণ্টা') + '</small></div><i class="fas fa-arrow-right"></i><div><small>' + T2('Level', 'লেভেল') + ' ' + nxt + '</small><b style="color:var(--pos)">' + f4(nl.speed) + '</b><small>' + sy + '/' + T2('hr', 'ঘণ্টা') + '</small></div></div>' + (nl.desc ? '<p class="tiny" style="margin-top:10px;text-align:center">' + esc(nl.desc) + '</p>' : '') + '</div>' +
+          '<div class="mx-box">' + kv(T2('Upgrade cost', 'আপগ্রেড খরচ'), freeOk ? '<span style="color:var(--pos)">' + T2('FREE (one-time)', 'ফ্রি (একবার)') + '</span>' : f4(cost) + ' ' + sy) + kv(T2('Your token balance', 'আপনার টোকেন ব্যালান্স'), f4(tbal()) + ' ' + sy, short ? 'neg' : '') + kv(T2('Speed gain', 'গতি বৃদ্ধি'), '+' + f4(num(nl.speed) - s.speed) + ' ' + sy + '/' + T2('hr', 'ঘণ্টা'), 'pos') + '</div>' +
+          (short ? '<div class="note bad" style="margin:0 16px 12px"><i class="fas fa-circle-exclamation"></i><span>' + T2('Insufficient token balance. You need', 'টোকেন ব্যালান্স অপর্যাপ্ত। প্রয়োজন') + ' ' + f4(cost - tbal()) + ' ' + T2('more', 'আরও') + ' ' + sy + '.</span></div><div class="mx-act"><button class="btn" data-act="mxBuy"><i class="fas fa-cart-plus"></i> ' + T2('BUY TOKEN', 'টোকেন কিনুন') + '</button></div>' : '<div class="mx-act"><button class="btn" data-act="mxUpAsk" data-to="' + nxt + '"><i class="fas fa-arrow-up"></i> ' + (freeOk ? T2('FREE UPGRADE', 'ফ্রি আপগ্রেড') : T2('UPGRADE', 'আপগ্রেড')) + '</button></div>') +
+          '<div class="tiny" style="margin:-4px 20px 14px">' + T2('The new speed applies from your next mining session.', 'নতুন গতি পরবর্তী মাইনিং সেশন থেকে কার্যকর হবে।') + '</div>';
+      }
+      const top = MX.upAll ? mc.maxLevel : Math.min(mc.maxLevel, lvl + 8), rows = [];
+      for (let n = Math.max(1, MX.upAll ? 1 : lvl - 1); n <= top; n++) { const l = mc.level(n); if (!l) continue; const cls = n === lvl ? 'cur' : n < lvl ? 'own' : n === lvl + 1 ? 'nx' : ''; rows.push('<div class="mx-lv ' + cls + '"><div class="n">' + n + '</div><div class="m">' + f4(l.speed) + ' ' + sy + '/' + T2('hr', 'ঘণ্টা') + '<small>' + (l.enabled === false ? T2('Not available', 'চালু নয়') : n <= lvl ? T2('Unlocked', 'আনলকড') : (n === lvl + 1 && freeOk ? T2('Free', 'ফ্রি') : f4(l.cost) + ' ' + sy)) + '</small></div><div class="r">' + (n === lvl ? chip('on', T2('Current', 'বর্তমান')) : n < lvl ? '<i class="fas fa-check" style="color:var(--pos)"></i>' : l.enabled === false ? '<i class="fas fa-lock" style="color:var(--faint)"></i>' : '') + '</div></div>'); }
+      h += '<div class="mx-h"><span>' + T2('Level roadmap', 'লেভেল রোডম্যাপ') + '</span><a data-act="mxUpAll" style="color:var(--accent);cursor:pointer">' + (MX.upAll ? T2('Show less', 'কম দেখুন') : T2('Show all', 'সব দেখুন')) + '</a></div><div class="mx-box flat">' + rows.join('') + '</div>';
+      const hs = hist('upg'); h += '<div class="mx-h"><span>' + T2('Upgrade history', 'আপগ্রেড ইতিহাস') + '</span></div>' + (hs.length ? '<div class="mx-box flat">' + hs.slice(0, 12).map(x => '<div class="mx-lv"><div class="n"><i class="fas fa-arrow-up"></i></div><div class="m">' + T2('Level', 'লেভেল') + ' ' + x.from + ' → ' + x.to + (x.free ? ' · ' + T2('Free', 'ফ্রি') : '') + (x.reset ? ' · ' + T2('Reset', 'রিসেট') : '') + '<small>' + dt(x.ts) + '</small></div><div class="r">' + (num(x.cost) > 0 ? '-' + f4(x.cost) : '') + '</div></div>').join('') + '</div>' : empty('fa-clock-rotate-left', T2('No upgrades yet', 'এখনও কোনো আপগ্রেড নেই')));
+      return h;
+    }
+  };
+  ACT.mxUpAll = () => { MX.upAll = !MX.upAll; renderAll(); };
+  ACT.mxUpAsk = d => {
+    const mc = mcfg(), to = num(d.to), nl = mc.level(to), free = mc.free && !((S.user.mining || {}).freeUsed), cost = free ? 0 : num(nl && nl.cost);
+    openSheet('<h3><i class="fas fa-arrow-up" style="color:var(--accent)"></i>' + T2('Confirm upgrade', 'আপগ্রেড নিশ্চিত করুন') + '</h3><div class="qbox">' + kv(T2('New level', 'নতুন লেভেল'), String(to)) + kv(T2('New speed', 'নতুন গতি'), f4(nl && nl.speed) + ' ' + tk() + '/' + T2('hr', 'ঘণ্টা')) + kv(T2('Cost', 'খরচ'), free ? T2('FREE', 'ফ্রি') : f4(cost) + ' ' + tk(), free ? 'pos' : 'neg') + '</div><div class="btns"><button class="btn ghost" data-act="closeSheet">' + t('cancel') + '</button><button class="btn" data-act="mxUpGo" data-to="' + to + '"><i class="fas fa-check"></i> ' + t('confirm') + '</button></div>');
+  };
+  ACT.mxUpGo = async d => { closeSheet(); const r = await act('mining.upgrade', { to: num(d.to) }); res(r, T2('Upgraded to level ', 'লেভেলে আপগ্রেড হয়েছে: ') + (r && r.to)); };
+
+  /* ---------- BOOST page ---------- */
+  SUBS.mxboost = {
+    title: () => T2('Mining Boost', 'মাইনিং বুস্ট'), live: true,
+    render() {
+      const mc = mcfg(), s = mst(), sy = tk(); if (!mc.enabled || !mc.boost.enabled) return empty('fa-bolt', T2('Boosts are currently unavailable.', 'বুস্ট বর্তমানে বন্ধ আছে।'));
+      const m = ((S.user || {}).mining) || {}, bb = m.boostBuys || {}; let h = '';
+      if (s.boost) h += '<div class="mx-hero"><div class="mx-between"><b>' + esc(s.boost.name || T2('Active boost', 'চালু বুস্ট')) + ' ×' + s.boostMult + '</b>' + chip('warn', cd(s.boost.until)) + '</div><p class="tiny" style="margin-top:8px">' + T2('Base speed and boost are calculated separately. The boost expires automatically.', 'বেস গতি ও বুস্ট আলাদাভাবে হিসাব হয়। বুস্ট স্বয়ংক্রিয়ভাবে শেষ হবে।') + '</p></div>';
+      const packs = Object.keys(mc.boost.packs).map(k => Object.assign({ id: k }, mc.boost.packs[k])).filter(p => p && p.enabled !== false && num(p.mult) > 1 && num(p.hours) > 0).sort((a, b) => num(a.cost) - num(b.cost));
+      if (!packs.length) return h + empty('fa-bolt', T2('No boosts available right now.', 'এখন কোনো বুস্ট নেই।'));
+      return h + packs.map(p => {
+        const lvOk = s.level >= num(p.minLevel) && !(num(p.maxLevel) > 0 && s.level > num(p.maxLevel)), left = num(p.maxPurchases) > 0 ? num(p.maxPurchases) - num(bb[p.id]) : null, cost = num(p.cost), short = cost > tbal();
+        const why = !lvOk ? T2('Requires level ' + (num(p.minLevel) || 1) + (num(p.maxLevel) > 0 ? '–' + p.maxLevel : '+'), 'লেভেল ' + (num(p.minLevel) || 1) + (num(p.maxLevel) > 0 ? '–' + p.maxLevel : '+') + ' প্রয়োজন') : left !== null && left <= 0 ? T2('Purchase limit reached', 'কেনার সীমা শেষ') : s.boost ? T2('A boost is already active', 'বুস্ট চালু আছে') : s.status === 'LOCKED' ? T2('Unlock mining first', 'আগে মাইনিং আনলক করুন') : '';
+        return '<div class="mx-box"><div class="mx-between"><div><b style="font-size:.95rem">' + esc(p.name || 'Boost') + '</b><div class="tiny" style="margin-top:3px">×' + p.mult + ' · ' + p.hours + T2(' hours', ' ঘণ্টা') + (left !== null ? ' · ' + left + ' ' + T2('left', 'বাকি') : '') + '</div></div><div class="mx-chip on">' + (cost > 0 ? f4(cost) + ' ' + sy : T2('Free', 'ফ্রি')) + '</div></div>' + (p.desc ? '<p class="tiny" style="margin-top:8px">' + esc(p.desc) + '</p>' : '') +
+          (why ? '<button class="btn ghost" style="margin-top:12px" disabled>' + why + '</button>' : short ? '<button class="btn" style="margin-top:12px" data-act="mxBuy"><i class="fas fa-cart-plus"></i> ' + T2('BUY TOKEN', 'টোকেন কিনুন') + '</button>' : '<button class="btn" style="margin-top:12px" data-act="mxBoost" data-id="' + esc(p.id) + '"><i class="fas fa-bolt"></i> ' + T2('ACTIVATE BOOST', 'বুস্ট চালু করুন') + '</button>') + '</div>';
+      }).join('');
+    }
+  };
+  ACT.mxBoost = async d => { const r = await act('mining.boost', { pack: d.id }); res(r, T2('Boost activated', 'বুস্ট চালু হয়েছে')); };
+
+  /* ---------- 30-DAY STREAK page ---------- */
+  SUBS.mxstreak = {
+    title: () => T2('Daily Login Streak', 'ডেইলি লগইন স্ট্রিক'), live: true,
+    render() {
+      listen('streak', 'streakHistory/' + uid, 30);
+      if (!S.cfgReady) return '<div class="mx-sk"></div>';
+      const sc = GC.streakCfg(cfg('streak')); if (!sc.enabled) return empty('fa-calendar-xmark', T2('Daily streak is currently unavailable.', 'ডেইলি স্ট্রিক বর্তমানে বন্ধ আছে।'));
+      const v = GC.streakView((S.user || {}).streak, sc, nowMs()), nextRw = sc.day(v.next), cl = v.broken ? {} : v.claims, curDone = v.claimedToday ? v.cur : v.cur;
+      let cells = ''; for (let n = 1; n <= 30; n++) { const r = sc.day(n), done = !v.broken && num(cl[n]) > 0 && n <= curDone, isNext = !v.claimedToday && n === v.next, ic = r ? (r.type === 'both' ? 'fa-layer-group' : r.type === 'token' ? 'fa-coins' : 'fa-wallet') : 'fa-minus'; cells += '<div class="mx-day ' + (done ? 'done' : '') + (isNext ? ' next' : '') + (n === 30 ? ' big' : '') + '">' + (done ? '<i class="fas fa-check"></i>' : n === 30 ? '<i class="fas fa-trophy"></i>' : n) + (n === 30 ? '<span>' + T2('Day 30 · Completion bonus', 'দিন ৩০ · কমপ্লিশন বোনাস') + '</span>' : '<small><i class="fas ' + ic + '"></i></small>') + '</div>'; }
+      const nextDay = (v.today + 1) * 86400000 - sc.tz * 60000;
+      let h = '<div class="mx-hero"><div class="mx-between"><div><div class="tiny">' + T2('Current streak', 'বর্তমান স্ট্রিক') + '</div><div style="font-size:2rem;font-weight:800">' + (v.broken ? 0 : v.cur) + '<small style="font-size:.8rem;color:var(--muted)"> / 30 ' + T2('days', 'দিন') + '</small></div></div><div class="mx-ic" style="font-size:2rem;color:var(--warn)"><i class="fas fa-fire"></i></div></div><div class="mx-bar" style="margin-top:12px"><i style="width:' + Math.round((v.broken ? 0 : v.cur) / 30 * 100) + '%"></i></div>' + (v.broken ? '<div class="note warn" style="margin-top:12px"><i class="fas fa-triangle-exclamation"></i><span>' + T2('Your streak was reset because a day was missed. Start again from Day 1.', 'একদিন মিস হওয়ায় স্ট্রিক রিসেট হয়েছে। আবার ১ম দিন থেকে শুরু করুন।') + '</span></div>' : '') + '</div>' +
+        '<div class="mx-grid">' + st(T2('Best streak', 'সর্বোচ্চ'), v.best + ' ' + T2('days', 'দিন')) + st(T2('Completed cycles', 'সম্পন্ন সাইকেল'), v.cycles) + st(T2('Next reward', 'পরবর্তী রিওয়ার্ড'), nextRw ? rw(nextRw) : '—') + st(T2('Day 30 bonus', '৩০তম দিনের বোনাস'), sc.completion.main + sc.completion.token > 0 ? rw(sc.completion) : '—') + '</div>';
+      h += '<div class="mx-act">' + (v.claimedToday ? '<button class="btn ghost" disabled><i class="fas fa-check"></i> ' + T2('Claimed today · next in ', 'আজ নেওয়া হয়েছে · পরবর্তী ') + cd(nextDay, true) + '</button>' : !nextRw ? '<button class="btn ghost" disabled>' + T2('Reward not configured', 'রিওয়ার্ড সেট করা নেই') + '</button>' : '<button class="btn" data-act="mxStreak"><i class="fas fa-gift"></i> ' + T2('CLAIM DAY ', 'দিন ক্লেইম ') + v.next + ' · ' + rw(nextRw) + '</button>') + '</div>';
+      h += '<div class="mx-h"><span>' + T2('30-day calendar', '৩০ দিনের ক্যালেন্ডার') + '</span></div><div class="mx-cal">' + cells + '</div>';
+      const hs = hist('streak'); h += '<div class="mx-h"><span>' + T2('Claim history', 'ক্লেইম ইতিহাস') + '</span></div>' + (hs.length ? '<div class="mx-box flat">' + hs.slice(0, 15).map(x => '<div class="mx-lv"><div class="n">' + x.day + '</div><div class="m">' + T2('Day', 'দিন') + ' ' + x.day + (x.bonus ? ' · ' + T2('Completion bonus', 'কমপ্লিশন বোনাস') : '') + '<small>' + dt(x.ts) + '</small></div><div class="r">+' + rw(x) + '</div></div>').join('') + '</div>' : empty('fa-calendar', T2('No claims yet', 'এখনও কোনো ক্লেইম নেই')));
+      return h;
+    }
+  };
+  ACT.mxStreak = async () => { const r = await act('streak.claim'); if (res(r, '')) openSheet('<div class="res"><div class="big ok"><i class="fas fa-fire"></i></div><h3>' + (r.completed ? T2('30-day streak completed!', '৩০ দিনের স্ট্রিক সম্পন্ন!') : T2('Day ', 'দিন ') + r.day + T2(' claimed', ' ক্লেইম হয়েছে')) + '</h3></div><div class="qbox">' + kv(T2('Reward', 'রিওয়ার্ড'), rw(r.reward), 'pos') + (r.bonus ? kv(T2('Completion bonus', 'কমপ্লিশন বোনাস'), rw(r.bonus), 'pos') : '') + '</div><div class="btns"><button class="btn" data-act="closeSheet">' + t('done') + '</button></div>'); };
+
+  /* ---------- QUIZ ---------- */
+  function qLoad() {
+    if (MX.l.qs) return; MX.l.qs = true;
+    db.ref('quizQuestions').on('value', s => { MX.qs = s.exists() ? s.val() : {}; renderAll(); }, () => { MX.qs = {}; renderAll(); });
+    db.ref('quizLeaderboard').orderByChild('score').limitToLast(20).on('value', s => { const a = []; s.forEach(c => { a.push(Object.assign({ id: c.key }, c.val())); }); MX.lb = a.sort((p, q) => num(q.score) - num(p.score)); renderAll(); }, () => {});
+    listen('quiz', 'quizAttempts/' + uid, 40);
+  }
+  const DIFF = { easy: ['Easy', 'সহজ', 'ok'], medium: ['Medium', 'মাঝারি', 'warn'], hard: ['Hard', 'কঠিন', 'bad'] };
+  function qDone(q, id) {
+    const z = ((S.user || {}).quiz) || {}, tz = num(cfg('quiz').tzOffsetMin), t0 = nowMs(), per = q.challenge === 'daily' ? 'd' + GC.dayNum(t0, tz) : q.challenge === 'weekly' ? 'w' + GC.weekNum(t0, tz) : 'x';
+    return !!(z.done || {})[id + '_' + per];
+  }
+  function qVisible(q, qc) { const t0 = nowMs(), cat = (qc.categories || {})[q.category] || {}; return q && q.enabled !== false && cat.enabled !== false && !(num(q.startAt) > t0) && !(num(q.endAt) > 0 && num(q.endAt) < t0); }
+  SUBS.mxquiz = {
+    title: () => T2('Quiz Earn', 'কুইজ আর্ন'), live: true,
+    render() {
+      qLoad(); const qc = cfg('quiz'); if (!S.cfgReady || MX.qs === null) return '<div class="mx-sk"></div><div class="mx-sk"></div>';
+      if (qc.enabled !== true) return empty('fa-circle-question', T2('Quiz is currently unavailable.', 'কুইজ বর্তমানে বন্ধ আছে।'));
+      const tab = MX.q.tab, tabs = [['simple', T2('Simple', 'সাধারণ')], ['advanced', T2('Advanced', 'অ্যাডভান্সড')], ['challenge', T2('Challenges', 'চ্যালেঞ্জ')], ['history', T2('History', 'ইতিহাস')], ['board', T2('Leaderboard', 'লিডারবোর্ড')]];
+      let h = '<div class="mx-tabs">' + tabs.map(x => '<button class="' + (tab === x[0] ? 'on' : '') + '" data-act="mxQTab" data-id="' + x[0] + '">' + x[1] + '</button>').join('') + '</div>';
+      const z = ((S.user || {}).quiz) || {}, dk = GC.dayNum(nowMs(), num(qc.tzOffsetMin)), used = z.day && z.day.k === dk ? num(z.day.n) : 0, lim = num(qc.dailyAttempts) > 0 ? num(qc.dailyAttempts) : 20, stt = z.stats || {};
+      if (!secure()) h += '<div class="note warn" style="margin:0 16px 12px"><i class="fas fa-shield-halved"></i><span>' + T2('Quiz answers are checked on the secure server, which the admin has not enabled yet.', 'কুইজের উত্তর সিকিউর সার্ভারে যাচাই হয়, যা অ্যাডমিন এখনও চালু করেননি।') + '</span></div>';
+      if (tab === 'history') { const a = hist('quiz'); return h + (a.length ? '<div class="mx-box flat">' + a.map(x => '<div class="mx-lv"><div class="n"><i class="fas fa-' + (x.correct ? 'check' : x.timeout ? 'clock' : 'xmark') + '" style="color:var(--' + (x.correct ? 'pos' : 'neg') + ')"></i></div><div class="m">' + esc(((MX.qs || {})[x.qid] || {}).question || x.qid).slice(0, 60) + '<small>' + dt(x.ts) + ' · ' + (x.correct ? T2('Correct', 'সঠিক') : x.timeout ? T2('Time up', 'সময় শেষ') : T2('Wrong', 'ভুল')) + '</small></div><div class="r">' + (num(x.main) > 0 ? '+' + fmt(x.main) + ' ' + sym() : '') + (num(x.token) > 0 ? ' +' + f4(x.token) + ' ' + tk() : '') + '</div></div>').join('') + '</div>' : empty('fa-clock-rotate-left', T2('No quiz attempts yet', 'এখনও কোনো কুইজ চেষ্টা নেই'))); }
+      if (tab === 'board') return h + (MX.lb.length ? '<div class="mx-box flat">' + MX.lb.map((x, i) => '<div class="mx-lv ' + (x.id === uid ? 'cur' : '') + '"><div class="n">' + (i + 1) + '</div><div class="m">' + esc(x.name || 'User') + (x.id === uid ? ' · ' + T2('You', 'আপনি') : '') + '<small>' + num(x.correct) + ' ' + T2('correct', 'সঠিক') + ' / ' + num(x.attempts) + '</small></div><div class="r">' + num(x.score) + ' ' + T2('pts', 'পয়েন্ট') + '</div></div>').join('') + '</div>' : empty('fa-ranking-star', T2('No scores yet', 'এখনও কোনো স্কোর নেই')));
+      h += '<div class="mx-grid">' + st(T2('Today attempts', 'আজকের চেষ্টা'), used + '/' + lim) + st(T2('Correct answers', 'সঠিক উত্তর'), num(stt.correct) + '/' + num(stt.total)) + '</div>';
+      const qs = Object.keys(MX.qs || {}).map(k => Object.assign({ id: k }, MX.qs[k])).filter(q => qVisible(q, qc) && (tab === 'challenge' ? !!q.challenge : !q.challenge && (q.category || 'simple') === tab));
+      if (!qs.length) return h + empty('fa-circle-question', T2('No questions available here right now.', 'এখানে এখন কোনো প্রশ্ন নেই।'));
+      return h + qs.map(q => { const d = DIFF[q.difficulty] || DIFF.easy, done = qDone(q, q.id); return '<div class="mx-q"><div class="mx-between" style="margin-bottom:8px"><div class="mx-row">' + chip(d[2], T2(d[0], d[1])) + (q.challenge ? chip('on', q.challenge === 'daily' ? T2('Daily', 'দৈনিক') : T2('Weekly', 'সাপ্তাহিক')) : '') + '</div><span class="tiny"><i class="fas fa-clock"></i> ' + (num(q.timer) || num(qc.defaultTimer) || 30) + 's</span></div><h4>' + esc(q.question) + '</h4><div class="mx-between"><span class="tiny" style="color:var(--accent)">' + rw({ type: q.rewardType || 'main', main: q.main, token: q.token }) + '</span>' + (done ? chip('ok', T2('Completed', 'সম্পন্ন')) : '<button class="btn sm" data-act="mxQStart" data-id="' + esc(q.id) + '"><i class="fas fa-play"></i> ' + T2('Start', 'শুরু') + '</button>') + '</div></div>'; }).join('');
+    }
+  };
+  ACT.mxQTab = d => { MX.q.tab = d.id; renderAll(); };
+  ACT.mxQStart = async d => {
+    const r = await act('quiz.start', { qid: d.id }, T2('Starting…', 'শুরু হচ্ছে…')); if (!r || !r.ok) { if (r) toast(em(r)); return; }
+    MX.q.play = { qid: d.id, attemptId: r.attemptId, expiresAt: num(r.expiresAt), timer: num(r.timer), sel: -1, result: null, sending: false }; openSub('mxplay');
+  };
+  SUBS.mxplay = {
+    title: () => T2('Quiz', 'কুইজ'), live: true,
+    render() {
+      const p = MX.q.play, q = p && (MX.qs || {})[p.qid]; if (!p || !q) return empty('fa-circle-question', T2('Question not found.', 'প্রশ্ন পাওয়া যায়নি।'));
+      const opts = (Array.isArray(q.options) ? q.options : Object.values(q.options || {})).slice(0, 4), L = ['A', 'B', 'C', 'D'], r = p.result;
+      let h = '<div class="mx-q" style="margin-top:4px"><div class="mx-between" style="margin-bottom:10px">' + chip((DIFF[q.difficulty] || DIFF.easy)[2], T2((DIFF[q.difficulty] || DIFF.easy)[0], (DIFF[q.difficulty] || DIFF.easy)[1])) + (r ? '' : chip('on', '<i class="fas fa-clock"></i> ' + cd(p.expiresAt))) + '</div>' + (r ? '' : '<div class="mx-bar" style="margin-bottom:12px"><i id="mxQBar" style="width:100%"></i></div>') + '<h4 style="font-size:1rem">' + esc(q.question) + '</h4></div><div style="padding:0 16px">' +
+        opts.map((o, i) => '<button class="mx-opt ' + (r ? (r.correctIndex === i ? 'right' : p.sel === i ? 'wrong' : '') : p.sel === i ? 'sel' : '') + '" ' + (r || p.sending ? 'disabled' : 'data-act="mxPick" data-i="' + i + '"') + '><b>' + L[i] + '</b>' + esc(o) + '</button>').join('') + '</div>';
+      if (!r) h += '<div class="mx-act"><button class="btn" data-act="mxSubmit" ' + (p.sel < 0 || p.sending ? 'disabled' : '') + '><i class="fas fa-paper-plane"></i> ' + T2('SUBMIT ANSWER', 'উত্তর জমা দিন') + '</button></div>';
+      else h += '<div class="mx-box"><div class="mx-row" style="margin-bottom:8px">' + chip(r.correct ? 'ok' : 'bad', r.correct ? T2('Correct!', 'সঠিক!') : r.timeout ? T2('Time is up', 'সময় শেষ') : T2('Wrong answer', 'ভুল উত্তর')) + '</div>' + (r.correct && (num(r.reward.main) > 0 || num(r.reward.token) > 0) ? kv(T2('Reward', 'রিওয়ার্ড'), rw({ type: r.reward.type, main: r.reward.main, token: r.reward.token }), 'pos') : '') + (r.explanation ? '<p class="tiny" style="margin-top:8px;line-height:1.6">' + esc(r.explanation) + '</p>' : '') + '</div><div class="mx-act"><button class="btn" data-act="mxQDone">' + t('done') + '</button></div>';
+      return h;
+    }
+  };
+  ACT.mxPick = d => { const p = MX.q.play; if (!p || p.result || p.sending) return; p.sel = num(d.i); renderSub(false); };
+  ACT.mxQDone = () => { MX.q.play = null; closeSub(); };
+  async function qSubmit(choice) {
+    const p = MX.q.play; if (!p || p.result || p.sending) return; p.sending = true; renderSub(false);
+    const r = await act('quiz.submit', { attemptId: p.attemptId, choice }, T2('Checking…', 'যাচাই হচ্ছে…')); p.sending = false;
+    if (!r || !r.ok) { if (r) toast(em(r)); if (r && r.code === 'QUIZ_REPLAY') { MX.q.play = null; closeSub(); } else renderSub(false); return; }
+    p.result = { correct: !!r.correct, timeout: !!r.timeout, correctIndex: r.correctIndex, explanation: r.explanation, reward: r.reward || {} };
+    if (!secure() && r._lb) E.quizLb(uid, tgUser.first_name || '', r._lb.pts, r._lb.ok); renderSub(false);
+  }
+  ACT.mxSubmit = () => { const p = MX.q.play; if (p && p.sel >= 0) qSubmit(p.sel); };
+
+  /* ---------- ALL PAGES directory ---------- */
+  const CATS = [['dash', 'Dashboard', 'ড্যাশবোর্ড'], ['tok', 'Token Ecosystem', 'টোকেন ইকোসিস্টেম'], ['earn', 'Rewards & Earnings', 'রিওয়ার্ড ও আয়'], ['fin', 'Wallet & Finance', 'ওয়ালেট ও ফাইন্যান্স'], ['acc', 'Account & Support', 'অ্যাকাউন্ট ও সাপোর্ট']];
+  const spinOn = () => { const c = cfg('spinWheel'); return c.enabled === true || (cfg('spin').enabled === true); };
+  const REG = [
+    { id: 'home', cat: 'dash', ic: 'fa-house', en: 'Home', bn: 'হোম', tab: 1 },
+    { id: 'notifications', cat: 'dash', ic: 'fa-bell', en: 'Notifications', bn: 'নোটিফিকেশন', sub: 1 },
+    { id: 'earnings', cat: 'dash', ic: 'fa-chart-line', en: 'Earnings', bn: 'আয়ের হিসাব', sub: 1 },
+    { id: 'achievements', cat: 'dash', ic: 'fa-award', en: 'Achievements', bn: 'অ্যাচিভমেন্ট', sub: 1 },
+    { id: 'token', cat: 'tok', ic: 'fa-coins', en: 'Token Market', bn: 'টোকেন মার্কেট', tab: 1, on: () => featOn('token') },
+    { id: 'mining', cat: 'tok', ic: 'fa-hammer', en: 'Token Mining', bn: 'টোকেন মাইনিং', sub: 1, nw: 1, on: () => mcfg().enabled && mcfg().configured },
+    { id: 'mxupgrade', cat: 'tok', ic: 'fa-arrow-up-right-dots', en: 'Mining Upgrade', bn: 'মাইনিং আপগ্রেড', sub: 1, nw: 1, on: () => mcfg().enabled && mcfg().configured },
+    { id: 'mxboost', cat: 'tok', ic: 'fa-bolt', en: 'Mining Boost', bn: 'মাইনিং বুস্ট', sub: 1, nw: 1, on: () => mcfg().enabled && mcfg().boost.enabled },
+    { id: 'tokendetail', cat: 'tok', ic: 'fa-chart-simple', en: 'Token Details', bn: 'টোকেন ডিটেইলস', sub: 1, on: () => featOn('token') },
+    { id: 'tokenwd', cat: 'tok', ic: 'fa-arrow-up-from-bracket', en: 'Token Withdraw', bn: 'টোকেন উত্তোলন', sub: 1, on: () => featOn('token') },
+    { id: 'buy', cat: 'tok', ic: 'fa-cart-plus', en: 'Buy Token', bn: 'টোকেন কিনুন', op: 1, on: () => featOn('token') },
+    { id: 'sell', cat: 'tok', ic: 'fa-hand-holding-dollar', en: 'Sell Token', bn: 'টোকেন বিক্রি', op: 1, on: () => featOn('token') },
+    { id: 'swap', cat: 'tok', ic: 'fa-right-left', en: 'Swap', bn: 'সোয়াপ', op: 1, on: () => featOn('token') },
+    { id: 'transfer', cat: 'tok', ic: 'fa-paper-plane', en: 'Transfer', bn: 'ট্রান্সফার', op: 1, on: () => featOn('token') },
+    { id: 'earn', cat: 'earn', ic: 'fa-bolt', en: 'Earn', bn: 'আর্ন', tab: 1 },
+    { id: 'mxstreak', cat: 'earn', ic: 'fa-fire', en: '30-Day Streak', bn: '৩০ দিনের স্ট্রিক', sub: 1, nw: 1, on: () => GC.streakCfg(cfg('streak')).enabled },
+    { id: 'mxquiz', cat: 'earn', ic: 'fa-circle-question', en: 'Quiz Earn', bn: 'কুইজ আর্ন', sub: 1, nw: 1, on: () => cfg('quiz').enabled === true },
+    { id: 'bonus', cat: 'earn', ic: 'fa-gift', en: 'Daily Bonus', bn: 'ডেইলি বোনাস', sub: 1, on: () => featOn('dailyBonus') },
+    { id: 'spin', cat: 'earn', ic: 'fa-dharmachakra', en: 'Spin Wheel', bn: 'স্পিন হুইল', sub: 1, on: spinOn },
+    { id: 'vault', cat: 'earn', ic: 'fa-gem', en: 'Reward Vault', bn: 'রিওয়ার্ড ভল্ট', sub: 1, on: () => featOn('vault') },
+    { id: 'promo', cat: 'earn', ic: 'fa-ticket', en: 'Promo Code', bn: 'প্রোমো কোড', sub: 1, on: () => featOn('promo') },
+    { id: 'events', cat: 'earn', ic: 'fa-calendar-star', en: 'Events', bn: 'ইভেন্ট', sub: 1, on: () => featOn('events') },
+    { id: 'giveaway', cat: 'earn', ic: 'fa-gift', en: 'Giveaway', bn: 'গিভঅ্যাওয়ে', sub: 1, on: () => featOn('giveaway') },
+    { id: 'vip', cat: 'earn', ic: 'fa-crown', en: 'VIP Membership', bn: 'ভিআইপি', sub: 1 },
+    { id: 'wallet', cat: 'fin', ic: 'fa-wallet', en: 'Wallet', bn: 'ওয়ালেট', tab: 1 },
+    { id: 'deposit', cat: 'fin', ic: 'fa-arrow-down', en: 'Deposit', bn: 'ডিপোজিট', sub: 1, on: () => featOn('deposit') },
+    { id: 'withdraw', cat: 'fin', ic: 'fa-arrow-up', en: 'Withdraw', bn: 'উত্তোলন', sub: 1, on: () => featOn('withdraw') },
+    { id: 'history', cat: 'fin', ic: 'fa-receipt', en: 'Transaction History', bn: 'লেনদেন ইতিহাস', sub: 1 },
+    { id: 'profile', cat: 'acc', ic: 'fa-user', en: 'Profile', bn: 'প্রোফাইল', tab: 1 },
+    { id: 'support', cat: 'acc', ic: 'fa-headset', en: 'Support', bn: 'সাপোর্ট', sub: 1, on: () => featOn('support') },
+    { id: 'security', cat: 'acc', ic: 'fa-shield-halved', en: 'Security', bn: 'সিকিউরিটি', sub: 1 }
+  ];
+  const seen = () => { try { return JSON.parse(localStorage.getItem('mx_seen') || '{}'); } catch (e) { return {}; } };
+  const markSeen = id => { try { const s = seen(); s[id] = 1; localStorage.setItem('mx_seen', JSON.stringify(s)); } catch (e) {} };
+  const pcfg = id => ((cfg('pages') || {})[id]) || {};
+  const regOk = p => { if (p.tab && !(p.id === 'home' || ((cfg('nav') || {})[p.id] !== false))) return false; if (p.sub && !SUBS[p.id]) return false; if (p.op && !SUBS.tokenop) return false; if (pcfg(p.id).visible === false) return false; try { return p.on ? !!p.on() : true; } catch (e) { return false; } };
+  const isNew = p => { const c = pcfg(p.id); return !seen()[p.id] && (c.isNew === true || (p.nw && c.isNew !== false)); };
+  const favs = () => ((S.user || {}).favPages) || {};
+  function apGrid() {
+    const q = MX.apQ.trim().toLowerCase(), fv = favs(), all = REG.filter(regOk).map(p => Object.assign({}, p, { title: pcfg(p.id).label || T2(p.en, p.bn) }));
+    const fl = all.filter(p => (MX.apCat === 'all' || MX.apCat === 'fav' ? true : p.cat === MX.apCat) && (MX.apCat !== 'fav' || fv[p.id]) && (!q || (p.title + ' ' + p.en + ' ' + p.bn).toLowerCase().includes(q)));
+    if (!fl.length) return empty('fa-magnifying-glass', T2('No pages found', 'কোনো পেজ পাওয়া যায়নি'));
+    const card = p => '<div class="mx-pg" data-act="mxGo" data-id="' + p.id + '">' + (isNew(p) ? '<span class="mx-new">NEW</span>' : '') + '<span class="fv ' + (fv[p.id] ? 'on' : '') + '" data-act="mxFav" data-id="' + p.id + '"><i class="fas fa-star"></i></span><div class="ic"><i class="fas ' + p.ic + '"></i></div>' + esc(p.title) + '</div>';
+    const by = c => fl.filter(p => p.cat === c); let h = '';
+    if (MX.apCat === 'all' && !q) { const f = fl.filter(p => fv[p.id]); if (f.length) h += '<div class="mx-h"><span><i class="fas fa-star" style="color:var(--warn)"></i> ' + T2('Favorites', 'ফেভারিট') + '</span></div><div class="mx-ap">' + f.map(card).join('') + '</div>'; }
+    CATS.forEach(c => { const a = by(c[0]); if (a.length) h += '<div class="mx-h"><span>' + T2(c[1], c[2]) + '</span><span>' + a.length + '</span></div><div class="mx-ap">' + a.map(card).join('') + '</div>'; });
+    return h;
+  }
+  SUBS.allpages = {
+    title: () => T2('All Pages', 'সব পেজ'), live: false,
+    render() {
+      if (!S.cfgReady) return '<div class="mx-sk"></div>';
+      return '<div class="mx-search" style="margin-top:4px"><i class="fas fa-magnifying-glass"></i><input id="mxApQ" data-in="mxAp" value="' + esc(MX.apQ) + '" placeholder="' + T2('Search pages…', 'পেজ খুঁজুন…') + '"></div><div class="mx-tabs">' + [['all', T2('All', 'সব')], ['fav', '★ ' + T2('Favorites', 'ফেভারিট')]].concat(CATS.map(c => [c[0], T2(c[1], c[2])])).map(x => '<button class="' + (MX.apCat === x[0] ? 'on' : '') + '" data-act="mxApCat" data-id="' + x[0] + '">' + x[1] + '</button>').join('') + '</div><div id="mxApGrid">' + apGrid() + '</div>';
+    },
+    onData() { const g = $('mxApGrid'); if (g) g.innerHTML = apGrid(); }
+  };
+  INP.mxAp = el => { MX.apQ = el.value; const g = $('mxApGrid'); if (g) g.innerHTML = apGrid(); };
+  ACT.mxApCat = d => { MX.apCat = d.id; renderSub(false); };
+  ACT.allPages = () => { if (subStack.length && subStack[subStack.length - 1].id === 'allpages') return; openSub('allpages'); };
+  ACT.mxFav = async (d, el) => { const on = !favs()[d.id]; if (el) el.classList.toggle('on', on); try { await db.ref('users/' + uid + '/favPages/' + d.id).set(on ? true : null); } catch (e) { toast(t('fail_generic')); } };
+  ACT.mxGo = d => { const p = REG.find(x => x.id === d.id); if (!p) return; markSeen(p.id); if (p.tab) showTab(p.id); else if (p.op) { initOp(p.id); openSub('tokenop', { p: p.id }); } else if (SUBS[p.id]) openSub(p.id); };
+  document.addEventListener('click', e => { const f = e.target.closest('.mx-pg .fv'); if (f) e.stopPropagation(); }, true);
+
+  /* ---------- injected entry cards (wrap existing renderers; originals untouched) ---------- */
+  function miningCard() {
+    const mc = mcfg(); if (!mc.enabled || !mc.configured) return ''; const s = mst(), sy = tk();
+    const sub = s.status === 'MINING_ACTIVE' ? cd(s.session.endAt, true) + ' · ' + f4(s.speed) + '/' + T2('hr', 'ঘণ্টা') : s.status === 'CLAIM_AVAILABLE' ? T2('Reward ready — claim now', 'রিওয়ার্ড প্রস্তুত — ক্লেইম করুন') : s.status === 'LOCKED' ? T2('Locked — unlock to continue', 'লকড — আনলক করুন') : T2('Tap to start mining', 'মাইনিং শুরু করতে ট্যাপ করুন');
+    return '<div class="mx-mini" id="mxCard" data-act="openSub" data-id="mining"><div class="ic"><i class="fas fa-hammer"></i></div><div class="tx"><b>' + T2('Token Mining', 'টোকেন মাইনিং') + ' · ' + T2('Lv', 'লেভেল') + ' ' + s.level + '</b><small>' + sub + '</small></div>' + stChip(s.status) + '</div>';
+  }
+  function strip() {
+    const it = [['mxstreak', 'fa-fire', T2('Streak', 'স্ট্রিক'), GC.streakCfg(cfg('streak')).enabled], ['mxquiz', 'fa-circle-question', T2('Quiz', 'কুইজ'), cfg('quiz').enabled === true], ['allpages', 'fa-table-cells-large', T2('All Pages', 'সব পেজ'), true]].filter(x => x[3] && pcfg(x[0]).visible !== false);
+    return it.length > 1 ? '<div class="mx-strip" id="mxStrip" style="grid-template-columns:repeat(' + it.length + ',1fr)">' + it.map(x => '<button data-act="openSub" data-id="' + x[0] + '"><i class="fas ' + x[1] + '"></i>' + x[2] + '</button>').join('') + '</div>' : '';
+  }
+  function inject(tabId, html) { try { const root = $(tabId); if (!root || !html) return; const d = document.createElement('div'); d.innerHTML = html; const n = d.firstElementChild, top = root.querySelector('.top') || root.firstElementChild; if (n && top) top.after(n); } catch (e) { console.warn(e); } }
+  try { const r0 = renderToken; window.renderToken = function () { r0.apply(this, arguments); inject('tab-token', miningCard()); }; } catch (e) {}
+  try { const r1 = renderHome; window.renderHome = function () { r1.apply(this, arguments); inject('tab-home', strip()); inject('tab-home', miningCard()); }; } catch (e) {}
+
+  /* ---------- ticker: countdowns, ring, status transitions, nav label ---------- */
+  setInterval(() => {
+    const n = nowMs();
+    document.querySelectorAll('[data-mx-cd]').forEach(el => { const ms = num(el.dataset.mxCd) - n; el.textContent = cdText(ms); if (ms <= 0 && el.dataset.mxFlip && !el._f) { el._f = 1; renderAll(); } });
+    const r = document.querySelector('[data-mx-ring]'); if (r) { const [a, b] = r.dataset.mxRing.split(',').map(Number), p = Math.min(1, Math.max(0, (n - a) / (b - a))), C = 2 * Math.PI * 76; r.setAttribute('stroke-dashoffset', (C * (1 - p)).toFixed(1)); const bar = $('mxBar'); if (bar) bar.style.width = (p * 100).toFixed(1) + '%'; }
+    const p = MX.q.play; if (p && !p.result && !p.sending && n > p.expiresAt && subStack.length && subStack[subStack.length - 1].id === 'mxplay') qSubmit(p.sel);
+    if (S.booted && S.userReady) { const k = mst().status + ':' + mcfg().enabled; if (MX.lastKey && k !== MX.lastKey) renderAll(); MX.lastKey = k; }
+    const lbl = $('mxNavLbl'); if (lbl) lbl.textContent = T2('All Pages', 'সব পেজ');
+    const nb = document.querySelector('#nav .nv[data-id="allpages"]'); if (nb) { const nw = S.cfgReady && REG.some(p => regOk(p) && isNew(p)); let dot = nb.querySelector('.mx-nvdot'); if (nw && !dot) { dot = document.createElement('i'); dot.className = 'mx-nvdot'; nb.appendChild(dot); } else if (!nw && dot) dot.remove(); }
+  }, 1000);
+  /* the SUBS.mining "claimed / unlocked" flip guard resets whenever DOM is rebuilt, so _f flags never stick */
+})();
 
 </script>
 </body>

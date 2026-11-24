@@ -2763,6 +2763,8 @@ let SCT = 'admins';
 const RULES = () => {
   const adm = "auth != null && root.child('admins/'+auth.uid+'/role').exists() && root.child('admins/'+auth.uid+'/enabled').val() !== false";
   const sup = "auth != null && root.child('admins/'+auth.uid+'/role').val() === 'super' && root.child('admins/'+auth.uid+'/enabled').val() !== false";
+  const SEC = (S.cfg.gameServer || {}).secure === true;   /* secure mode: only the Cloud Function writes game history */
+  const GW = SEC ? false : true;
   return JSON.stringify({
     rules: {
       '.read': false, '.write': false,
@@ -2788,7 +2790,7 @@ const RULES = () => {
       announcements: { '.read': true, '.write': adm },
       depositMethods: { '.read': true, '.write': adm },
       promoCodes: { '.read': true, '.write': true },
-      users: { '.read': true, '.write': true, '.indexOn': ['balance', 'totalEarned'] },
+      users: { '.read': true, '.write': true, '.indexOn': ['balance', 'totalEarned', 'mining/session/endAt', 'mining/boost/until'] },
       withdrawals: { '.read': true, '.write': true },
       depositRequests: { '.read': true, '.write': true },
       deposits: { '.read': true, '.write': true },
@@ -2802,7 +2804,17 @@ const RULES = () => {
       tokenStats: { '.read': true, '.write': true },
       tokenUsers: { '.read': true, '.write': true },
       securityLog: { '.read': true, '.write': true },
-      deviceProfiles: { '.read': true, '.write': true }
+      deviceProfiles: { '.read': true, '.write': true },
+      gameOrders: { '.read': true, '$uid': { '$oid': { '.write': '!data.exists()' } } },
+      miningHistory: { '.read': true, '.write': GW },
+      miningUpgrades: { '.read': true, '.write': GW },
+      miningBoosts: { '.read': true, '.write': GW },
+      streakHistory: { '.read': true, '.write': GW },
+      quizAttempts: { '.read': true, '.write': GW },
+      miningFlags: { '.read': adm, '.write': GW },
+      quizQuestions: { '.read': true, '.write': adm },
+      quizAnswers: { '.read': adm, '.write': adm },
+      quizLeaderboard: { '.read': true, '.write': GW, '.indexOn': ['score'] }
     }
   }, null, 2);
 };
@@ -3279,543 +3291,430 @@ function swapIcons(root) {
 }
 (function () { let q = 0; const run = () => { q = 0; swapIcons(); }; new MutationObserver(() => { if (!q) q = requestAnimationFrame(run); }).observe(document.documentElement, { childList: true, subtree: true }); document.addEventListener('DOMContentLoaded', run); })();
 </script>
-<style id="nx-admin-css">
-/* =====================================================================
-   NEXAVAULT ADMIN — Advanced Mining & Rewards styles (nx*-scoped, additive)
-===================================================================== */
-.nxm-sec{display:flex;align-items:center;gap:10px;margin:22px 0 10px}
-.nxm-sec b{font-size:.86rem;font-weight:800;color:var(--ts,inherit)}
-.nxm-sec span{font-size:.72rem;color:var(--ts2,#8891a5)}
-.nxm-u-search{display:flex;align-items:center;gap:10px;padding:4px 0}
-.nxm-u-search i{color:var(--ts2,#8891a5)}
-.nxm-u-search input{flex:1}
-table thead tr{border-bottom:1px solid var(--line2)}
-table tbody tr{border-bottom:1px solid var(--line)}
-table tbody tr:hover{background:rgba(121,91,255,.05)}
-table .inp{margin:2px 0}
-table .sw{margin:0 auto}
+<script id="mx-core">
+/* GameCore — mining / streak / quiz engine. Pure logic over a Firebase-RTDB-like `db`.
+   Runs unchanged in the browser (client mode) and in Cloud Functions (secure mode). */
+(function (root, factory) { if (typeof module === 'object' && module.exports) module.exports = factory(); else root.GameCore = factory(); })(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
+  const H = 3600000, DAY = 86400000;
+  const num = v => { v = Number(v); return isFinite(v) ? v : 0; };
+  const rnd = (v, d) => { const p = Math.pow(10, d == null ? 6 : d); return Math.round((num(v) + Number.EPSILON) * p) / p; };
+  const fail = (code, extra) => Object.assign({ ok: false, code, persist: false }, extra || {});
+  const rid = () => Math.random().toString(36).slice(2, 7).toUpperCase();
+  const obj = v => (v && typeof v === 'object') ? v : {};
+  const list = v => Array.isArray(v) ? v.filter(x => x != null) : Object.keys(obj(v)).map(k => v[k]);
 
-</style>
-<script>
-/* =====================================================================
-   NEXAVAULT ADMIN — ADVANCED MINING & REWARDS MANAGEMENT (additive)
-===================================================================== */
-try { NAV.push(['Mining & Rewards', [['amin', 'fa-gem', 'Mining Management'], ['amusers', 'fa-user-ninja', 'Mining Users'], ['astreak', 'fa-fire', '30-Day Streak'], ['aquiz', 'fa-circle-question', 'Quiz Earning'], ['amodules', 'fa-toggle-on', 'Module Controls']]]); } catch (e) {}
+  /* ---------- config normalisation ---------- */
+  function miningCfg(c) {
+    c = obj(c);
+    const L = c.levels, lv = n => { const x = Array.isArray(L) ? L[n] : obj(L)[n]; return x && typeof x === 'object' ? x : null; };
+    let hi = 0; for (let n = 1; n <= 100; n++) { const x = lv(n); if (x && num(x.speed) > 0) hi = n; }
+    const maxLevel = Math.max(1, Math.min(100, num(c.maxLevel) || hi || 1));
+    const lk = obj(c.lock), fu = obj(c.freeUpgrade), bo = obj(c.boost);
+    return {
+      enabled: c.enabled === true, sessionHours: num(c.sessionHours) > 0 ? num(c.sessionHours) : 24, maxLevel, level: lv,
+      configured: !!(lv(1) && num(lv(1).speed) > 0),
+      free: fu.enabled === true,
+      lock: { enabled: lk.enabled !== false, hours: num(lk.hours) > 0 ? num(lk.hours) : 48, fee: Math.max(0, num(lk.unlockFee)), forfeit: lk.forfeitReward !== false },
+      boost: { enabled: bo.enabled === true, packs: obj(bo.packs) }
+    };
+  }
+  const D0 = m => (m && m.session) || null;
 
-try { listen('quizQ', db.ref('quizQuestions'), s => { S.quizQ = val0(s, {}); }); } catch (e) {}
-try { listen('quizP', db.ref('quizPool'), s => { S.quizP = val0(s, {}); }); } catch (e) {}
-try { listen('quizB', db.ref('quizBoard'), s => { S.quizB = val0(s, {}); }); } catch (e) {}
+  /* ---------- pure helpers ---------- */
+  function rewardOf(s) {
+    s = s || {}; const hrs = (num(s.endAt) - num(s.startAt)) / H, speed = num(s.speed);
+    const base = rnd(speed * hrs); let boost = 0;
+    list(s.boostSegs).forEach(g => { boost += speed * (num(g.mult) - 1) * Math.max(0, (num(g.to) - num(g.from)) / H); });
+    boost = rnd(boost); return { base, boost, total: rnd(base + boost), hours: hrs };
+  }
+  function lockDueAt(m, mc) {
+    const s = D0(m); if (!mc.lock.enabled || !s || s.status !== 'active') return null;
+    return Math.max(num(s.endAt), num(s.unlockedAt)) + mc.lock.hours * H;
+  }
+  function derive(m, mc, t) {
+    m = obj(m); const s = D0(m), level = num(m.level) || 1, out = { level, maxLevel: mc.maxLevel, isMax: level >= mc.maxLevel, speed: num(mc.level(level) && mc.level(level).speed), totalMined: num(m.total), sessions: num(m.sessions) };
+    const bo = m.boost && num(m.boost.until) > t ? m.boost : null; out.boost = bo;
+    out.boostMult = bo ? num(bo.mult) : 1; out.lock = m.lock || null; out.session = s;
+    if (!mc.enabled || !mc.configured) out.status = 'DISABLED';
+    else if (m.lock) out.status = 'LOCKED';
+    else if (lockDueAt(m, mc) != null && t >= lockDueAt(m, mc)) out.status = 'LOCKED', out.lockDue = true;
+    else if (s && s.status === 'active') out.status = t >= num(s.endAt) ? 'CLAIM_AVAILABLE' : 'MINING_ACTIVE';
+    else if (s && s.status === 'claimed') out.status = 'CLAIMED';
+    else out.status = 'READY_TO_START';
+    if (s && s.status === 'active') { out.remainingMs = Math.max(0, num(s.endAt) - t); out.progress = Math.min(1, Math.max(0, (t - num(s.startAt)) / Math.max(1, num(s.endAt) - num(s.startAt)))); out.pending = rewardOf(Object.assign({}, s, { boostSegs: s.boostSegs })); const ld = lockDueAt(m, mc); out.lockAt = ld; }
+    return out;
+  }
+  const dayNum = (t, tz) => Math.floor((t + num(tz) * 60000) / DAY);
+  const weekNum = (t, tz) => Math.floor((dayNum(t, tz) + 3) / 7);
 
-/* ---------------- shared render helpers ---------------- */
-const nxSecTitle = (t, sub) => '<div class="nxm-sec"><b>' + esc(t) + '</b>' + (sub ? '<span>' + esc(sub) + '</span>' : '') + '</div>';
-const nxSwField = (id, label, on, desc) => '<div class="trow"><b>' + esc(label) + (desc ? '<span class="d">' + esc(desc) + '</span>' : '') + '</b>' + sw(id, on) + '</div>';
-function arrUsers() { return Object.keys(S.users || {}).map(k => Object.assign({ id: k }, S.users[k])).filter(u => u && !String(u.id).startsWith('_')); }
+  function streakCfg(c) {
+    c = obj(c); const days = obj(c.days), cb = obj(c.completion);
+    return { enabled: c.enabled === true, tz: num(c.tzOffsetMin), grace: Math.max(0, Math.floor(num(c.graceDays))), resetOnMiss: c.resetOnMiss !== false, repeat: c.repeat !== false, from: c.claimFromHour == null ? 0 : num(c.claimFromHour), to: c.claimToHour == null ? 24 : num(c.claimToHour), day: n => { const d = days[n]; return d && typeof d === 'object' ? { type: ['main', 'token', 'both'].includes(d.type) ? d.type : 'main', main: Math.max(0, num(d.main)), token: Math.max(0, num(d.token)) } : null; }, completion: { type: ['main', 'token', 'both'].includes(cb.type) ? cb.type : 'main', main: Math.max(0, num(cb.main)), token: Math.max(0, num(cb.token)) } };
+  }
+  function streakView(st, sc, t) {
+    st = obj(st); const today = dayNum(t, sc.tz), last = st.lastDay == null ? null : num(st.lastDay);
+    let cur = num(st.cur), next = cur + 1, broken = false;
+    if (last != null) { const gap = today - last; if (gap > 1 + sc.grace && sc.resetOnMiss) { broken = true; next = 1; cur = 0; } }
+    if (next > 30) next = 1;
+    return { cur, next, today, last, claimedToday: last === today, broken, best: num(st.best), cycles: num(st.cycles), claims: obj(st.claims) };
+  }
+  function credit(u, type, main, token) {
+    if ((type === 'main' || type === 'both') && main > 0) { u.balance = rnd(num(u.balance) + main); u.totalEarned = rnd(num(u.totalEarned) + main); }
+    if ((type === 'token' || type === 'both') && token > 0) u.tokenBalance = rnd(num(u.tokenBalance) + token);
+  }
 
-/* =====================================================================
-   PG.amin — MINING MANAGEMENT
-===================================================================== */
-let AMT = 'config';
-PG.amin = {
-  title: 'Mining Management', nav: 'amin', deps: ['config'], live: true,
-  render: function () {
-    const tabs = [['config', 'Controls'], ['levels', 'Level Settings (1–100)'], ['boost', 'Boost Config']];
-    let h = pageHead('Advanced Mining Management', '24h mining sessions, 100 levels, free first upgrade, inactivity lock — read live by the User Panel', '<button class="btn" data-act="amineSave"' + (can('settings') ? '' : ' disabled') + '><i class="fas fa-floppy-disk"></i> Save mining config</button>') + needLock('settings');
-    h += '<div class="tabs">' + tabs.map(t => '<button class="tab ' + (AMT === t[0] ? 'on' : '') + '" data-act="amineTab" data-id="' + t[0] + '">' + t[1] + '</button>').join('') + '</div>';
-    h += AMT === 'config' ? nxMineTabConfig() : AMT === 'levels' ? nxMineTabLevels() : nxMineTabBoost();
-    return h;
-  }
-};
-ACT.amineTab = d => { AMT = d.id; renderView(); };
-function nxMineTabConfig() {
-  const m = S.cfg.mining || {}, ia = m.inactivity || {};
-  return '<div class="grid g2" style="margin-top:16px">' +
-    '<div class="card"><div class="ct"><i class="fas fa-power-off"></i> Master</div>' +
-    nxSwField('nx_mine_on', 'Mining module', m.enabled !== false, 'OFF hides the entire Mining page') +
-    nxSwField('nx_mine_free', 'Free first upgrade', m.freeUpgrade !== false, 'One free level upgrade per user') +
-    fld('nx_mine_hours', 'Session duration (hours)', num(m.sessionHours) || 24, { type: 'number', min: 1 }) +
-    fld('nx_mine_maxlvl', 'Maximum level', 100, { type: 'number', min: 1, hint: 'Level system supports up to 100' }) +
-    '</div>' +
-    '<div class="card"><div class="ct"><i class="fas fa-user-slash"></i> Inactivity Lock (default 48h)</div>' +
-    nxSwField('nx_mine_ia_on', 'Inactivity lock', ia.enabled !== false, 'Auto-lock when a session stays unclaimed') +
-    fld('nx_mine_ia_hours', 'Threshold (hours)', num(ia.thresholdHours) || 48, { type: 'number', min: 1, hint: 'Unclaimed session older than this triggers the lock' }) +
-    fld('nx_mine_ia_fee', 'Unlock fee (tokens)', num(ia.unlockFee) > 0 ? num(ia.unlockFee) : 100, { type: 'number', min: 0 }) +
-    '<div class="note" style="margin-top:10px"><i class="fas fa-circle-info"></i><span>Scheduled Cloud Functions run the detection even when users never open the app.</span></div>' +
-    '</div></div>';
-}
-function nxMineTabLevels() {
-  const store = (S.cfg.miningLevels || {});
-  const def = (l, f) => { const o = store[l] || store[String(l)] || {}; return o[f] !== undefined ? o[f] : (f === 'speed' ? Math.round((0.5 + 0.1 * (l - 1)) * 100) / 100 : f === 'cost' ? (l === 1 ? 0 : Math.round(60 * Math.pow(1.09, l - 1) * 100) / 100) : f === 'enabled' ? true : ''); };
-  let h = '<div class="grid g3" style="margin-top:16px">' +
-    '<div class="card"><div class="ct"><i class="fas fa-hat-wizard"></i> Generator</div>' +
-    fld('nx_gen_base', 'Level-1 speed (tokens/h)', 0.5, { type: 'number', step: '0.01' }) +
-    fld('nx_gen_step', 'Speed increment per level', 0.1, { type: 'number', step: '0.01' }) +
-    fld('nx_gen_cost', 'Level-2 cost (tokens)', 60, { type: 'number', step: '0.01' }) +
-    fld('nx_gen_growth', 'Cost growth % per level', 9, { type: 'number', step: '0.1' }) +
-    '<button class="btn bl" style="margin-top:12px" data-act="amineGen"' + (can('settings') ? '' : ' disabled') + '><i class="fas fa-hat-wizard"></i> Fill table from generator</button></div>' +
-    '<div class="card"><div class="ct"><i class="fas fa-floppy-disk"></i> Persistence</div>' +
-    '<p class="ss" style="line-height:1.7">Each level stores: <b>speed</b> (tokens/hour), <b>cost</b> (tokens to unlock this level), <b>availability</b> and an optional <b>description</b>.<br>Prices are charged from the <b>Token Balance</b>.</p>' +
-    '<button class="btn" style="margin-top:10px" data-act="amineLevelsSave"' + (can('settings') ? '' : ' disabled') + '><i class="fas fa-floppy-disk"></i> Save all levels</button>' +
-    '<button class="btn gh" style="margin-top:8px" data-act="amineLevelsReset"' + (can('settings') ? '' : ' disabled') + '><i class="fas fa-rotate-left"></i> Remove overrides (use defaults)</button></div>' +
-    '</div>';
-  h += '<div class="card" style="margin-top:16px;overflow:auto;max-height:520px"><table style="width:100%;border-collapse:collapse;font-size:.8rem"><thead><tr>' +
-    ['Lv', 'Speed/h', 'Cost', 'Enabled', 'Description'].map(x => '<th style="text-align:left;padding:8px 6px;color:var(--ts)">' + x + '</th>').join('') + '</tr></thead><tbody>' +
-    Array.from({ length: 100 }, (_, i) => i + 1).map(l =>
-      '<tr><td style="padding:5px 6px;font-weight:800;color:var(--ts)">' + l + '</td>' +
-      '<td><input class="inp" style="width:90px;padding:6px 8px" type="number" step="0.01" id="nxl_' + l + '_sp" value="' + attr(def(l, 'speed')) + '"></td>' +
-      '<td><input class="inp" style="width:100px;padding:6px 8px" type="number" step="0.01" id="nxl_' + l + '_co" value="' + attr(def(l, 'cost')) + '"></td>' +
-      '<td>' + sw('nxl_' + l + '_en', def(l, 'enabled') !== false) + '</td>' +
-      '<td><input class="inp" style="width:210px;padding:6px 8px" id="nxl_' + l + '_de" value="' + attr(def(l, 'desc')) + '" placeholder="optional"></td></tr>').join('') +
-    '</tbody></table></div>';
-  return h;
-}
-function nxMineTabBoost() {
-  const b = S.cfg.miningBoost || {};
-  return '<div class="grid g2" style="margin-top:16px"><div class="card"><div class="ct"><i class="fas fa-rocket"></i> Temporary Boost</div>' +
-    nxSwField('nx_boost_on', 'Boost system', b.enabled !== false, 'Users can buy a temporary mining-speed multiplier') +
-    fld('nx_boost_hours', 'Duration (hours)', num(b.durationHours) || 24, { type: 'number', min: 1 }) +
-    fld('nx_boost_mult', 'Multiplier (×)', num(b.multiplier) || 2, { type: 'number', step: '0.1', min: 1.1 }) +
-    '</div><div class="card"><div class="ct"><i class="fas fa-coins"></i> Conditions</div>' +
-    fld('nx_boost_cost', 'Token cost', num(b.cost) || 50, { type: 'number', min: 0 }) +
-    fld('nx_boost_maxday', 'Max purchases per user per day', num(b.maxPerDay) || 2, { type: 'number', min: 1 }) +
-    fld('nx_boost_minlvl', 'Eligible from level', num(b.minLevel) || 5, { type: 'number', min: 1 }) +
-    '<div class="note" style="margin-top:10px"><i class="fas fa-circle-info"></i><span>Base speed and boost are calculated separately; the boost applies to sessions started while it is active and expires automatically.</span></div>' +
-    '</div></div>';
-}
-ACT.amineSave = async () => {
-  if (!need('settings')) return;
-  const updates = {
-    'mining/enabled': chk('nx_mine_on'),
-    'mining/freeUpgrade': chk('nx_mine_free'),
-    'mining/sessionHours': Math.max(1, nv('nx_mine_hours')),
-    'mining/inactivity/enabled': chk('nx_mine_ia_on'),
-    'mining/inactivity/thresholdHours': Math.max(1, nv('nx_mine_ia_hours')),
-    'mining/inactivity/unlockFee': Math.max(0, nv('nx_mine_ia_fee'))
-  };
-  const ok = await saveCfg(updates, 'mining config', 'settings');
-  if (ok) notifyFlash('Mining configuration saved');
-};
-ACT.amineGen = async () => {
-  if (!need('settings')) return;
-  AMT = 'levels';
-  const base = num(val('nx_gen_base')) || 0.5, step = num(val('nx_gen_step')) || 0.1;
-  const c0 = num(val('nx_gen_cost')) || 60, g = num(val('nx_gen_growth')) || 9;
-  for (let l = 1; l <= 100; l++) {
-    const spEl = $('nxl_' + l + '_sp'), coEl = $('nxl_' + l + '_co');
-    if (spEl) spEl.value = Math.round((base + step * (l - 1)) * 100) / 100;
-    if (coEl) coEl.value = l === 1 ? 0 : Math.round(c0 * Math.pow(1 + g / 100, l - 2) * 100) / 100;
-  }
-  toast('Table filled — review then <b>Save all levels</b>', 'ok');
-};
-ACT.amineLevelsSave = async () => {
-  if (!need('settings')) return;
-  const updates = {};
-  for (let l = 1; l <= 100; l++) {
-    updates['miningLevels/' + l + '/speed'] = num(val('nxl_' + l + '_sp'));
-    updates['miningLevels/' + l + '/cost'] = Math.max(0, num(val('nxl_' + l + '_co')));
-    updates['miningLevels/' + l + '/enabled'] = !$('nxl_' + l + '_en') || $('nxl_' + l + '_en').checked;
-    updates['miningLevels/' + l + '/desc'] = val('nxl_' + l + '_de');
-    updates['miningLevels/' + l + '/level'] = l;
-  }
-  const ok = await saveCfg(updates, 'mining levels 1-100', 'settings');
-  if (ok) notifyFlash('100 level configurations saved');
-};
-ACT.amineLevelsReset = () => {
-  if (!need('settings')) return;
-  confirmBox({ title: 'Remove all level overrides?', msg: 'Built-in defaults will be used by the User Panel.', typed: true, cls: 'no', label: 'Remove', onOk: async () => { await db.ref('config/miningLevels').remove(); await audit('mining.levelsReset', '', {}); toast('Overrides removed', 'ok'); renderView(); } });
-};
-function notifyFlash(msg) { try { toast(msg, 'ok'); } catch (e) {} }
-
-/* boost config uses its own save (boost tab has no direct Save button — include in config save) */
-ACT.amineBoostSave = async () => {
-  if (!need('settings')) return;
-  const ok = await saveCfg({
-    'miningBoost/enabled': chk('nx_boost_on'),
-    'miningBoost/durationHours': Math.max(1, nv('nx_boost_hours')),
-    'miningBoost/multiplier': Math.max(1.1, nv('nx_boost_mult')),
-    'miningBoost/cost': Math.max(0, nv('nx_boost_cost')),
-    'miningBoost/maxPerDay': Math.max(1, nv('nx_boost_maxday')),
-    'miningBoost/minLevel': Math.max(1, nv('nx_boost_minlvl'))
-  }, 'mining boost', 'settings');
-  if (ok) notifyFlash('Boost configuration saved');
-};
-/* hook: config tab Save also persists boost fields when present */
-try {
-  const _origSave = ACT.amineSave;
-  ACT.amineSave = async function () {
-    await _origSave();
-    if (can('settings') && $('nx_boost_on')) await ACT.amineBoostSave();
-  };
-} catch (e) {}
-
-/* =====================================================================
-   PG.amusers — USER MINING MANAGEMENT
-===================================================================== */
-let AMUS = '';
-PG.amusers = {
-  title: 'Mining User Management', nav: 'amusers', deps: ['users'], live: true,
-  render: function () {
-    let h = pageHead('User Mining Management', 'Inspect mining status, lock/unlock, reset levels and audit suspicious activity');
-    h += '<div class="card"><div class="nxm-u-search"><i class="fas fa-magnifying-glass"></i><input class="inp" placeholder="Search by user ID or name…" data-in="amUserSearch" value="' + attr(AMUS) + '"></div></div>';
-    const q = AMUS.toLowerCase();
-    let list = arrUsers();
-    if (q) list = list.filter(u => String(u.id).toLowerCase().includes(q) || String(u.name || '').toLowerCase().includes(q));
-    list = list.slice(0, 60);
-    h += '<div class="grid g2" style="margin-top:16px">' + (list.length ? list.map(u => {
-      const mn = u.mining || {};
-      const lvl = num(mn.level) || 1;
-      const speed = Math.round((0.5 + 0.1 * (lvl - 1)) * 100) / 100;
-      const lock = !!mn.lockOn;
-      const st = mn.st === 'active' ? 'MINING' : mn.st === 'claimed' ? 'CLAIMED' : 'IDLE';
-      const ib = (S.cfg.mining || {}).inactivity || {};
-      return '<div class="card"><div class="ct"><i class="fas fa-hat-wizard"></i> <b>' + esc(u.name || 'User') + '</b> <small style="color:var(--ts)">#' + esc(u.id) + '</small>' +
-        (lock ? '<span class="pill pending" style="margin-left:8px;background:rgba(255,93,93,.15);color:#ff8f8f">LOCKED</span>' : '') + '</div>' +
-        '<div class="kv"><span>Level</span><b>' + lvl + ' / 100</b></div>' +
-        '<div class="kv"><span>Speed</span><b>' + fmt(speed) + ' tokens/h</b></div>' +
-        '<div class="kv"><span>Session state</span><b>' + esc(st) + (num(mn.sessStart) ? ' · ends ' + fdt(num(mn.sessStart) + (num(S.cfg.mining && S.cfg.mining.sessionHours) || 24) * 3600e3) : '') + '</b></div>' +
-        '<div class="kv"><span>Total mined</span><b>' + fmt(num(mn.totalMined), 4) + ' ' + esc(((S.cfg.token || {}).symbol) || 'TOKEN') + '</b></div>' +
-        '<div class="kv"><span>Free upgrade used</span><b>' + (mn.freeUpgradeUsed ? 'Yes' : 'No') + '</b></div>' +
-        '<div class="acts" style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">' +
-        '<button class="btn gh sm" data-act="amDetail" data-id="' + attr(u.id) + '"><i class="fas fa-magnifying-glass-chart"></i> Inspect</button>' +
-        (lock ? '<button class="btn ok sm" data-act="amUnlockUser" data-id="' + attr(u.id) + '"><i class="fas fa-unlock"></i> Unlock</button>' : '<button class="btn wn sm" data-act="amLockUser" data-id="' + attr(u.id) + '"><i class="fas fa-lock"></i> Lock</button>') +
-        '<button class="btn no sm" data-act="amResetLevel" data-id="' + attr(u.id) + '"><i class="fas fa-eraser"></i> Reset level</button>' +
-        '<button class="btn gh sm" data-act="amAugLevel" data-id="' + attr(u.id) + '"><i class="fas fa-arrow-up"></i> +1 level</button>' +
-        '</div></div>';
-    }).join('') : '<div class="card"><div class="empty"><i class="fas fa-user-slash"></i><p>No users found</p></div></div>') + '</div>';
-    return h;
-  }
-};
-INP.amUserSearch = (v) => { AMUS = String(v || ''); clearTimeout(window._amq); window._amq = setTimeout(() => renderView(), 300); };
-ACT.amLockUser = async d => {
-  if (!need('users')) return;
-  await db.ref('users/' + d.id + '/mining').update({ lockOn: true, lockReason: 'admin', lockAt: Date.now() });
-  await db.ref('miningHistory/' + d.id + '/A' + Date.now().toString(36)).set({ level: num((S.users[d.id] || {}).mining && S.users[d.id].mining.level) || 1, reward: 0, ts: Date.now(), session: '', note: 'locked by admin' });
-  await audit('mining.lockUser', d.id, 'manual lock');
-  await notifyUser(d.id, 'security', 'Mining locked', 'Your mining system has been locked by an administrator.');
-  toast('User mining locked', 'ok'); renderView();
-};
-ACT.amUnlockUser = async d => {
-  if (!need('users')) return;
-  await db.ref('users/' + d.id + '/mining').update({ lockOn: null, lockReason: null, lockAt: null, st: 'ready', sessStart: null, sessEnd: null, sessClaimed: null, sessBoost: null });
-  await db.ref('miningHistory/' + d.id + '/A' + Date.now().toString(36)).set({ level: num((S.users[d.id] || {}).mining && S.users[d.id].mining.level) || 1, reward: 0, ts: Date.now(), session: '', note: 'unlocked by admin' });
-  await audit('mining.unlockUser', d.id, 'manual unlock');
-  await notifyUser(d.id, 'security', 'Mining unlocked', 'Your mining system has been unlocked. You can start a new session.');
-  toast('User mining unlocked', 'ok'); renderView();
-};
-ACT.amResetLevel = d => {
-  if (!need('users')) return;
-  const u = S.users[d.id] || {};
-  confirmBox({
-    title: 'Reset mining level?', msg: '<b>' + esc(u.name || d.id) + '</b> will return to level 1 (speed 0.5/h). Total mined tokens are preserved. This is logged.', typed: true, cls: 'no', label: 'Reset level',
-    onOk: async () => { await db.ref('users/' + d.id + '/mining').update({ level: 1 }); await audit('mining.resetLevel', d.id, { from: num((u.mining || {}).level) || 1, to: 1 }); await notifyUser(d.id, 'security', 'Mining level reset', 'Your mining level was reset to 1 by an administrator.'); toast('Level reset to 1', 'ok'); renderView(); }
-  });
-};
-ACT.amAugLevel = async d => {
-  if (!need('users')) return;
-  const cur = num((S.users[d.id] || {}).mining && S.users[d.id].mining.level) || 1;
-  if (cur >= 100) return toast('Already at level 100', 'er');
-  await db.ref('users/' + d.id + '/mining/level').transaction(c => Math.min(100, num(c) + 1));
-  await db.ref('miningUpgrades/' + d.id + '/A' + Date.now().toString(36)).set({ from: cur, to: num(cur) + 1, cost: 0, free: true, admin: true, ts: Date.now() });
-  await audit('mining.adminUpgrade', d.id, { from: cur, to: num(cur) + 1 });
-  toast('Level set to ' + (num(cur) + 1), 'ok'); renderView();
-};
-ACT.amDetail = async d => {
-  const u = S.users[d.id] || {};
-  const mh = (await db.ref('miningHistory/' + d.id).limitToLast(25).once('value')).val() || {};
-  const mu = (await db.ref('miningUpgrades/' + d.id).limitToLast(25).once('value')).val() || {};
-  const mn = u.mining || {};
-  const rows = Object.keys(mh).map(k => mh[k]).sort((a, b) => num(b.ts) - num(a.ts));
-  const ups = Object.keys(mu).map(k => mu[k]).sort((a, b) => num(b.ts) - num(a.ts));
-  openModal('<h3><i class="fas fa-hat-wizard"></i>Mining inspection \u00b7 ' + esc(u.name || d.id) + '</h3><div class="sub">Live mining state, upgrade trail and session audit</div>' +
-    '<div class="grid g2">' +
-    '<div><div class="ct" style="margin-bottom:10px"><i class="fas fa-hat-wizard"></i> Live state</div>' +
-    '<div class="kv"><span>Status</span><b>' + esc(mn.st || 'ready') + (mn.lockOn ? ' \u00b7 LOCKED (' + esc(mn.lockReason || '') + ')' : '') + '</b></div>' +
-    '<div class="kv"><span>Level</span><b>' + (num(mn.level) || 1) + '</b></div>' +
-    '<div class="kv"><span>Session start</span><b>' + fdt(num(mn.sessStart) || 0) + '</b></div>' +
-    '<div class="kv"><span>Session end</span><b>' + fdt(num(mn.sessEnd) || 0) + '</b></div>' +
-    '<div class="kv"><span>Last claim</span><b>' + fdt(num(mn.lastClaimAt) || 0) + '</b></div>' +
-    '<div class="kv"><span>Total mined</span><b>' + fmt(num(mn.totalMined), 4) + '</b></div>' +
-    '<div class="kv"><span>Free upgrade used</span><b>' + (mn.freeUpgradeUsed ? 'Yes' : 'No') + '</b></div>' +
-    '<div class="kv"><span>Token balance</span><b>' + fmt(num(u.tokenBalance), 4) + '</b></div></div>' +
-    '<div><div class="ct" style="margin-bottom:10px"><i class="fas fa-arrow-up"></i> Recent upgrades</div>' +
-    (ups.length ? ups.slice(-12).reverse().map(r => '<div class="kv"><span>' + fdt(num(r.ts) || 0) + '</span><b>' + esc(r.from) + ' \u2192 ' + esc(r.to) + (r.free || r.admin ? ' (' + (r.admin ? 'admin' : 'free') + ')' : ' \u00b7 -' + fmt(r.cost)) + '</b></div>').join('') : '<div class="ss">None</div>') + '</div></div>' +
-    '<div class="ct" style="margin:16px 0 10px"><i class="fas fa-hammer"></i> Recent mining sessions</div>' +
-    (rows.length ? rows.slice(0, 12).map(r => '<div class="kv"><span>' + fdt(num(r.ts) || 0) + '</span><b>' + (num(r.reward) > 0 ? '+' + fmt(r.reward, 4) : '\u2014') + (r.note ? ' \u00b7 ' + esc(r.note) : '') + '</b></div>').join('') : '<div class="ss">None</div>') +
-    '<div class="mbtn"><button class="btn gh" data-act="closeModal">Close</button></div>', true);
-};
-
-/* =====================================================================
-   PG.astreak — 30-DAY STREAK MANAGEMENT
-===================================================================== */
-let ASTAB = 'config';
-PG.astreak = {
-  title: '30-Day Streak Management', nav: 'astreak', deps: ['config'], live: true,
-  render: function () {
-    const tabs = [['config', 'Rewards & Rules'], ['history', 'User History']];
-    let h = pageHead('30-Day Login Streak', 'Per-day reward types (Main / Token / Both), reset rules and completion bonus', '<button class="btn" data-act="astreakSave"' + (can('settings') ? '' : ' disabled') + '><i class="fas fa-floppy-disk"></i> Save streak config</button>') + needLock('settings');
-    h += '<div class="tabs">' + tabs.map(t => '<button class="tab ' + (ASTAB === t[0] ? 'on' : '') + '" data-act="astreakTab" data-id="' + t[0] + '">' + t[1] + '</button>').join('') + '</div>';
-    h += ASTAB === 'config' ? nxStreakTabCfg() : nxStreakTabHistory();
-    return h;
-  }
-};
-ACT.astreakTab = d => { ASTAB = d.id; renderView(); };
-function nxStreakTabCfg() {
-  const c = S.cfg.streak30 || {};
-  const days = c.days || {};
-  const dget = (d2, f, def) => { const o = days[d2] || days[String(d2)] || {}; let v = o[f] !== undefined ? o[f] : def; if (v === undefined) { const t2 = o.type || 'main'; v = f === 'main' ? (t2 === 'token' ? 0 : 0.05 * d2) : f === 'token' ? (t2 === 'token' || t2 === 'both' ? 2 * d2 : 0) : 'main'; } return v; };
-  let h = '<div class="grid g2" style="margin-top:16px"><div class="card"><div class="ct"><i class="fas fa-power-off"></i> Module</div>' +
-    nxSwField('nx_st_on', '30-Day Streak module', c.enabled !== false) +
-    nxSwField('nx_st_reset', 'Reset streak on missed day', c.resetMissed !== false) +
-    fld('nx_st_grace', 'Grace period (hours)', num(c.graceHours) || 4, { type: 'number', min: 0 }) +
-    fld('nx_st_bonusmain', 'Day-30 completion bonus (Main Balance)', num(c.bonusMain) || 0, { type: 'number', min: 0 }) +
-    fld('nx_st_bonustoken', 'Day-30 completion bonus (Tokens)', num(c.bonusToken) || 0, { type: 'number', min: 0 }) +
-    '</div><div class="card"><div class="ct"><i class="fas fa-hat-wizard"></i> Presets</div>' +
-    '<button class="btn bl" data-act="astreakPreset" data-id="flat" style="margin-bottom:8px">Flat preset (0.1 Main + 2 Tokens per day)</button>' +
-    '<button class="btn bl" data-act="astreakPreset" data-id="grow" style="margin-bottom:8px">Growing preset (0.05×day Main + 2×day Tokens)</button>' +
-    '<button class="btn gh" data-act="astreakPreset" data-id="both">Alternating preset (Token only on day % 5 == 0)</button>' +
-    '<div class="note" style="margin-top:12px"><i class="fas fa-circle-info"></i><span>Each day may reward Main Balance, Project Tokens, or both. Claim validation is server-side (one claim per calendar day per user).</span></div>' +
-    '</div></div>';
-  h += '<div class="card" style="margin-top:16px;overflow:auto;max-height:480px"><table style="width:100%;border-collapse:collapse;font-size:.8rem"><thead><tr>' +
-    ['Day', 'Reward type', 'Main Balance', 'Tokens'].map(x => '<th style="text-align:left;padding:8px 6px">' + x + '</th>').join('') + '</tr></thead><tbody>' +
-    Array.from({ length: 30 }, (_, i) => i + 1).map(ddz =>
-      '<tr><td style="padding:5px 6px;font-weight:800">' + (ddz === 30 ? '30 🏆' : ddz) + '</td>' +
-      '<td><select class="sel" id="nxs_' + ddz + '_ty" style="width:120px;padding:6px 8px">' + [['main', 'Main'], ['token', 'Token'], ['both', 'Both']].map(o => '<option value="' + o[0] + '"' + (dget(ddz, 'type', 'main') === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') + '</select></td>' +
-      '<td><input class="inp" style="width:110px;padding:6px 8px" type="number" step="0.01" min="0" id="nxs_' + ddz + '_mn" value="' + attr(dget(ddz, 'main', 0)) + '"></td>' +
-      '<td><input class="inp" style="width:110px;padding:6px 8px" type="number" step="0.01" min="0" id="nxs_' + ddz + '_tk" value="' + attr(dget(ddz, 'token', 0)) + '"></td></tr>').join('') +
-    '</tbody></table></div>';
-  return h;
-}
-ACT.astreakPreset = dd => {
-  for (let i = 1; i <= 30; i++) {
-    const ty = $('nxs_' + i + '_ty'), mn = $('nxs_' + i + '_mn'), tk = $('nxs_' + i + '_tk');
-    if (!ty) continue;
-    if (dd.id === 'flat') { ty.value = 'both'; mn.value = 0.1; tk.value = 2; }
-    else if (dd.id === 'grow') { ty.value = 'both'; mn.value = Math.round(5 * i) / 100; tk.value = 2 * i; }
-    else { const isTok = i % 5 === 0; ty.value = isTok ? 'token' : 'main'; mn.value = isTok ? 0 : Math.round(5 * i) / 100; tk.value = isTok ? 2 * i : 0; }
-  }
-  toast('Preset applied — save to publish', 'ok');
-};
-ACT.astreakSave = async () => {
-  if (!need('settings')) return;
-  const updates = {
-    'streak30/enabled': chk('nx_st_on'),
-    'streak30/resetMissed': chk('nx_st_reset'),
-    'streak30/graceHours': Math.max(0, nv('nx_st_grace')),
-    'streak30/bonusMain': Math.max(0, nv('nx_st_bonusmain')),
-    'streak30/bonusToken': Math.max(0, nv('nx_st_bonustoken'))
-  };
-  for (let i = 1; i <= 30; i++) {
-    const ty = val('nxs_' + i + '_ty'), mn = num(val('nxs_' + i + '_mn')), tk = num(val('nxs_' + i + '_tk'));
-    updates['streak30/days/' + i + '/type'] = ty || 'main';
-    updates['streak30/days/' + i + '/main'] = mn;
-    updates['streak30/days/' + i + '/token'] = tk;
-    updates['streak30/days/' + i + '/amount'] = mn > 0 ? mn : tk;
-    updates['streak30/days/' + i + '/enabled'] = mn > 0 || tk > 0;
-  }
-  const ok = await saveCfg(updates, 'streak30 config', 'settings');
-  if (ok) notifyFlash('30-Day streak configuration saved');
-};
-function nxStreakTabHistory() {
-  const list = arrUsers().filter(u => u.streak30 && (num(u.streak30.day) > 1 || u.streak30.lastKey)).sort((a, b) => num(a.streak30.day) - num(b.streak30.day)).slice(0, 40);
-  return '<div class="grid g2" style="margin-top:16px">' + (list.length ? list.map(u =>
-    '<div class="card"><div class="ct"><i class="fas fa-fire"></i> <b>' + esc(u.name || 'User') + '</b> <small>#' + esc(u.id) + '</small></div>' +
-    '<div class="kv"><span>Current streak</span><b>' + num(u.streak30.day) + ' / 30</b></div>' +
-    '<div class="kv"><span>Last claim</span><b>' + esc(u.streak30.lastKey || '—') + '</b></div>' +
-    '<div class="kv"><span>Best</span><b>' + num(u.streak30.best) + ' / 30</b></div></div>').join('') :
-    '<div class="card" style="grid-column:1/-1"><div class="empty"><i class="fas fa-fire"></i><p>No streak activity yet</p></div></div>') + '</div>';
-}
-
-/* =====================================================================
-   PG.aquiz — QUIZ MANAGEMENT
-===================================================================== */
-let AQT = 'questions';
-PG.aquiz = {
-  title: 'Quiz Earning Management', nav: 'aquiz', deps: ['config', 'quizQ'], live: true,
-  render: function () {
-    const tabs = [['questions', 'Questions'], ['config', 'Rewards & Limits'], ['stats', 'Statistics']];
-    let h = pageHead('Quiz Earning Management', 'Simple & Advanced categories · server-side grading · once-per-question rewards', '<button class="btn" data-act="aquizNew"' + (can('content') ? '' : ' disabled') + '><i class="fas fa-plus"></i> New question</button>') + needLock('content');
-    if ((S.cfg.quiz || {}).fallbackPool === true) h += '<div class="note w" style="margin-top:12px"><i class="fas fa-triangle-exclamation"></i><span>Fallback local grading is ON — correct answers are published to the client pool. Disable it once Cloud Functions are deployed.</span></div>';
-    h += '<div class="tabs">' + tabs.map(t => '<button class="tab ' + (AQT === t[0] ? 'on' : '') + '" data-act="aquizTab" data-id="' + t[0] + '">' + t[1] + '</button>').join('') + '</div>';
-    h += AQT === 'questions' ? nxQuizTabQuestions() : AQT === 'config' ? nxQuizTabCfg() : nxQuizTabStats();
-    return h;
-  }
-};
-ACT.aquizTab = d => { AQT = d.id; renderView(); };
-function nxQuizTabQuestions() {
-  const store = S.quizQ || {};
-  const list = Object.keys(store).map(k => Object.assign({ id: k }, store[k])).filter(q => q && q.q).sort((a, b) => num(b.createdAt) - num(a.createdAt));
-  const simple = list.filter(q => (q.diff || 'simple') === 'simple').length;
-  const adv = list.filter(q => (q.diff || 'advanced') === 'advanced').length;
-  let h = '<div class="grid g3" style="margin-top:16px">' + statCard('fa-seedling', 'Simple questions', simple, '', 'ok') + statCard('fa-brain', 'Advanced questions', adv, '', 'wn') + statCard('fa-circle-question', 'Total', list.length, '', 'bl') + '</div>';
-  h += '<div class="grid g2" style="margin-top:16px">' + (list.length ? list.map(q =>
-    '<div class="card"><div class="ct"><i class="fas ' + ((q.diff || 'simple') === 'advanced' ? 'fa-brain' : 'fa-seedling') + '"></i> <b>' + esc((q.q || '').slice(0, 60)) + '</b>' + (q.enabled === false ? '<span class="pill pending" style="margin-left:8px">OFF</span>' : '') + '</div>' +
-    (q.opts || []).map((o, i) => '<div class="kv"><span>' + 'ABCD'[i] + (i === num(q.correct) ? ' ✓ (answer)' : '') + '</span><b>' + esc(o) + '</b></div>').join('') +
-    '<div class="kv"><span>Timer</span><b>' + (num(q.timer) || ((S.cfg.quiz || {}).timeSec || 30)) + 's</b></div>' +
-    '<div class="acts" style="margin-top:10px;display:flex;gap:8px">' +
-    '<button class="btn gh sm" data-act="aquizEdit" data-id="' + attr(q.id) + '"><i class="fas fa-pen"></i> Edit</button>' +
-    '<button class="btn gh sm" data-act="aquizToggle" data-id="' + attr(q.id) + '"><i class="fas fa-power-off"></i> ' + (q.enabled === false ? 'Enable' : 'Disable') + '</button>' +
-    '<button class="btn no sm" data-act="aquizDel" data-id="' + attr(q.id) + '"><i class="fas fa-trash"></i> Delete</button></div></div>').join('') :
-    '<div class="card" style="grid-column:1/-1"><div class="empty"><i class="fas fa-circle-question"></i><p>No questions yet — create the first one</p></div></div>') + '</div>';
-  return h;
-}
-function nxQuizFields(q) {
-  q = q || {};
-  return [
-    { id: 'cat', label: 'Category', type: 'select', value: q.diff || 'simple', options: [['simple', 'Simple'], ['advanced', 'Advanced']] },
-    { id: 'q', label: 'Question', type: 'textarea', rows: 2, req: true, value: q.q || '' },
-    { id: 'o0', label: 'Option A', req: true, value: (q.opts || [])[0] || '' },
-    { id: 'o1', label: 'Option B', req: true, value: (q.opts || [])[1] || '' },
-    { id: 'o2', label: 'Option C', req: true, value: (q.opts || [])[2] || '' },
-    { id: 'o3', label: 'Option D', req: true, value: (q.opts || [])[3] || '' },
-    { id: 'c', label: 'Correct answer', type: 'select', value: String(q.correct !== undefined ? q.correct : 0), options: [[0, 'A'], [1, 'B'], [2, 'C'], [3, 'D']] },
-    { id: 'timer', label: 'Timer (seconds, blank = default)', type: 'number', value: q.timer || '' }
-  ];
-}
-const nxQuizSanitize = (id, d) => ({ q: d.q, opts: d.opts, timer: d.timer, diff: d.diff, enabled: d.enabled !== false, order: num(id.replace(/\D/g, '')) || 0 });
-ACT.aquizNew = () => {
-  if (!need('content')) return;
-  formModal({
-    title: 'New quiz question', icon: 'fa-plus', wide: true, submit: 'Create question', fields: nxQuizFields(),
-    onSubmit: async v => {
-      const d = { q: String(v.q || '').trim(), opts: [v.o0, v.o1, v.o2, v.o3].map(x => String(x || '').trim()), correct: num(v.c), timer: num(v.timer), diff: v.cat || 'simple', enabled: true, createdAt: Date.now() };
-      if (!d.q || d.opts.filter(Boolean).length < 4) { toast('Question and all four options are required', 'er'); return false; }
-      d.opts = d.opts.map(x => x || '—');
-      const id = 'q' + Date.now().toString(36);
-      await db.ref('quizQuestions/' + id).set(d);
-      const san = nxQuizSanitize(id, d); delete san.__; 
-      const pub = Object.assign({}, san); delete pub.correct;
-      await db.ref('quizPool/' + id).set(pub);
-      await audit('quiz.questionCreate', id, { cat: d.diff });
-      toast('Question created and published', 'ok'); renderView();
+  /* ---------- engine ---------- */
+  function createEngine(db, o) {
+    o = o || {}; const now = o.now || (() => Date.now());
+    const cfgOf = async k => { const s = await db.ref('config/' + k).once('value'); return s.val() || {}; };
+    async function userTxn(uid, fn) {
+      let res = null;
+      const r = await db.ref('users/' + uid).transaction(u => {
+        res = null; if (u === null || typeof u !== 'object') return u;
+        const out = fn(u); res = out || fail('ERR'); if (res.persist === false) return; return u;
+      });
+      if (res === null) return fail('NO_USER');
+      if (!r.committed && res.persist !== false) return fail('CONFLICT');
+      return res;
     }
-  });
-};
-ACT.aquizEdit = d => {
-  if (!need('content')) return;
-  const q = (S.quizQ || {})[d.id]; if (!q) return;
-  formModal({
-    title: 'Edit question', wide: true, submit: 'Save changes', fields: nxQuizFields(q),
-    onSubmit: async v => {
-      const nd = { q: String(v.q || '').trim(), opts: [v.o0, v.o1, v.o2, v.o3].map(x => String(x || '').trim()), correct: num(v.c), timer: num(v.timer), diff: v.cat || 'simple', enabled: q.enabled !== false, createdAt: q.createdAt || Date.now() };
-      if (!nd.q) { toast('Question text is required', 'er'); return false; }
-      nd.opts = nd.opts.map(x => x || '—');
-      await db.ref('quizQuestions/' + d.id).set(nd);
-      const pub = nxQuizSanitize(d.id, nd); delete pub.correct;
-      await db.ref('quizPool/' + d.id).set(pub);
-      await audit('quiz.questionEdit', d.id, { cat: nd.diff });
-      toast('Question updated', 'ok'); renderView();
+    async function after(uid, res) {
+      if (!res || !res.writes) return;
+      for (const w of res.writes) { try { await db.ref(w[0]).set(w[1]); } catch (e) {} }
     }
-  });
-};
-ACT.aquizToggle = async d => {
-  if (!need('content')) return;
-  const q = (S.quizQ || {})[d.id] || {};
-  const on = q.enabled === false;
-  await db.ref('quizQuestions/' + d.id + '/enabled').set(on);
-  await db.ref('quizPool/' + d.id + '/enabled').set(on);
-  await audit('quiz.questionToggle', d.id, on ? 'enabled' : 'disabled');
-  toast(on ? 'Question enabled' : 'Question disabled', 'ok'); renderView();
-};
-ACT.aquizDel = d => {
-  if (!need('content')) return;
-  confirmBox({ title: 'Delete question?', msg: 'Users who already answered keep their rewards.', typed: true, cls: 'no', label: 'Delete', onOk: async () => { await db.ref('quizQuestions/' + d.id).remove(); await db.ref('quizPool/' + d.id).remove(); await audit('quiz.questionDelete', d.id, ''); toast('Question deleted', 'ok'); renderView(); } });
-};
-function nxQuizTabCfg() {
-  const c = S.cfg.quiz || {}, rs = c.rewards || {};
-  return '<div class="grid g2" style="margin-top:16px"><div class="card"><div class="ct"><i class="fas fa-power-off"></i> Module</div>' +
-    nxSwField('nx_q_on', 'Quiz module', c.enabled !== false) +
-    nxSwField('nx_q_sim', 'Simple category', c.simpleEnabled !== false) +
-    nxSwField('nx_q_adv', 'Advanced category', c.advancedEnabled !== false) +
-    nxSwField('nx_q_roc', 'Reward only on correct answers', c.rewardOnCorrect !== false) +
-    nxSwField('nx_q_fb', 'Fallback local grading', c.fallbackPool === true, 'Publishes correct answers to the client — enable only without Cloud Functions') +
-    '</div><div class="card"><div class="ct"><i class="fas fa-coins"></i> Rewards & Limits</div>' +
-    fld('nx_q_rm_s', 'Simple · Main Balance reward', num((rs.simple || {}).main) || 0, { type: 'number', min: 0, step: '0.01' }) +
-    fld('nx_q_rt_s', 'Simple · Token reward', num((rs.simple || {}).token) || 0, { type: 'number', min: 0, step: '0.01' }) +
-    fld('nx_q_rm_a', 'Advanced · Main Balance reward', num((rs.advanced || {}).main) || 0, { type: 'number', min: 0, step: '0.01' }) +
-    fld('nx_q_rt_a', 'Advanced · Token reward', num((rs.advanced || {}).token) || 0, { type: 'number', min: 0, step: '0.01' }) +
-    fld('nx_q_daily', 'Daily attempt limit', num(c.dailyLimit) || 10, { type: 'number', min: 1 }) +
-    fld('nx_q_weekly', 'Weekly attempt limit', num(c.weeklyLimit) || 30, { type: 'number', min: 1 }) +
-    fld('nx_q_t1', 'Default timer · Simple (s)', num(c.timeSec) || 30, { type: 'number', min: 5 }) +
-    fld('nx_q_t2', 'Default timer · Advanced (s)', num(c.timeSecAdv) || 45, { type: 'number', min: 5 }) +
-    '</div></div>' +
-    '<button class="btn" style="margin-top:16px" data-act="aquizSave"' + (can('settings') ? '' : ' disabled') + '><i class="fas fa-floppy-disk"></i> Save quiz config</button>';
-}
-ACT.aquizSave = async () => {
-  if (!need('settings')) return;
-  const ok = await saveCfg({
-    'quiz/enabled': chk('nx_q_on'), 'quiz/simpleEnabled': chk('nx_q_sim'), 'quiz/advancedEnabled': chk('nx_q_adv'),
-    'quiz/rewardOnCorrect': chk('nx_q_roc'), 'quiz/fallbackPool': chk('nx_q_fb'),
-    'quiz/rewards/simple/main': nv('nx_q_rm_s'), 'quiz/rewards/simple/token': nv('nx_q_rt_s'),
-    'quiz/rewards/advanced/main': nv('nx_q_rm_a'), 'quiz/rewards/advanced/token': nv('nx_q_rt_a'),
-    'quiz/dailyLimit': Math.max(1, nv('nx_q_daily')), 'quiz/weeklyLimit': Math.max(1, nv('nx_q_weekly')),
-    'quiz/timeSec': Math.max(5, nv('nx_q_t1')), 'quiz/timeSecAdv': Math.max(5, nv('nx_q_t2'))
-  }, 'quiz config', 'settings');
-  if (ok) notifyFlash('Quiz configuration saved');
-};
-function nxQuizTabStats() {
-  const board = Object.keys(S.quizB || {}).map(k => Object.assign({ id: k }, S.quizB[k])).filter(u => u && num(u.total) > 0).sort((a, b) => num(b.correct) - num(a.correct)).slice(0, 40);
-  const totAns = board.reduce((a, u) => a + num(u.total), 0), totOk = board.reduce((a, u) => a + num(u.correct), 0);
-  const nq = Object.keys(S.quizQ || {}).length, nOn = Object.values(S.quizQ || {}).filter(q => q && q.enabled !== false).length;
-  return '<div class="grid g3" style="margin-top:16px">' +
-    statCard('fa-clipboard-question', 'Questions (enabled)', nOn + ' / ' + nq, '', 'bl') +
-    statCard('fa-list-ol', 'Answers graded', totAns, '', 'ok') +
-    statCard('fa-percent', 'Accuracy', totAns ? Math.round(totOk / totAns * 100) + '%' : '—', '', 'wn') + '</div>' +
-    '<div class="grid g2" style="margin-top:16px">' + (board.length ? board.map((u, i) =>
-      '<div class="card"><div class="ct"><i class="fas fa-user-graduate"></i> #' + (i + 1) + ' <b>' + esc((u.name || 'User').slice(0, 20)) + '</b> <small>#' + esc(u.id) + '</small></div>' +
-      '<div class="kv"><span>Correct / answered</span><b>' + num(u.correct) + ' / ' + num(u.total) + '</b></div>' +
-      '<div class="kv"><span>Earned tokens</span><b>' + fmt(num(u.token), 4) + '</b></div>' +
-      '<div class="kv"><span>Earned main</span><b>' + fmt(num(u.main)) + '</b></div></div>').join('') :
-      '<div class="card" style="grid-column:1/-1"><div class="empty"><i class="fas fa-chart-column"></i><p>No quiz attempts recorded yet</p></div></div>') + '</div>';
-}
+    const ledger = (uid, id, amt, unit, src, t, note) => ['ledger/' + uid + '/' + id, { id, cat: 'earning', source: src, amount: rnd(amt), unit, ref: '', status: 'completed', note: note || '', timestamp: t }];
+    const notif = (uid, key, title, body, t) => ['userNotifications/' + uid + '/' + key, { cat: 'security', title, body, ts: t, read: false }];
+    const flag = async (uid, code) => { try { const t = now(); await db.ref('miningFlags/' + uid + '/' + code + '_' + Math.floor(t / 60000)).set({ code, ts: t }); } catch (e) {} };
+    const SUS = ['EARLY_CLAIM', 'NOT_ACTIVE', 'ALREADY_UPGRADED', 'QUIZ_REPLAY', 'STREAK_DUP', 'NOT_CLAIMABLE'];
+    const run = async (uid, fn) => { const r = await userTxn(uid, fn); await after(uid, r); if (!r.ok && SUS.includes(r.code)) flag(uid, r.code); delete r.writes; delete r.persist; return r; };
 
-/* =====================================================================
-   PG.amodules — GLOBAL MODULE CONTROLS + PAGE VISIBILITY
-===================================================================== */
-PG.amodules = {
-  title: 'Module Controls', nav: 'amodules', deps: ['config'], live: true,
-  render: function () {
-    const f = S.cfg.features || {};
-    const mods = [
-      ['mining/enabled', 'Token Mining', (S.cfg.mining || {}).enabled !== false, '24h session mining, levels, claims'],
-      ['miningBoost/enabled', 'Mining Boost', (S.cfg.miningBoost || {}).enabled !== false, 'Temporary speed multipliers'],
-      ['streak30/enabled', '30-Day Login Streak', ((S.cfg || {}).streak30 || {}).enabled !== false, 'Daily calendar rewards'],
-      ['quiz/enabled', 'Quiz Earning', ((S.cfg || {}).quiz || {}).enabled !== false, 'Simple + Advanced quizzes']
-    ];
-    let h = pageHead('Global Module Controls', 'Enable or disable each module independently — unrelated modules are never affected', '') + needLock('settings');
-    h += '<div class="grid g2" style="margin-top:16px"><div class="card"><div class="ct"><i class="fas fa-toggle-on"></i> New advanced modules</div>' +
-      mods.map(mz => '<div class="trow"><b>' + esc(mz[1]) + '<span class="d">' + esc(mz[3]) + '</span></b>' + sw('nxmod_' + mz[0].replace(/[\/]/g, '_'), mz[2], 'nxmod_' + mz[0].replace(/[\/]/g, '_')) + '</div>').join('') +
-      '<button class="btn" style="margin-top:12px" data-act="amodulesSave"' + (can('settings') ? '' : ' disabled') + '><i class="fas fa-floppy-disk"></i> Apply module switches</button></div>' +
-      '<div class="card"><div class="ct"><i class="fas fa-eye"></i> Page visibility (All Pages directory)</div>' +
-      NXP_ADMIN_PAGES.map(p => '<div class="trow"><b>' + esc(p[1]) + '<span class="d">' + esc(p[2]) + '</span></b>' + sw('nxpg_' + p[0], nxPageVisible(p[0]), 'nxpg') + '</div>').join('') +
-      '<div class="hint" style="margin-top:8px">Visibility of pages belonging to a disabled module is also controlled by the module switch. Existing legacy pages keep their own feature switches.</div>' +
-      '</div></div>';
-    return h;
+    /* apply inactivity lock to m if due (mutates). returns lock rec or null */
+    function lazyLock(u, mc, t) {
+      const m = u.mining; if (!m || m.lock) return null; const ld = lockDueAt(m, mc); if (ld == null || t < ld) return null;
+      const s = m.session, lost = rewardOf(s).total;
+      m.lock = { at: t, reason: 'inactivity', by: 'system', fee: mc.lock.fee, forfeited: mc.lock.forfeit ? lost : 0 };
+      if (mc.lock.forfeit) { s.status = 'forfeited'; s.forfeited = lost; }
+      return { id: 'LK' + t, type: 'lock', reason: 'inactivity', ts: t, forfeited: m.lock.forfeited, sessionId: s.id };
+    }
+    const getM = u => { if (!u.mining || typeof u.mining !== 'object') u.mining = {}; if (!u.mining.level) u.mining.level = 1; return u.mining; };
+    const ready = mc => mc.enabled && mc.configured;
+    const lockRes = (u, mc, t, lk) => { const w = [['miningHistory/' + u.id + '/' + lk.id, lk]]; return { ok: false, code: 'LOCKED', persist: true, writes: w.concat([notif(String(u.id), 'mlock_' + lk.id, 'Mining locked', 'No claim for ' + mc.lock.hours + 'h. Pay the unlock fee to resume.', t)]) }; };
+
+    const api = {
+      derive, miningCfg, rewardOf,
+      async mState(uid) { const [mc, u] = [miningCfg(await cfgOf('mining')), (await db.ref('users/' + uid + '/mining').once('value')).val()]; return derive(u, mc, now()); },
+
+      start(uid) { return cfgOf('mining').then(raw => { const mc = miningCfg(raw), t = now(); return run(uid, u => {
+        if (!ready(mc)) return fail('MINING_OFF'); const m = getM(u); u.id = u.id || uid;
+        const lk = lazyLock(u, mc, t); if (lk) return lockRes(u, mc, t, lk); if (m.lock) return fail('LOCKED');
+        if (m.session && m.session.status === 'active') return fail('NOT_CLAIMED');
+        const lvl = mc.level(m.level); if (!lvl || num(lvl.speed) <= 0) return fail('LEVEL_NOT_SET');
+        const s = { id: 'S' + t + rid(), startAt: t, endAt: t + mc.sessionHours * H, speed: num(lvl.speed), level: m.level, status: 'active' };
+        if (m.boost && num(m.boost.until) > t) s.boostSegs = [{ mult: num(m.boost.mult), from: t, to: Math.min(num(m.boost.until), s.endAt) }];
+        m.session = s; m.sessions = num(m.sessions) + 1; if (m.boost && num(m.boost.until) <= t) m.boost = null;
+        return { ok: true, persist: true, session: s, writes: [['miningHistory/' + uid + '/start_' + s.id, { id: 'start_' + s.id, type: 'start', sessionId: s.id, level: s.level, speed: s.speed, ts: t, endAt: s.endAt }]] };
+      }); }); },
+
+      claim(uid) { return cfgOf('mining').then(raw => { const mc = miningCfg(raw), t = now(); return run(uid, u => {
+        if (!ready(mc)) return fail('MINING_OFF'); const m = getM(u); u.id = u.id || uid;
+        const lk = lazyLock(u, mc, t); if (lk) return lockRes(u, mc, t, lk); if (m.lock) return fail('LOCKED');
+        const s = m.session; if (!s || s.status !== 'active') return fail('NOT_ACTIVE');
+        if (t < num(s.endAt)) return fail('EARLY_CLAIM', { remainingMs: num(s.endAt) - t });
+        const r = rewardOf(s); if (!(r.total > 0)) return fail('ZERO_REWARD');
+        u.tokenBalance = rnd(num(u.tokenBalance) + r.total); m.total = rnd(num(m.total) + r.total);
+        s.status = 'claimed'; s.reward = r.total; s.claimedAt = t; m.lastClaimAt = t;
+        return { ok: true, persist: true, reward: r.total, base: r.base, boost: r.boost, writes: [
+          ['miningHistory/' + uid + '/claim_' + s.id, { id: 'claim_' + s.id, type: 'claim', sessionId: s.id, level: s.level, speed: s.speed, base: r.base, boost: r.boost, amount: r.total, ts: t }],
+          ledger(uid, 'MC_' + s.id, r.total, 'token', 'mining', t, 'Mining reward')] };
+      }); }); },
+
+      upgrade(uid, toLevel) { return cfgOf('mining').then(raw => { const mc = miningCfg(raw), t = now(); return run(uid, u => {
+        if (!ready(mc)) return fail('MINING_OFF'); const m = getM(u); u.id = u.id || uid; toLevel = Math.floor(num(toLevel));
+        if (m.level >= mc.maxLevel) return fail('MAX_LEVEL');
+        if (toLevel !== m.level + 1) return fail('ALREADY_UPGRADED');
+        const lv = mc.level(toLevel); if (!lv || lv.enabled === false || num(lv.speed) <= 0) return fail('LEVEL_UNAVAILABLE');
+        const freeOk = mc.free && !m.freeUsed; let cost = freeOk ? 0 : rnd(num(lv.cost));
+        if (!freeOk && !(cost > 0)) return fail('LEVEL_COST_NOT_SET');
+        if (cost > 0 && num(u.tokenBalance) + 1e-9 < cost) return fail('INSUFFICIENT', { need: cost, have: num(u.tokenBalance) });
+        const from = m.level; if (cost > 0) u.tokenBalance = rnd(num(u.tokenBalance) - cost); if (freeOk) m.freeUsed = true; m.level = toLevel;
+        const id = 'up_' + t + '_' + from + '_' + toLevel;
+        return { ok: true, persist: true, from, to: toLevel, cost, free: freeOk, balance: num(u.tokenBalance), writes: [['miningUpgrades/' + uid + '/' + id, { id, from, to: toLevel, cost, free: freeOk, ts: t }]].concat(cost > 0 ? [[ 'ledger/' + uid + '/MU_' + id, { id: 'MU_' + id, cat: 'spend', source: 'mining_upgrade', amount: -cost, unit: 'token', ref: '', status: 'completed', note: 'Mining level ' + from + ' → ' + toLevel, timestamp: t }]] : []) };
+      }); }); },
+
+      unlock(uid) { return cfgOf('mining').then(raw => { const mc = miningCfg(raw), t = now(); return run(uid, u => {
+        if (!ready(mc)) return fail('MINING_OFF'); const m = getM(u); u.id = u.id || uid; lazyLock(u, mc, t);
+        if (!m.lock) return fail('NOT_LOCKED'); if (m.lock.by === 'admin') return fail('ADMIN_LOCKED');
+        const fee = rnd(mc.lock.fee); if (fee > 0 && num(u.tokenBalance) + 1e-9 < fee) return fail('INSUFFICIENT', { need: fee, have: num(u.tokenBalance) });
+        if (fee > 0) u.tokenBalance = rnd(num(u.tokenBalance) - fee);
+        m.lock = null; if (m.session && m.session.status === 'active') m.session.unlockedAt = t;
+        const id = 'unlock_' + t; return { ok: true, persist: true, fee, writes: [['miningHistory/' + uid + '/' + id, { id, type: 'unlock', fee, ts: t }]].concat(fee > 0 ? [['ledger/' + uid + '/MK_' + t, { id: 'MK_' + t, cat: 'spend', source: 'mining_unlock', amount: -fee, unit: 'token', ref: '', status: 'completed', note: 'Mining unlock fee', timestamp: t }]] : []) };
+      }); }); },
+
+      buyBoost(uid, packId) { return cfgOf('mining').then(raw => { const mc = miningCfg(raw), t = now(); return run(uid, u => {
+        if (!ready(mc) || !mc.boost.enabled) return fail('BOOST_OFF'); const m = getM(u); u.id = u.id || uid;
+        const lk = lazyLock(u, mc, t); if (lk) return lockRes(u, mc, t, lk); if (m.lock) return fail('LOCKED');
+        const p = obj(mc.boost.packs[packId]); if (!p.mult || p.enabled === false) return fail('BOOST_UNAVAILABLE');
+        const mult = num(p.mult), hrs = num(p.hours), cost = rnd(num(p.cost)); if (!(mult > 1) || !(hrs > 0)) return fail('BOOST_UNAVAILABLE');
+        if (num(p.minLevel) > m.level || (num(p.maxLevel) > 0 && m.level > num(p.maxLevel))) return fail('BOOST_LEVEL');
+        if (m.boost && num(m.boost.until) > t) return fail('BOOST_ACTIVE');
+        const bb = obj(m.boostBuys); if (num(p.maxPurchases) > 0 && num(bb[packId]) >= num(p.maxPurchases)) return fail('BOOST_MAX');
+        if (cost > 0 && num(u.tokenBalance) + 1e-9 < cost) return fail('INSUFFICIENT', { need: cost, have: num(u.tokenBalance) });
+        if (cost > 0) u.tokenBalance = rnd(num(u.tokenBalance) - cost);
+        const b = { id: 'B' + t, packId: String(packId), name: p.name || '', mult, startAt: t, until: t + hrs * H }; m.boost = b; bb[packId] = num(bb[packId]) + 1; m.boostBuys = bb;
+        const s = m.session; if (s && s.status === 'active' && num(s.endAt) > t) { const segs = list(s.boostSegs); segs.push({ mult, from: t, to: Math.min(b.until, num(s.endAt)) }); s.boostSegs = segs; }
+        return { ok: true, persist: true, boost: b, cost, writes: [['miningBoosts/' + uid + '/' + b.id, { id: b.id, packId: b.packId, mult, hours: hrs, cost, ts: t, until: b.until }]].concat(cost > 0 ? [['ledger/' + uid + '/MB_' + b.id, { id: 'MB_' + b.id, cat: 'spend', source: 'mining_boost', amount: -cost, unit: 'token', ref: '', status: 'completed', note: 'Mining boost', timestamp: t }]] : []) };
+      }); }); },
+
+      /* scheduler: lock overdue sessions, clear expired boosts */
+      async sweep() {
+        const t = now(), mc = miningCfg(await cfgOf('mining')); let locked = 0, boosts = 0; if (!mc.enabled) return { locked, boosts };
+        const maxHrs = 24 * 30, cutoff = t - mc.lock.hours * H;
+        const snap = await db.ref('users').orderByChild('mining/session/endAt').endAt(cutoff).once('value'); const ids = []; snap.forEach(c => { const m = (c.val() || {}).mining; if (m && m.session && m.session.status === 'active' && !m.lock) ids.push(c.key); });
+        for (const uid of ids) { const r = await run(uid, u => { u.id = u.id || uid; const lk = lazyLock(u, mc, t); return lk ? lockRes(u, mc, t, lk) : fail('NOOP'); }); if (r.code === 'LOCKED') locked++; }
+        const bs = await db.ref('users').orderByChild('mining/boost/until').endAt(t).once('value'); const bi = []; bs.forEach(c => bi.push(c.key));
+        for (const uid of bi) { const r = await run(uid, u => { const m = u.mining; if (!m || !m.boost || num(m.boost.until) > t) return fail('NOOP'); m.boost = null; return { ok: true, persist: true }; }); if (r.ok) boosts++; }
+        return { locked, boosts };
+      },
+
+      adminLock(uid, by, reason) { const t = now(); return run(uid, u => { const m = getM(u); if (m.lock) return fail('ALREADY_LOCKED'); m.lock = { at: t, reason: reason || 'admin', by: 'admin', admin: by || '' }; return { ok: true, persist: true, writes: [['miningHistory/' + uid + '/alock_' + t, { id: 'alock_' + t, type: 'lock', reason: 'admin', by: by || '', ts: t }]] }; }); },
+      adminUnlock(uid, by) { const t = now(); return run(uid, u => { const m = getM(u); if (!m.lock) return fail('NOT_LOCKED'); m.lock = null; if (m.session && m.session.status === 'active') m.session.unlockedAt = t; return { ok: true, persist: true, writes: [['miningHistory/' + uid + '/aunlock_' + t, { id: 'aunlock_' + t, type: 'unlock', by: by || '', fee: 0, ts: t }]] }; }); },
+      adminResetLevel(uid, by, to) { const t = now(); return run(uid, u => { const m = getM(u); const from = m.level; m.level = Math.max(1, Math.floor(num(to)) || 1); return { ok: true, persist: true, from, to: m.level, writes: [['miningUpgrades/' + uid + '/reset_' + t, { id: 'reset_' + t, from, to: m.level, cost: 0, free: false, reset: true, by: by || '', ts: t }]] }; }); },
+
+      /* ---------- 30-day streak ---------- */
+      streakClaim(uid) { return cfgOf('streak').then(raw => { const sc = streakCfg(raw), t = now(); return run(uid, u => {
+        if (!sc.enabled) return fail('STREAK_OFF'); u.id = u.id || uid;
+        const hr = ((t + sc.tz * 60000) % DAY) / H; if (hr < sc.from || hr >= sc.to) return fail('STREAK_WINDOW');
+        const st = u.streak && typeof u.streak === 'object' ? u.streak : (u.streak = {}), v = streakView(st, sc, t);
+        if (v.claimedToday) return fail('STREAK_DUP'); const day = v.next, rw = sc.day(day); if (!rw) return fail('STREAK_NOT_CONFIGURED');
+        if (v.broken) { st.cur = 0; st.claims = {}; }
+        let cl = obj(st.claims); if (day === 1) cl = {}; cl[day] = t; st.claims = cl; st.cur = day; st.lastDay = v.today; st.best = Math.max(num(st.best), day); st.total = num(st.total) + 1;
+        credit(u, rw.type, rw.main, rw.token); let bonus = null;
+        if (day === 30) { const c = sc.completion; if (c.main > 0 || c.token > 0) { credit(u, c.type, c.main, c.token); bonus = c; } st.cycles = num(st.cycles) + 1; if (!sc.repeat) st.done = true; }
+        const hid = 'sk_' + v.today; const w = [['streakHistory/' + uid + '/' + hid, { id: hid, day, type: rw.type, main: rw.main, token: rw.token, bonus: bonus || null, ts: t }]];
+        if ((rw.type !== 'token') && rw.main > 0) w.push(ledger(uid, 'SKM_' + v.today, rw.main + (bonus && bonus.type !== 'token' ? bonus.main : 0), 'main', 'streak', t, 'Streak day ' + day));
+        if (rw.type !== 'main' && (rw.token > 0 || (bonus && bonus.token > 0))) w.push(ledger(uid, 'SKT_' + v.today, rw.token + (bonus && bonus.type !== 'main' ? bonus.token : 0), 'token', 'streak', t, 'Streak day ' + day));
+        return { ok: true, persist: true, day, reward: rw, bonus, completed: day === 30, writes: w };
+      }); }); },
+
+      /* ---------- quiz (secure mode only: needs quizAnswers) ---------- */
+      quizStart(uid, qid) { return cfgOf('quiz').then(async qc => { const t = now(); if (qc.enabled !== true) return fail('QUIZ_OFF');
+        const q = (await db.ref('quizQuestions/' + qid).once('value')).val(); if (!q || q.enabled === false) return fail('QUIZ_UNAVAILABLE');
+        if (num(q.startAt) > t || (num(q.endAt) > 0 && num(q.endAt) < t)) return fail('QUIZ_SCHEDULE');
+        const cat = obj(obj(qc.categories)[q.category]); if (cat.enabled === false) return fail('QUIZ_UNAVAILABLE');
+        const tz = num(qc.tzOffsetMin), dk = dayNum(t, tz), per = q.challenge === 'daily' ? 'd' + dk : q.challenge === 'weekly' ? 'w' + weekNum(t, tz) : 'x', key = String(qid) + '_' + per;
+        const timer = Math.max(5, Math.min(600, num(q.timer) || num(qc.defaultTimer) || 30));
+        return run(uid, u => { u.id = u.id || uid; const z = u.quiz && typeof u.quiz === 'object' ? u.quiz : (u.quiz = {});
+          if (obj(z.done)[key]) return fail('QUIZ_DONE'); const day = obj(z.day); const dn = day.k === dk ? num(day.n) : 0;
+          if (z.open && num(z.open.expiresAt) + 3000 > t) { if (z.open.qid === String(qid)) return { ok: true, persist: false, attemptId: z.open.id, expiresAt: z.open.expiresAt, timer, resumed: true }; return fail('QUIZ_OPEN'); }
+          const lim = num(qc.dailyAttempts) > 0 ? num(qc.dailyAttempts) : 20; if (dn >= lim) return fail('QUIZ_LIMIT');
+          const qa = obj(z.q); const mx = q.challenge ? 1 : (num(q.maxAttempts) > 0 ? num(q.maxAttempts) : 1); if (num(obj(qa[qid]).n) >= mx && !q.challenge) return fail('QUIZ_MAX_ATTEMPTS');
+          const aid = 'A' + t + rid(); z.open = { id: aid, qid: String(qid), key, startedAt: t, expiresAt: t + timer * 1000 }; z.day = { k: dk, n: dn + 1 }; qa[qid] = { n: num(obj(qa[qid]).n) + 1 }; z.q = qa;
+          return { ok: true, persist: true, attemptId: aid, expiresAt: z.open.expiresAt, timer }; }); }); },
+
+      quizSubmit(uid, attemptId, choice) { return cfgOf('quiz').then(async qc => { const t = now(); choice = Math.floor(num(choice));
+        const cur = (await db.ref('users/' + uid + '/quiz/open').once('value')).val(); if (!cur || cur.id !== attemptId) return flagRet(uid, fail('QUIZ_REPLAY'));
+        const q = obj((await db.ref('quizQuestions/' + cur.qid).once('value')).val()), a = obj((await db.ref('quizAnswers/' + cur.qid).once('value')).val());
+        if (a.correct == null) return fail('QUIZ_UNAVAILABLE'); const right = num(a.correct) === choice;
+        return run(uid, u => { u.id = u.id || uid; const z = obj(u.quiz); if (!z.open || z.open.id !== attemptId) return fail('QUIZ_REPLAY');
+          const late = t > num(z.open.expiresAt) + 3000, ok = right && !late && choice >= 0 && choice < 4, done = obj(z.done); let paid = { main: 0, token: 0 };
+          const key = z.open.key; if (ok && !done[key]) { const type = ['main', 'token', 'both'].includes(q.rewardType) ? q.rewardType : 'main'; paid = { main: Math.max(0, num(q.main)), token: Math.max(0, num(q.token)) }; credit(u, type, paid.main, paid.token); done[key] = t; z.done = done; paid.type = type; }
+          z.open = null; z.stats = { total: num(obj(z.stats).total) + 1, correct: num(obj(z.stats).correct) + (ok ? 1 : 0) }; u.quiz = z;
+          const pts = ok ? (num(q.points) || ({ easy: 1, medium: 2, hard: 3 }[q.difficulty] || 1)) : 0;
+          const rec = { id: attemptId, qid: String(cur.qid), category: q.category || '', difficulty: q.difficulty || '', choice, correct: ok, timeout: late, main: paid.main, token: paid.token, ts: t };
+          return { ok: true, persist: true, correct: ok, timeout: late, correctIndex: late ? null : num(a.correct), explanation: a.explanation || '', reward: paid, points: pts, writes: [['quizAttempts/' + uid + '/' + attemptId, rec]].concat(paid.main > 0 ? [ledger(uid, 'QZM_' + attemptId, paid.main, 'main', 'quiz', t, 'Quiz reward')] : []).concat(paid.token > 0 ? [ledger(uid, 'QZT_' + attemptId, paid.token, 'token', 'quiz', t, 'Quiz reward')] : []), _lb: { pts, ok, name: u.name || '' } }; })
+          .then(async r => { return r; }); }); },
+    };
+    function flagRet(uid, r) { flag(uid, r.code); return r; }
+    /* leaderboard bump (best-effort, non-financial) */
+    api.quizLb = async function (uid, name, pts, ok) { const t = now(), wk = weekNum(t, 0); try { await db.ref('quizLeaderboard/' + uid).transaction(c => { c = c || {}; c.name = name || c.name || ''; c.score = num(c.score) + pts; c.correct = num(c.correct) + (ok ? 1 : 0); c.attempts = num(c.attempts) + 1; if (c.wk !== wk) { c.wk = wk; c.wkScore = 0; } c.wkScore = num(c.wkScore) + pts; c.updatedAt = t; return c; }); } catch (e) {} };
+    return api;
   }
-};
-const NXP_ADMIN_PAGES = [
-  ['mine', 'Token Mining', 'Token Ecosystem'], ['mineup', 'Mining Upgrade', 'Token Ecosystem'], ['mineboost', 'Mining Boost', 'Token Ecosystem'],
-  ['streak30', '30-Day Login Streak', 'Rewards & Earnings'], ['quiz', 'Quiz Earning', 'Rewards & Earnings'], ['allpages', 'All Pages directory', 'Dashboard']
-];
-const nxPageVisible = (id) => {
-  const o = ((S.cfg || {}).allpages || {})[id] || {};
-  return o.visible !== false;
-};
-CHG.nxpg = async (on, el) => {
-  if (!need('settings')) { el.checked = !on; return; }
-  const id = String(el.id || '').replace('nxpg_', '');
-  await db.ref('config/allpages/' + id + '/visible').set(on ? null : false);
-  await audit('allpages.visibility', id, on ? 'visible' : 'hidden');
-  toast(on ? 'Page visible' : 'Page hidden', 'ok');
-};
-ACT.amodulesSave = async () => {
-  if (!need('settings')) return;
-  const ids = ['mining', 'miningBoost', 'streak30', 'quiz'];
-  const updates = {};
-  ids.forEach(mz => { const el = $('nxmod_' + mz.replace(/[\/]/g, '_')); if (el) updates[mz + '/enabled'] = el.checked; });
-  const ok = await saveCfg(updates, 'module switches', 'settings');
-  if (ok) notifyFlash('Module switches applied');
-};
-/* CHG may not exist yet at eval time in some load orders — re-check */
-try { if (typeof CHG === 'undefined') window.CHG = window.CHG || {}; } catch (e) {}
+  return { createEngine, miningCfg, streakCfg, streakView, derive, rewardOf, lockDueAt, dayNum, weekNum, H, DAY };
+});
+
+</script>
+<script id="mx-admin">
+/* NEXAVAULT Admin — Advanced Mining & Rewards Management (appended module; existing code untouched except RULES additions) */
+(function () {
+  'use strict';
+  const GC = window.GameCore, H = 3600000, MXE = GC.createEngine(db, { now: () => Date.now() });
+  const M = () => S.cfg.mining || {}, mcOf = () => GC.miningCfg(M());
+  const stOf = u => GC.derive(u && u.mining, mcOf(), Date.now());
+  const hasT = typeof tsym === 'function';
+  const LBL = { READY_TO_START: ['Ready', 'ok'], MINING_ACTIVE: ['Mining', 'approved'], CLAIM_AVAILABLE: ['Claim ready', 'pending'], CLAIMED: ['Claimed', 'completed'], LOCKED: ['Locked', 'rejected'], DISABLED: ['Disabled', 'inactive'] };
+  const sp = (a, b) => (a != null ? a : b);
+  const grid = (n, h) => '<div class="grid g' + n + '" style="margin-bottom:16px">' + h + '</div>';
+  const secNote = () => (S.cfg.gameServer || {}).secure === true ? '<div class="note g"><i class="fas fa-shield-halved"></i><span>Secure server mode is <b>ON</b>: mining / streak / quiz run in the Cloud Function.</span></div>' : '<div class="note w"><i class="fas fa-triangle-exclamation"></i><span>Secure server mode is <b>OFF</b>: mining and streak run in the user\'s app (client mode). <b>Quiz is unavailable</b> until the Cloud Function is deployed and Secure server mode is turned ON (Mining Settings).</span></div>';
+  const lazy = (key, path, assign) => { if (S['_l' + key] || !S.uid) return; S['_l' + key] = true; db.ref(path).on('value', s => { assign(s.exists() ? s.val() : {}); if (['mxusers', 'mxquiz', 'mxhub'].includes(S.page) && !typing()) renderView(); }, e => { S['_l' + key] = false; console.warn(key, e && e.code); }); };
+
+  /* ================= Mining Settings ================= */
+  PG.mxhub = {
+    title: 'Mining Settings', deps: ['config', 'users'], live: false,
+    render() {
+      lazy('flags', 'miningFlags', v => { S.mxFlags = v; });
+      const m = M(), mc = mcOf(), lk = m.lock || {}, bo = m.boost || {}, U = Object.values(S.users);
+      const sts = U.map(u => stOf(u).status), cnt = k => sts.filter(x => x === k).length, tot = U.reduce((a, u) => a + num(u.mining && u.mining.total), 0);
+      const packs = Object.keys(bo.packs || {}).map(k => Object.assign({ _k: k }, bo.packs[k]));
+      return pageHead('Advanced Mining Settings', 'Master switch, sessions, free upgrade, auto-lock, boosts and server mode', '<button class="btn" data-act="mxSave"' + (can('settings') ? '' : ' disabled') + '><i class="fas fa-floppy-disk"></i> Save settings</button>') + needLock('settings') + secNote() +
+        grid(4, statCard('fa-hammer', 'Mining', m.enabled === true ? 'ON' : 'OFF', mc.configured ? 'Levels configured' : 'Configure levels first', m.enabled === true ? 'pos' : 'warn') + statCard('fa-bolt', 'Mining now', fint(cnt('MINING_ACTIVE')), fint(cnt('CLAIM_AVAILABLE')) + ' claim-ready') + statCard('fa-lock', 'Locked users', fint(cnt('LOCKED')), 'Auto + manual', cnt('LOCKED') ? 'warn' : '') + statCard('fa-coins', 'Total mined', fmt(tot, 2), 'Tokens claimed (' + (hasT ? tsym() : 'TOKEN') + ')')) +
+        '<div class="card"><div class="ct"><i class="fas fa-sliders"></i> Core settings</div>' + swRow('mx_on', 'Mining module enabled (master switch)', 'OFF hides Start/Claim for everyone; levels and balances are kept', m.enabled === true) +
+        '<div class="fr">' + fld('mx_hrs', 'Session duration (hours)', sp(m.sessionHours, 24), { type: 'number', min: 1, step: '1', hint: 'Default 24' }) + fld('mx_max', 'Max level (1–100)', sp(m.maxLevel, 100), { type: 'number', min: 1, step: '1' }) + '</div>' +
+        swRow('mx_free', 'Free upgrade enabled', 'Each user gets exactly ONE free upgrade (level 1 → 2), recorded per user', (m.freeUpgrade || {}).enabled === true) + '</div>' +
+        '<div class="card"><div class="ct"><i class="fas fa-user-lock"></i> Inactivity lock</div>' + swRow('mx_lk_on', 'Auto-lock enabled', 'Locks users who do not claim an expired session in time. Runs in the scheduler even if the user never opens the app', lk.enabled !== false) +
+        '<div class="fr">' + fld('mx_lk_h', 'Lock after unclaimed (hours)', sp(lk.hours, 48), { type: 'number', min: 1, step: '1', hint: 'Counted from session expiry. Default 48' }) + fld('mx_lk_fee', 'Unlock fee (tokens)', sp(lk.unlockFee, 0), { type: 'number', min: 0, step: '0.0001' }) + '</div>' +
+        swRow('mx_lk_f', 'Forfeit the unclaimed reward on lock', 'ON: the expired reward is never paid (no double payout). OFF: reward stays claimable after unlock', lk.forfeitReward !== false) + '</div>' +
+        '<div class="card"><div class="ct"><i class="fas fa-bolt"></i> Temporary boosts</div>' + swRow('mx_bo_on', 'Boosts enabled', 'Users buy temporary speed multipliers with tokens', bo.enabled === true) +
+        '<div style="margin:8px 0">' + (packs.length ? '<div class="tw"><table><thead><tr><th>Name</th><th>Multiplier</th><th>Duration</th><th>Cost</th><th>Max buys</th><th>Levels</th><th>Status</th><th></th></tr></thead><tbody>' + packs.map(p => '<tr><td><b>' + esc(p.name || p._k) + '</b></td><td>×' + num(p.mult) + '</td><td>' + num(p.hours) + 'h</td><td>' + fmt(p.cost, 4) + '</td><td>' + (num(p.maxPurchases) || '∞') + '</td><td>' + (num(p.minLevel) || 1) + '–' + (num(p.maxLevel) || mc.maxLevel) + '</td><td>' + pill(p.enabled === false ? 'inactive' : 'active', p.enabled === false ? 'Off' : 'On') + '</td><td style="text-align:right"><button class="btn gh sm" data-act="mxBoostEdit" data-id="' + attr(p._k) + '"><i class="fas fa-pen"></i></button> <button class="btn gh sm" data-act="mxBoostDel" data-id="' + attr(p._k) + '"><i class="fas fa-trash"></i></button></td></tr>').join('') + '</tbody></table></div>' : empty('fa-bolt', 'No boost packs yet')) + '</div><button class="btn gh sm" data-act="mxBoostEdit"' + (can('settings') ? '' : ' disabled') + '><i class="fas fa-plus"></i> Add boost pack</button></div>' +
+        '<div class="card"><div class="ct"><i class="fas fa-server"></i> Server mode</div>' + swRow('mx_sec', 'Secure server mode (Cloud Function)', 'Turn ON only after deploying functions/ (see DEPLOY.md). Required for Quiz. Server verifies Telegram initData and uses its own clock', (S.cfg.gameServer || {}).secure === true) + '</div>';
+    }
+  };
+  ACT.mxSave = (d, el) => runBtn(el, async () => {
+    const hrs = nv('mx_hrs'), mx = Math.floor(nv('mx_max')), lh = nv('mx_lk_h'), fee = nv('mx_lk_fee');
+    if (!(hrs >= 1) || mx < 1 || mx > 100 || !(lh >= 1) || fee < 0) return toast('Check the numbers: session ≥ 1h, max level 1–100, lock ≥ 1h, fee ≥ 0', 'er');
+    if (chk('mx_on') && !mcOf().configured) return toast('Set at least level 1 speed in Level Editor before enabling mining', 'er');
+    await saveCfg({ 'mining/enabled': chk('mx_on'), 'mining/sessionHours': hrs, 'mining/maxLevel': mx, 'mining/freeUpgrade/enabled': chk('mx_free'), 'mining/lock/enabled': chk('mx_lk_on'), 'mining/lock/hours': lh, 'mining/lock/unlockFee': fee, 'mining/lock/forfeitReward': chk('mx_lk_f'), 'mining/boost/enabled': chk('mx_bo_on'), 'gameServer/secure': chk('mx_sec') }, 'mining.settings');
+  });
+  ACT.mxBoostEdit = d => {
+    if (!need('settings')) return; const p = d.id ? ((M().boost || {}).packs || {})[d.id] || {} : {};
+    formModal({ title: d.id ? 'Edit boost pack' : 'New boost pack', icon: 'fa-bolt', fields: [
+      { id: 'name', label: 'Name', value: p.name || '', req: true }, { id: 'mult', label: 'Speed multiplier (e.g. 2 = ×2)', type: 'number', step: '0.01', min: 1, value: sp(p.mult, 2), req: true }, { id: 'hours', label: 'Duration (hours)', type: 'number', min: 1, value: sp(p.hours, 6), req: true },
+      { id: 'cost', label: 'Token cost', type: 'number', step: '0.0001', min: 0, value: sp(p.cost, 0) }, { id: 'max', label: 'Max purchases per user (0 = unlimited)', type: 'number', min: 0, value: sp(p.maxPurchases, 0) },
+      { id: 'minL', label: 'Eligible from level', type: 'number', min: 1, value: sp(p.minLevel, 1) }, { id: 'maxL', label: 'Eligible up to level (0 = any)', type: 'number', min: 0, value: sp(p.maxLevel, 0) }, { id: 'desc', label: 'Description', value: p.desc || '' }, { id: 'on', label: 'Available', type: 'switch', value: p.enabled !== false }],
+      onSubmit: async v => { if (!(num(v.mult) > 1) || !(num(v.hours) > 0) || num(v.cost) < 0) { toast('Multiplier must be > 1, duration > 0, cost ≥ 0', 'er'); return false; } const id = d.id || ('b' + Date.now().toString(36)); await saveCfg({ ['mining/boost/packs/' + id]: { name: v.name, mult: num(v.mult), hours: num(v.hours), cost: num(v.cost), maxPurchases: Math.floor(num(v.max)), minLevel: Math.max(1, Math.floor(num(v.minL))), maxLevel: Math.floor(num(v.maxL)), desc: v.desc, enabled: v.on } }, 'mining.boost.pack'); } });
+  };
+  ACT.mxBoostDel = d => confirmBox({ title: 'Delete boost pack?', msg: 'Active boosts already purchased are not affected.', cls: 'no', icon: 'fa-trash', onOk: () => saveCfg({ ['mining/boost/packs/' + d.id]: null }, 'mining.boost.delete') });
+
+  /* ================= Level editor (1–100) ================= */
+  PG.mxlevels = {
+    title: 'Level Editor', deps: ['config'], live: false,
+    render() {
+      const L = M().levels || {}, mc = mcOf(); let rows = '';
+      for (let n = 1; n <= 100; n++) { const l = (Array.isArray(L) ? L[n] : L[n]) || {}; rows += '<tr><td><b>' + n + '</b></td><td><input class="inp" id="lv_s' + n + '" type="number" step="0.0001" min="0" value="' + attr(l.speed == null ? '' : l.speed) + '" style="min-width:90px"></td><td><input class="inp" id="lv_c' + n + '" type="number" step="0.0001" min="0" value="' + attr(l.cost == null ? '' : l.cost) + '" style="min-width:90px"></td><td><label class="sw"><input type="checkbox" id="lv_e' + n + '"' + (l.enabled === false ? '' : ' checked') + '><i></i></label></td><td><input class="inp" id="lv_d' + n + '" value="' + attr(l.desc || '') + '" placeholder="Description" style="min-width:150px"></td></tr>'; }
+      return pageHead('Level Editor', '100 levels · speed (tokens / hour) and upgrade cost (tokens to reach that level)', '<button class="btn" data-act="mxLvSave"' + (can('settings') ? '' : ' disabled') + '><i class="fas fa-floppy-disk"></i> Save all levels</button>') + needLock('settings') +
+        '<div class="card"><div class="ct"><i class="fas fa-wand-magic-sparkles"></i> Curve generator <small>fills the fields below — nothing is saved until you press Save</small></div><div class="fr">' + fld('g_sp', 'Level 1 speed (tokens/hour)', 0.5, { type: 'number', step: '0.0001' }) + fld('g_sg', 'Speed growth per level (%)', 6, { type: 'number', step: '0.1' }) + fld('g_c', 'Level 2 cost (tokens)', 10, { type: 'number', step: '0.0001' }) + fld('g_cg', 'Cost growth per level (%)', 12, { type: 'number', step: '0.1' }) + '</div><button class="btn gh sm" data-act="mxLvGen"><i class="fas fa-wand-magic-sparkles"></i> Generate 100 levels</button></div>' +
+        '<div class="note"><i class="fas fa-circle-info"></i><span>Level 1 cost is ignored (everyone starts there). Every level ≥ 2 needs a cost &gt; 0 — except the single free upgrade, which is controlled in Mining Settings. A disabled level blocks upgrading past it.' + (mc.configured ? '' : ' <b>Mining cannot be enabled until Level 1 has a speed.</b>') + '</span></div><div class="card"><div class="tw" style="max-height:70vh;overflow:auto"><table><thead><tr><th>Lv</th><th>Speed /hr</th><th>Upgrade cost</th><th>Available</th><th>Description</th></tr></thead><tbody>' + rows + '</tbody></table></div></div>';
+    }
+  };
+  ACT.mxLvGen = () => { const s0 = nv('g_sp'), sg = nv('g_sg') / 100, c0 = nv('g_c'), cg = nv('g_cg') / 100; if (!(s0 > 0) || c0 < 0) return toast('Enter valid base values', 'er'); for (let n = 1; n <= 100; n++) { $('lv_s' + n).value = +(s0 * Math.pow(1 + sg, n - 1)).toFixed(4); $('lv_c' + n).value = n === 1 ? 0 : +(c0 * Math.pow(1 + cg, n - 2)).toFixed(4); } toast('Generated — review and press Save', 'ok'); };
+  ACT.mxLvSave = (d, el) => runBtn(el, async () => {
+    const out = {}; let hi = 0;
+    for (let n = 1; n <= 100; n++) { const sRaw = val('lv_s' + n), s = Number(sRaw), c = Number(val('lv_c' + n) || 0); if (sRaw === '') continue; if (!(s > 0) || !(c >= 0)) return toast('Level ' + n + ': speed must be > 0 and cost ≥ 0', 'er'); if (n >= 2 && !(c > 0)) return toast('Level ' + n + ': upgrade cost must be > 0', 'er'); if (n > 1 && !out[n - 1]) return toast('Level ' + n + ' is set but level ' + (n - 1) + ' is empty — levels must be continuous', 'er'); out[n] = { speed: s, cost: n === 1 ? 0 : c, enabled: chk('lv_e' + n), desc: val('lv_d' + n) }; hi = n; }
+    if (!out[1]) return toast('Level 1 speed is required', 'er');
+    await saveCfg({ 'mining/levels': out, 'mining/maxLevel': Math.min(100, Math.max(num(M().maxLevel) || 0, 1) >= hi ? (num(M().maxLevel) || hi) : hi) }, 'mining.levels');
+  });
+
+  /* ================= Mining users ================= */
+  const flagCount = uid => { const f = (S.mxFlags || {})[uid]; return f ? Object.values(f).filter(x => Date.now() - num(x.ts) < 864e5).length : 0; };
+  PG.mxusers = {
+    title: 'Mining Users', deps: ['users', 'config'], live: false,
+    render() {
+      lazy('flags', 'miningFlags', v => { S.mxFlags = v; });
+      const mc = mcOf(), rows = Object.values(S.users).filter(u => u.mining || true).map(u => { const s = stOf(u); return { id: String(u.id), u, s, f: flagCount(String(u.id)) }; });
+      const sus = rows.filter(r => r.f >= 3).length;
+      return pageHead('Mining Users', 'Per-user mining state, manual lock / unlock / level reset and suspicious activity') + (mc.enabled ? '' : '<div class="note w"><i class="fas fa-pause"></i><span>Mining is OFF globally.</span></div>') + grid(3, statCard('fa-users', 'Users', fint(rows.length), '') + statCard('fa-user-lock', 'Locked', fint(rows.filter(r => r.s.status === 'LOCKED').length), '', 'warn') + statCard('fa-triangle-exclamation', 'Suspicious (24h)', fint(sus), '≥ 3 blocked integrity attempts', sus ? 'neg' : '')) +
+        '<div class="card">' + tbl('mxu', [
+          { h: 'User', f: r => userCell(r.id, r.u.name), v: r => String(r.u.name || '') }, { h: 'Level', f: r => '<b>' + r.s.level + '</b>/' + mc.maxLevel, v: r => r.s.level }, { h: 'Speed/hr', f: r => fmt(r.s.speed, 4), v: r => r.s.speed, right: true },
+          { h: 'Status', f: r => pill((LBL[r.s.status] || LBL.DISABLED)[1], (LBL[r.s.status] || LBL.DISABLED)[0]), v: r => r.s.status }, { h: 'Total mined', f: r => '<span class="num">' + fmt(r.s.totalMined, 4) + '</span>', v: r => r.s.totalMined, right: true },
+          { h: 'Sessions', f: r => fint(r.s.sessions), v: r => r.s.sessions, right: true }, { h: 'Flags 24h', f: r => r.f ? '<span class="pill rejected">' + r.f + '</span>' : '—', v: r => r.f, right: true }, { h: '', f: r => '<button class="btn gh sm" data-act="mxUser" data-id="' + attr(r.id) + '">Manage</button>' }
+        ], rows, { hay: r => r.id + ' ' + (r.u.name || ''), ph: 'Search user name or ID…', icon: 'fa-hammer', csv: true, size: 25 }) + '</div>';
+    }
+  };
+  ACT.mxUser = async d => {
+    const u = uOf(d.id); if (!u) return; const s = stOf(u), mc = mcOf();
+    const [h, up, bo] = await Promise.all(['miningHistory', 'miningUpgrades', 'miningBoosts'].map(k => db.ref(k + '/' + d.id).limitToLast(15).once('value').then(x => { const a = []; x.forEach(c => a.push(c.val())); return a.sort((p, q) => num(q.ts) - num(p.ts)); }).catch(() => [])));
+    const li = (a, f) => a.length ? a.map(f).join('') : '<div class="tiny">None</div>';
+    openModal('<h3><i class="fas fa-hammer"></i>' + esc(uName(d.id)) + ' <small class="mono">' + esc(d.id) + '</small></h3><div class="kv"><span>Status</span><b>' + esc((LBL[s.status] || LBL.DISABLED)[0]) + '</b></div><div class="kv"><span>Level / speed</span><b>' + s.level + ' · ' + fmt(s.speed, 4) + ' /hr</b></div><div class="kv"><span>Total mined</span><b>' + fmt(s.totalMined, 4) + '</b></div><div class="kv"><span>Free upgrade used</span><b>' + (((u.mining || {}).freeUsed) ? 'Yes' : 'No') + '</b></div>' +
+      (s.session ? '<div class="kv"><span>Session</span><b>' + esc(fdt(s.session.startAt)) + ' → ' + esc(fdt(s.session.endAt)) + ' (' + esc(s.session.status) + ')</b></div>' : '') + (s.lock ? '<div class="kv"><span>Lock</span><b>' + esc(s.lock.reason || '') + ' · ' + esc(fdt(s.lock.at)) + ' · by ' + esc(s.lock.by || '') + '</b></div>' : '') + '<div class="kv"><span>Blocked attempts (24h)</span><b>' + flagCount(d.id) + '</b></div>' +
+      '<div class="ct" style="margin-top:14px">Sessions & locks</div>' + li(h, x => '<div class="kv"><span>' + esc(x.type) + ' · ' + esc(fdt(x.ts)) + '</span><b>' + (x.amount != null ? '+' + fmt(x.amount, 4) : x.fee != null ? '-' + fmt(x.fee, 4) : '') + '</b></div>') + '<div class="ct" style="margin-top:14px">Upgrades</div>' + li(up, x => '<div class="kv"><span>L' + x.from + ' → L' + x.to + (x.free ? ' (free)' : x.reset ? ' (reset)' : '') + ' · ' + esc(fdt(x.ts)) + '</span><b>' + (num(x.cost) ? '-' + fmt(x.cost, 4) : '') + '</b></div>') + '<div class="ct" style="margin-top:14px">Boosts</div>' + li(bo, x => '<div class="kv"><span>×' + x.mult + ' · ' + esc(fdt(x.ts)) + '</span><b>-' + fmt(x.cost, 4) + '</b></div>') +
+      '<div class="mbtn" style="flex-wrap:wrap"><button class="btn gh" data-act="closeModal">Close</button>' + (s.lock ? '<button class="btn ok" data-act="mxUnlockU" data-id="' + attr(d.id) + '"><i class="fas fa-unlock"></i> Unlock</button>' : '<button class="btn wn" data-act="mxLockU" data-id="' + attr(d.id) + '"><i class="fas fa-lock"></i> Lock</button>') + '<button class="btn no" data-act="mxResetU" data-id="' + attr(d.id) + '"><i class="fas fa-rotate-left"></i> Reset level</button></div>', true);
+  };
+  ACT.mxLockU = d => { if (!need('users')) return; closeModal(); formModal({ title: 'Lock mining · ' + uName(d.id), icon: 'fa-lock', fields: [{ id: 'r', label: 'Reason (shown to the user)', value: '', req: true }], submit: 'Lock', cls: 'wn', onSubmit: async v => { const r = await MXE.adminLock(d.id, S.uid, v.r); if (!r.ok) { toast('Could not lock: ' + r.code, 'er'); return false; } await audit('mining.lock', d.id, { reason: v.r }); await notifyUser(d.id, 'security', 'Mining locked', v.r || 'An administrator locked your mining.'); toast('Locked', 'ok'); } }); };
+  ACT.mxUnlockU = d => { if (!need('users')) return; confirmBox({ title: 'Unlock mining?', msg: 'No fee is charged for an admin unlock.', icon: 'fa-unlock', okIcon: 'fa-unlock', label: 'Unlock', onOk: async () => { const r = await MXE.adminUnlock(d.id, S.uid); if (!r.ok) return toast('Could not unlock: ' + r.code, 'er'); await audit('mining.unlock', d.id, {}); await notifyUser(d.id, 'security', 'Mining unlocked', 'Your mining has been unlocked.'); toast('Unlocked', 'ok'); } }); closeModal0(); };
+  const closeModal0 = () => {};
+  ACT.mxResetU = d => { if (!need('users')) return; confirmBox({ title: 'Reset mining level to 1?', msg: 'This lowers <b>' + esc(uName(d.id)) + '</b> to level 1. Paid tokens are NOT refunded and the free upgrade is NOT restored. This is logged.', typed: true, cls: 'no', icon: 'fa-rotate-left', label: 'Reset level', onOk: async () => { const r = await MXE.adminResetLevel(d.id, S.uid, 1); if (!r.ok) return toast('Failed: ' + r.code, 'er'); await audit('mining.resetLevel', d.id, { from: r.from, to: 1 }); toast('Level reset', 'ok'); } }); };
+
+  /* ================= Daily streak ================= */
+  PG.mxstreak = {
+    title: 'Daily Streak', deps: ['config', 'users'], live: false,
+    render() {
+      const c = S.cfg.streak || {}, sc = GC.streakCfg(c), days = c.days || {}, U = Object.values(S.users), act = U.filter(u => u.streak && num(u.streak.cur) > 0).length, done = U.reduce((a, u) => a + num(u.streak && u.streak.cycles), 0);
+      const today = GC.dayNum(Date.now(), sc.tz), claimedToday = U.filter(u => u.streak && num(u.streak.lastDay) === today).length;
+      let rows = ''; for (let n = 1; n <= 30; n++) { const d = days[n] || {}; rows += '<tr><td><b>Day ' + n + '</b></td><td><select class="sel" id="sk_t' + n + '">' + [['main', 'Main balance'], ['token', 'Token'], ['both', 'Both']].map(o => '<option value="' + o[0] + '"' + ((d.type || 'main') === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') + '</select></td><td><input class="inp" id="sk_m' + n + '" type="number" step="0.01" min="0" value="' + attr(d.main == null ? '' : d.main) + '" style="min-width:80px"></td><td><input class="inp" id="sk_k' + n + '" type="number" step="0.0001" min="0" value="' + attr(d.token == null ? '' : d.token) + '" style="min-width:80px"></td></tr>'; }
+      const cb = c.completion || {};
+      return pageHead('Daily Login Streak', '30-day calendar · per-day rewards · reset rules · completion bonus', '<button class="btn" data-act="mxSkSave"' + (can('settings') ? '' : ' disabled') + '><i class="fas fa-floppy-disk"></i> Save streak</button>') + needLock('settings') + grid(3, statCard('fa-fire', 'Active streaks', fint(act), '') + statCard('fa-calendar-check', 'Claimed today', fint(claimedToday), '') + statCard('fa-trophy', 'Completed cycles', fint(done), '')) +
+        '<div class="card"><div class="ct"><i class="fas fa-sliders"></i> Rules</div>' + swRow('sk_on', 'Streak module enabled', 'Shows the Streak page to users', c.enabled === true) + '<div class="fr">' + fld('sk_tz', 'Day boundary offset (minutes from UTC)', sp(c.tzOffsetMin, 0), { type: 'number', hint: 'e.g. 360 for Bangladesh (UTC+6)' }) + fld('sk_gr', 'Grace days (missed days tolerated)', sp(c.graceDays, 0), { type: 'number', min: 0 }) + '</div><div class="fr">' + fld('sk_f', 'Claim window opens (hour 0–24)', sp(c.claimFromHour, 0), { type: 'number', min: 0 }) + fld('sk_t', 'Claim window closes (hour 0–24)', sp(c.claimToHour, 24), { type: 'number', min: 0 }) + '</div>' +
+        swRow('sk_rs', 'Reset to Day 1 when the grace period is exceeded', 'OFF: the streak continues where it stopped', c.resetOnMiss !== false) + swRow('sk_rp', 'Restart automatically after Day 30', 'OFF: calendar is completed once', c.repeat !== false) + '</div>' +
+        '<div class="card"><div class="ct"><i class="fas fa-trophy"></i> Day 30 completion bonus <small>paid in addition to the Day 30 reward</small></div><div class="fr"><div class="f"><label class="l">Type</label><select class="sel" id="sk_ct">' + [['main', 'Main balance'], ['token', 'Token'], ['both', 'Both']].map(o => '<option value="' + o[0] + '"' + ((cb.type || 'main') === o[0] ? ' selected' : '') + '>' + o[1] + '</option>').join('') + '</select></div>' + fld('sk_cm', 'Main amount (' + sym() + ')', sp(cb.main, 0), { type: 'number', step: '0.01', min: 0 }) + fld('sk_ck', 'Token amount', sp(cb.token, 0), { type: 'number', step: '0.0001', min: 0 }) + '</div></div>' +
+        '<div class="card"><div class="ct"><i class="fas fa-calendar-days"></i> Day rewards <small>Main = ' + esc(sym()) + ' · Token = ' + (hasT ? esc(tsym()) : 'TOKEN') + '</small></div><button class="btn gh sm" data-act="mxSkFill" style="margin-bottom:10px"><i class="fas fa-wand-magic-sparkles"></i> Fill empty days with Day-1 values</button><div class="tw" style="max-height:60vh;overflow:auto"><table><thead><tr><th>Day</th><th>Reward type</th><th>Main amount</th><th>Token amount</th></tr></thead><tbody>' + rows + '</tbody></table></div></div>';
+    }
+  };
+  ACT.mxSkFill = () => { for (let n = 2; n <= 30; n++) { if ($('sk_m' + n).value === '' && $('sk_k' + n).value === '') { $('sk_t' + n).value = $('sk_t1').value; $('sk_m' + n).value = $('sk_m1').value; $('sk_k' + n).value = $('sk_k1').value; } } toast('Filled — press Save', 'ok'); };
+  ACT.mxSkSave = (d, el) => runBtn(el, async () => {
+    const days = {}; for (let n = 1; n <= 30; n++) { const m = Number(val('sk_m' + n) || 0), k = Number(val('sk_k' + n) || 0), t = val('sk_t' + n); if (m < 0 || k < 0 || !isFinite(m) || !isFinite(k)) return toast('Day ' + n + ': invalid amount', 'er'); if ((t === 'main' || t === 'both') && !(m > 0) && (t === 'main' || !(k > 0))) return toast('Day ' + n + ': set an amount for the chosen type', 'er'); if ((t === 'token' || t === 'both') && !(k > 0) && (t === 'token' || !(m > 0))) return toast('Day ' + n + ': set an amount for the chosen type', 'er'); days[n] = { type: t, main: m, token: k }; }
+    const f = nv('sk_f'), t = nv('sk_t'); if (!(f >= 0 && t <= 24 && f < t)) return toast('Claim window must satisfy 0 ≤ open < close ≤ 24', 'er');
+    await saveCfg({ streak: { enabled: chk('sk_on'), tzOffsetMin: nv('sk_tz'), graceDays: Math.max(0, Math.floor(nv('sk_gr'))), claimFromHour: f, claimToHour: t, resetOnMiss: chk('sk_rs'), repeat: chk('sk_rp'), completion: { type: val('sk_ct'), main: nv('sk_cm'), token: nv('sk_ck') }, days } }, 'streak.config');
+  });
+
+  /* ================= Quiz ================= */
+  const QD = ['easy', 'medium', 'hard'];
+  PG.mxquiz = {
+    title: 'Quiz Management', deps: ['config'], live: false,
+    render() {
+      lazy('qq', 'quizQuestions', v => { S.mxQ = v; }); lazy('qlb', 'quizLeaderboard', v => { S.mxLB = v; });
+      const c = S.cfg.quiz || {}, qs = Object.keys(S.mxQ || {}).map(k => Object.assign({ _k: k }, S.mxQ[k])), lb = Object.keys(S.mxLB || {}).map(k => Object.assign({ _k: k }, S.mxLB[k])).sort((a, b) => num(b.score) - num(a.score)).slice(0, 20);
+      const att = lb.reduce((a, x) => a + num(x.attempts), 0), cor = lb.reduce((a, x) => a + num(x.correct), 0), cat = c.categories || {};
+      return pageHead('Quiz Management', 'Questions, rewards, timers, limits, schedule and statistics', '<button class="btn gh" data-act="mxQNew"' + (can('content') ? '' : ' disabled') + '><i class="fas fa-plus"></i> New question</button> <button class="btn" data-act="mxQSave"' + (can('settings') ? '' : ' disabled') + '><i class="fas fa-floppy-disk"></i> Save settings</button>') + secNote() +
+        grid(4, statCard('fa-circle-question', 'Questions', fint(qs.length), fint(qs.filter(q => q.enabled !== false).length) + ' enabled') + statCard('fa-pen', 'Attempts (top 20 users)', fint(att), '') + statCard('fa-check', 'Correct rate', att ? Math.round(cor / att * 100) + '%' : '—', '') + statCard('fa-users', 'Players', fint(lb.length), 'on leaderboard')) +
+        '<div class="card"><div class="ct"><i class="fas fa-sliders"></i> Settings</div>' + swRow('qz_on', 'Quiz module enabled', 'Shows Quiz Earn to users', c.enabled === true) + '<div class="fr">' + fld('qz_da', 'Daily attempts per user', sp(c.dailyAttempts, 20), { type: 'number', min: 1 }) + fld('qz_dt', 'Default timer (seconds)', sp(c.defaultTimer, 30), { type: 'number', min: 5 }) + fld('qz_tz', 'Day boundary offset (minutes from UTC)', sp(c.tzOffsetMin, 0), { type: 'number' }) + '</div>' + swRow('qz_cs', 'Simple category enabled', '', (cat.simple || {}).enabled !== false) + swRow('qz_ca', 'Advanced category enabled', '', (cat.advanced || {}).enabled !== false) + '</div>' +
+        '<div class="card"><div class="ct"><i class="fas fa-list"></i> Questions</div>' + tbl('mxq', [{ h: 'Question', f: q => esc(String(q.question || '').slice(0, 70)), v: q => q.question }, { h: 'Category', f: q => esc(q.category || 'simple'), v: q => q.category }, { h: 'Level', f: q => esc(q.difficulty || 'easy') }, { h: 'Type', f: q => q.challenge ? pill('pending', q.challenge) : 'Regular' }, { h: 'Reward', f: q => (q.rewardType !== 'token' && num(q.main) ? fmt(q.main) + ' ' + esc(sym()) : '') + (q.rewardType !== 'main' && num(q.token) ? ' ' + fmt(q.token, 4) + ' ' + (hasT ? esc(tsym()) : 'TOKEN') : '') }, { h: 'Timer', f: q => (num(q.timer) || num(c.defaultTimer) || 30) + 's' }, { h: 'Status', f: q => pill(q.enabled === false ? 'inactive' : 'active', q.enabled === false ? 'Off' : 'On') }, { h: '', f: q => '<button class="btn gh sm" data-act="mxQEdit" data-id="' + attr(q._k) + '"><i class="fas fa-pen"></i></button> <button class="btn gh sm" data-act="mxQDel" data-id="' + attr(q._k) + '"><i class="fas fa-trash"></i></button>' }], qs, { hay: q => q.question + ' ' + q.category, ph: 'Search questions…', icon: 'fa-circle-question', empty: 'No questions yet', size: 15 }) + '</div>' +
+        '<div class="card"><div class="ct"><i class="fas fa-ranking-star"></i> Leaderboard</div>' + (lb.length ? '<div class="tw"><table><thead><tr><th>#</th><th>User</th><th>Score</th><th>Correct</th><th>Attempts</th></tr></thead><tbody>' + lb.map((x, i) => '<tr><td>' + (i + 1) + '</td><td>' + esc(x.name || x._k) + ' <small class="mono">' + esc(x._k) + '</small></td><td><b>' + num(x.score) + '</b></td><td>' + num(x.correct) + '</td><td>' + num(x.attempts) + '</td></tr>').join('') + '</tbody></table></div>' : empty('fa-ranking-star', 'No scores yet')) + '</div>' +
+        '<div class="card"><div class="ct"><i class="fas fa-user-clock"></i> User quiz history</div><div style="display:flex;gap:8px">' + '<input class="inp grow" id="qz_u" placeholder="User ID"><button class="btn gh" data-act="mxQHist">Load</button></div><div id="qz_h" style="margin-top:12px"></div></div>';
+    }
+  };
+  ACT.mxQSave = (d, el) => runBtn(el, async () => { if (nv('qz_da') < 1 || nv('qz_dt') < 5) return toast('Check limits', 'er'); await saveCfg({ 'quiz/enabled': chk('qz_on'), 'quiz/dailyAttempts': Math.floor(nv('qz_da')), 'quiz/defaultTimer': Math.floor(nv('qz_dt')), 'quiz/tzOffsetMin': nv('qz_tz'), 'quiz/categories/simple/enabled': chk('qz_cs'), 'quiz/categories/advanced/enabled': chk('qz_ca') }, 'quiz.settings'); });
+  const dtl = ts => { if (!ts) return ''; const d = new Date(num(ts) - new Date().getTimezoneOffset() * 6e4); return d.toISOString().slice(0, 16); };
+  async function qForm(id) {
+    if (!need('content')) return; const q = id ? (S.mxQ || {})[id] || {} : {}; let a = {}; if (id) { try { a = (await db.ref('quizAnswers/' + id).once('value')).val() || {}; } catch (e) {} }
+    const o = Array.isArray(q.options) ? q.options : Object.values(q.options || {});
+    formModal({ title: id ? 'Edit question' : 'New question', icon: 'fa-circle-question', wide: true, fields: [
+      { id: 'q', label: 'Question', type: 'textarea', rows: 3, value: q.question || '', req: true }, { id: 'o1', label: 'Option A', value: o[0] || '', req: true }, { id: 'o2', label: 'Option B', value: o[1] || '', req: true }, { id: 'o3', label: 'Option C', value: o[2] || '', req: true }, { id: 'o4', label: 'Option D', value: o[3] || '', req: true },
+      { id: 'ok', label: 'Correct option', type: 'select', options: [['0', 'A'], ['1', 'B'], ['2', 'C'], ['3', 'D']], value: String(a.correct == null ? 0 : a.correct) }, { id: 'ex', label: 'Explanation (shown only after answering)', type: 'textarea', rows: 2, value: a.explanation || '' },
+      { id: 'cat', label: 'Category', type: 'select', options: [['simple', 'Simple'], ['advanced', 'Advanced']], value: q.category || 'simple' }, { id: 'df', label: 'Difficulty', type: 'select', options: QD, value: q.difficulty || 'easy' }, { id: 'ch', label: 'Challenge', type: 'select', options: [['', 'Regular question'], ['daily', 'Daily challenge'], ['weekly', 'Weekly challenge']], value: q.challenge || '' },
+      { id: 'tm', label: 'Timer seconds (0 = default)', type: 'number', min: 0, value: sp(q.timer, 0) }, { id: 'ma', label: 'Max attempts (regular questions)', type: 'number', min: 1, value: sp(q.maxAttempts, 1) }, { id: 'pt', label: 'Leaderboard points (0 = by difficulty)', type: 'number', min: 0, value: sp(q.points, 0) },
+      { id: 'rt', label: 'Reward type', type: 'select', options: [['main', 'Main balance'], ['token', 'Token'], ['both', 'Combined']], value: q.rewardType || 'main' }, { id: 'rm', label: 'Main reward (' + sym() + ')', type: 'number', step: '0.01', min: 0, value: sp(q.main, 0) }, { id: 'rk', label: 'Token reward', type: 'number', step: '0.0001', min: 0, value: sp(q.token, 0) },
+      { id: 'st', label: 'Available from (optional)', type: 'datetime-local', value: dtl(q.startAt) }, { id: 'en', label: 'Available until (optional)', type: 'datetime-local', value: dtl(q.endAt) }, { id: 'on', label: 'Enabled', type: 'switch', value: q.enabled !== false }],
+      onSubmit: async v => {
+        const rm = num(v.rm), rk = num(v.rk); if (rm < 0 || rk < 0 || (v.rt === 'main' && !(rm > 0)) || (v.rt === 'token' && !(rk > 0)) || (v.rt === 'both' && !(rm > 0 || rk > 0))) { toast('Set a reward amount matching the reward type', 'er'); return false; }
+        const key = id || ('q' + Date.now().toString(36) + rid(3)), pub = { question: v.q, options: [v.o1, v.o2, v.o3, v.o4], category: v.cat, difficulty: v.df, challenge: v.ch || null, timer: Math.floor(num(v.tm)), maxAttempts: Math.max(1, Math.floor(num(v.ma))), points: Math.floor(num(v.pt)), rewardType: v.rt, main: rm, token: rk, startAt: v.st ? new Date(v.st).getTime() : null, endAt: v.en ? new Date(v.en).getTime() : null, enabled: v.on, updatedAt: Date.now() };
+        await db.ref().update({ ['quizQuestions/' + key]: pub, ['quizAnswers/' + key]: { correct: Math.floor(num(v.ok)), explanation: v.ex || '' } }); await audit(id ? 'quiz.update' : 'quiz.create', key, { question: v.q.slice(0, 80) }); toast('Question saved', 'ok');
+      } });
+  }
+  ACT.mxQNew = () => qForm(null); ACT.mxQEdit = d => qForm(d.id);
+  ACT.mxQDel = d => confirmBox({ title: 'Delete question?', msg: 'Users\' past attempts remain in their history.', cls: 'no', icon: 'fa-trash', onOk: async () => { if (!need('content')) return; await db.ref().update({ ['quizQuestions/' + d.id]: null, ['quizAnswers/' + d.id]: null }); await audit('quiz.delete', d.id, {}); toast('Deleted', 'ok'); } });
+  ACT.mxQHist = async () => { const u = val('qz_u'); if (!u) return; const s = await db.ref('quizAttempts/' + u).limitToLast(50).once('value'), a = []; s.forEach(c => a.push(c.val())); a.sort((x, y) => num(y.ts) - num(x.ts)); $('qz_h').innerHTML = a.length ? '<div class="tw"><table><thead><tr><th>When</th><th>Question</th><th>Result</th><th>Reward</th></tr></thead><tbody>' + a.map(x => '<tr><td>' + esc(fdt(x.ts)) + '</td><td>' + esc(String(((S.mxQ || {})[x.qid] || {}).question || x.qid).slice(0, 50)) + '</td><td>' + (x.correct ? pill('approved', 'Correct') : pill('rejected', x.timeout ? 'Timeout' : 'Wrong')) + '</td><td>' + (num(x.main) ? fmt(x.main) : '') + (num(x.token) ? ' ' + fmt(x.token, 4) : '') + '</td></tr>').join('') + '</tbody></table></div>' : empty('fa-inbox', 'No attempts'); };
+
+  /* ================= Pages & modules ================= */
+  const PAGES = [['home', 'Home'], ['notifications', 'Notifications'], ['earnings', 'Earnings'], ['achievements', 'Achievements'], ['token', 'Token Market'], ['mining', 'Token Mining'], ['mxupgrade', 'Mining Upgrade'], ['mxboost', 'Mining Boost'], ['tokendetail', 'Token Details'], ['tokenwd', 'Token Withdraw'], ['buy', 'Buy Token'], ['sell', 'Sell Token'], ['swap', 'Swap'], ['transfer', 'Transfer'], ['earn', 'Earn'], ['mxstreak', '30-Day Streak'], ['mxquiz', 'Quiz Earn'], ['bonus', 'Daily Bonus'], ['spin', 'Spin Wheel'], ['vault', 'Reward Vault'], ['promo', 'Promo Code'], ['events', 'Events'], ['giveaway', 'Giveaway'], ['vip', 'VIP Membership'], ['wallet', 'Wallet'], ['deposit', 'Deposit'], ['withdraw', 'Withdraw'], ['history', 'Transaction History'], ['profile', 'Profile'], ['support', 'Support'], ['security', 'Security']];
+  PG.mxpages = {
+    title: 'Pages & Modules', deps: ['config'], live: false,
+    render() {
+      const pc = S.cfg.pages || {}, nav = S.cfg.nav || {};
+      return pageHead('Pages & Modules', 'Control the ALL PAGES directory and global module availability', '<button class="btn" data-act="mxPgSave"' + (can('settings') ? '' : ' disabled') + '><i class="fas fa-floppy-disk"></i> Save</button>') + needLock('settings') +
+        '<div class="card"><div class="ct"><i class="fas fa-toggle-on"></i> Global modules</div>' + swRow('pm_nav', 'ALL PAGES item in the bottom navigation', 'Hides the nav item (the directory is still reachable from Home)', nav.allpages !== false) + swRow('pm_min', 'Token Mining module', 'Same as the master switch in Mining Settings', M().enabled === true) + swRow('pm_str', 'Daily Streak module', '', (S.cfg.streak || {}).enabled === true) + swRow('pm_quz', 'Quiz module', '', (S.cfg.quiz || {}).enabled === true) + '</div>' +
+        '<div class="card"><div class="ct"><i class="fas fa-table-cells-large"></i> Directory entries <small>A page also disappears automatically when its own feature is disabled elsewhere</small></div><div class="tw"><table><thead><tr><th>Page</th><th>Visible</th><th>NEW badge</th><th>Custom label</th></tr></thead><tbody>' + PAGES.map(p => { const c = pc[p[0]] || {}; return '<tr><td><b>' + esc(p[1]) + '</b> <small class="mono">' + p[0] + '</small></td><td><label class="sw"><input type="checkbox" id="pp_v_' + p[0] + '"' + (c.visible === false ? '' : ' checked') + '><i></i></label></td><td><label class="sw"><input type="checkbox" id="pp_n_' + p[0] + '"' + (c.isNew === true ? ' checked' : '') + '><i></i></label></td><td><input class="inp" id="pp_l_' + p[0] + '" value="' + attr(c.label || '') + '" placeholder="' + attr(p[1]) + '"></td></tr>'; }).join('') + '</tbody></table></div></div>';
+    }
+  };
+  ACT.mxPgSave = (d, el) => runBtn(el, async () => {
+    const up = { 'nav/allpages': chk('pm_nav'), 'mining/enabled': chk('pm_min'), 'streak/enabled': chk('pm_str'), 'quiz/enabled': chk('pm_quz') };
+    if (chk('pm_min') && !mcOf().configured) return toast('Configure Level 1 before enabling mining', 'er');
+    PAGES.forEach(p => { const c = {}; if (!chk('pp_v_' + p[0])) c.visible = false; if (chk('pp_n_' + p[0])) c.isNew = true; const l = val('pp_l_' + p[0]); if (l) c.label = l; up['pages/' + p[0]] = Object.keys(c).length ? c : null; });
+    await saveCfg(up, 'pages.modules');
+  });
+
+  /* register nav (new section after "Earning") */
+  NAV.splice(4, 0, ['Mining & Rewards', [['mxhub', 'fa-hammer', 'Mining Settings'], ['mxlevels', 'fa-stairs', 'Level Editor'], ['mxusers', 'fa-user-gear', 'Mining Users'], ['mxstreak', 'fa-fire', 'Daily Streak'], ['mxquiz', 'fa-circle-question', 'Quiz Management'], ['mxpages', 'fa-table-cells-large', 'Pages & Modules']]]);
+  try { renderNav(); } catch (e) {}
+})();
 
 </script>
 </body>

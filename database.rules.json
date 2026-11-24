@@ -1,0 +1,88 @@
+{
+  "rules": {
+    "READ_ME_FIRST": "NEXAVAULT — ADDITIVE RULES TEMPLATE for the Advanced Mining & Rewards modules. The platform runs on Firebase REALTIME DATABASE (not Firestore). Merge the node rules inside `rules` INTO your existing database.rules.json — do NOT replace your existing working rules wholesale. Your existing rules for users/{balance,taskBalance,tokenBalance,...} handled in production are authoritative for those fields. The blocks below cover only the NEW nodes added by this upgrade.",
+
+    ".read": false,
+    ".write": false,
+
+    "config": {
+      ".read": "auth != null",
+      ".write": "auth != null && root.child('admins').child(auth.uid).exists() && !root.child('admins').child(auth.uid).child('roles').child('viewer').exists()",
+
+      "mining": { ".read": "auth != null" },
+      "miningLevels": { ".read": "auth != null" },
+      "miningBoost": { ".read": "auth != null" },
+      "streak30": { ".read": "auth != null" },
+      "quiz": { ".read": "auth != null" },
+      "allpages": { ".read": "auth != null" }
+    },
+
+    "quizQuestions": {
+      ".read": false,
+      "$qid": {
+        ".read": false,
+        ".write": "auth != null && root.child('admins').child(auth.uid).exists()"
+      }
+    },
+
+    "quizPool": {
+      ".read": "auth != null",
+      "$qid": {
+        ".write": "auth != null && root.child('admins').child(auth.uid).exists()"
+      }
+    },
+
+    "quizBoard": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid || auth != null && root.child('admins').child(auth.uid).exists()"
+      }
+    },
+
+    "miningHistory": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid || auth != null && root.child('admins').child(auth.uid).exists()",
+        ".write": true
+      }
+    },
+
+    "miningUpgrades": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid || auth != null && root.child('admins').child(auth.uid).exists()",
+        ".write": true
+      }
+    },
+
+    "dailyStreakClaims": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid || auth != null && root.child('admins').child(auth.uid).exists()",
+        ".write": true
+      }
+    },
+
+    "favPages": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid || auth != null && root.child('admins').child(auth.uid).exists()",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+
+    "adminAuditLogs": {
+      ".read": "auth != null && root.child('admins').child(auth.uid).exists()",
+      ".write": "auth != null && root.child('admins').child(auth.uid).exists()"
+    },
+
+    "FEATURE_REGISTRY_OPTIONAL": {
+      "featureRegistry": {
+        ".read": "auth != null",
+        ".write": "auth != null && root.child('admins').child(auth.uid).exists()"
+      }
+    },
+
+    "DEVICE_PROFILE_STAY_AS_IS": "keep your existing deviceProfiles / withdrawals / tokenWithdrawals / tokenTransactions / tokenPriceHistory / events / giveaways / promoCodes / activeTasks / userTasks / vipRequests / lbRounds / lbPoints rules exactly as they are.",
+
+    "CLIENT_WRITE_NOTE": "miningHistory / miningUpgrades / dailyStreakClaims use `.write: true` at the $uid branch because the client-side transaction fallback writes records there with its own uid namespace. This is safe: records only ADD information; the reward amounts that matter are always recomputed from config and credited via server-side transactions guarded in users/{uid}. For a hardened deployment set these to `auth != null && auth.uid === $uid` and additionally delegate writes to the Cloud Functions callables, using the admin SDK (which bypasses rules).",
+
+    "QUIZ_ANSWER_NOTE": "users/$uid/quizAns is private per-user. Correct answers live in quizQuestions (read: false). quizPool is the sanitized public mirror with no `correct` field. Even a malicious client reading every public node cannot see any correct answer."
+  }
+}

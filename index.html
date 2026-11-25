@@ -1110,6 +1110,43 @@ html[data-theme] .qa i{border-radius:16px}
 .mx-box{margin:0 16px 14px;padding:16px;border-radius:22px;background:var(--card);border:1px solid var(--line)}.mx-box.flat{padding:4px 16px}
 .nav-in .nv{min-width:0}.nav-in .nv span{white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.mx-ringw .fg,.mx-bar i,.mx-sk{transition:none;animation:none}}
+
+/* ===== v2: mining orbit, boost cards, tasks, loaders, withdrawal cards, All Pages polish, home reveal ===== */
+.mx-orbit{position:absolute;inset:-4px;pointer-events:none;animation:mxspin 6s linear infinite}.mx-orbit i{position:absolute;width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+.mx-orbit i:nth-child(1){top:0;left:50%}.mx-orbit i:nth-child(2){bottom:14%;left:8%;opacity:.6}.mx-orbit i:nth-child(3){bottom:14%;right:8%;opacity:.4}@keyframes mxspin{to{transform:rotate(360deg)}}
+.mx-bactive{border-color:var(--warn);background:radial-gradient(120% 90% at 0 0,var(--warn-soft,rgba(245,184,75,.18)),transparent 60%),var(--card)}
+.mx-bolt{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#FFD36B,#FF8A3D);color:#2a1800;font-size:1.05rem;animation:mxpulse 1.8s ease-in-out infinite}
+.mx-bx{font-size:1.9rem;font-weight:900;background:linear-gradient(135deg,#FFD36B,#FF8A3D);-webkit-background-clip:text;background-clip:text;color:transparent}
+@keyframes mxpulse{50%{transform:scale(1.07);box-shadow:0 0 18px rgba(255,170,60,.5)}}
+.mx-bc{margin:0 16px 14px;padding:16px;border-radius:24px;border:1px solid hsl(var(--bh) 70% 55% / .45);background:radial-gradient(110% 80% at 100% 0,hsl(var(--bh) 80% 55% / .16),transparent 60%),var(--card);position:relative;overflow:hidden}
+.mx-bc-top{display:flex;align-items:center;gap:14px;margin-bottom:12px}.mx-bmul{width:68px;height:68px;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,hsl(var(--bh) 85% 60%),hsl(calc(var(--bh) + 40) 85% 50%));color:#fff;box-shadow:0 10px 22px -8px hsl(var(--bh) 85% 55%);flex-shrink:0}
+.mx-bmul b{font-size:1.4rem;font-weight:900}.mx-bmul small{font-size:.55rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;opacity:.9}.mx-bmeta{flex:1;min-width:0}.mx-bmeta>b{font-size:.98rem}
+.mx-bchips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.mx-bchips span{font-size:.64rem;font-weight:800;padding:4px 9px;border-radius:99px;background:var(--card3);color:var(--muted)}
+.mx-energy{display:flex;gap:3px;align-items:flex-end;height:30px}.mx-energy i{width:4px;border-radius:3px;background:hsl(var(--bh) 85% 62%);animation:mxen 1.1s ease-in-out infinite}.mx-energy i:nth-child(1){height:40%}.mx-energy i:nth-child(2){height:75%;animation-delay:.15s}.mx-energy i:nth-child(3){height:55%;animation-delay:.3s}.mx-energy i:nth-child(4){height:90%;animation-delay:.45s}
+@keyframes mxen{50%{transform:scaleY(.45)}}
+.mx-bc-info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.mx-bc-info>div{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:10px 12px}.mx-bc-info small{display:block;font-size:.6rem;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.6px}.mx-bc-info b{display:block;margin-top:4px;font-size:.84rem}.mx-bc-info em{font-style:normal;color:var(--pos)}
+.mx-tk{margin:0 16px 12px;padding:14px;border-radius:22px;background:var(--card);border:1px solid var(--line);position:relative;overflow:hidden}
+.mx-tk.in_progress{border-color:var(--warn)}.mx-tk.waiting{border-color:var(--pos);box-shadow:0 0 0 2px var(--pos-soft,rgba(43,217,139,.14))}.mx-tk.completed{opacity:.8}.mx-tk.failed{border-color:var(--neg)}
+.mx-tki{width:46px;height:46px;border-radius:15px;object-fit:cover;display:grid;place-items:center;flex-shrink:0;background:var(--accent-soft);color:var(--accent);font-size:1.1rem}
+.mx-tkt{display:block;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px}.mx-tkr{text-align:right;flex-shrink:0}.mx-tkr small{display:block;font-size:.58rem;color:var(--muted);font-weight:800;text-transform:uppercase}.mx-tkr b{font-size:1.15rem;color:var(--pos)}.mx-tkr em{font-style:normal;font-size:.62rem;margin-left:3px;color:var(--muted)}
+.mx-tkd{font-size:.74rem;line-height:1.5;color:var(--muted);margin:10px 0 12px;word-break:break-word}.mx-tk .btn{margin-top:10px}
+.btn.mx-ld{pointer-events:none;opacity:.92;cursor:progress}.btn.mx-ld>span:last-child{margin-left:9px}
+.mx-spin{display:inline-block;width:16px;height:16px;border-radius:50%;border:2.5px solid rgba(255,255,255,.28);border-top-color:#fff;border-right-color:#fff;animation:mxspin .7s linear infinite;vertical-align:-3px}
+.btn.mx-okf{animation:mxok .9s}.btn.mx-erf{animation:mxer .5s}@keyframes mxok{40%{box-shadow:0 0 0 5px rgba(43,217,139,.35)}}@keyframes mxer{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.mx-pmg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:10px}
+.mx-pm{position:relative;display:flex;align-items:center;gap:10px;padding:12px;border-radius:18px;background:var(--card2);border:1.5px solid var(--line2);color:var(--text);font-weight:800;font-size:.82rem;text-align:left;transition:transform .15s,border-color .2s,box-shadow .25s}
+.mx-pm:active{transform:scale(.96)}.mx-pm .mx-pmi,.mx-pmd .mx-pmi{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:.78rem;font-weight:900;color:#fff;background:linear-gradient(135deg,var(--c1),var(--c2));flex-shrink:0;box-shadow:0 6px 14px -6px var(--c1)}
+.mx-pm b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mx-pmc{position:absolute;top:7px;right:7px;font-size:.8rem;color:var(--c1);opacity:0;transform:scale(.4);transition:.25s}
+.mx-pm.on{border-color:var(--c1);box-shadow:0 0 0 3px color-mix(in srgb,var(--c1) 24%,transparent),0 10px 24px -12px var(--c1);background:linear-gradient(135deg,color-mix(in srgb,var(--c1) 14%,var(--card2)),var(--card2))}.mx-pm.on .mx-pmc{opacity:1;transform:scale(1)}
+.mx-pmd{display:flex;align-items:center;gap:12px;overflow:hidden;max-height:0;opacity:0;padding:0 14px;border-radius:16px;background:color-mix(in srgb,var(--c1,#6A5CFF) 12%,var(--card2));border:1px solid color-mix(in srgb,var(--c1,#6A5CFF) 45%,transparent);margin-bottom:0;transition:max-height .35s,opacity .3s,padding .3s,margin .3s}
+.mx-pmd.open{max-height:90px;opacity:1;padding:12px 14px;margin-bottom:12px}.mx-pmd b{display:block;font-size:.86rem}.mx-pmd small{font-size:.7rem;color:var(--muted);font-weight:600}
+.mx-pg{background:linear-gradient(160deg,color-mix(in srgb,var(--c1) 10%,var(--card)),var(--card));border-color:color-mix(in srgb,var(--c1) 26%,var(--line));transition:transform .15s,box-shadow .25s,border-color .25s;-webkit-tap-highlight-color:transparent}
+.mx-pg .ic{background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;box-shadow:0 8px 18px -8px var(--c1)}.mx-pg:active{transform:scale(.93);box-shadow:0 0 0 2px var(--c1),0 0 22px -4px var(--c1)}
+#mxApGrid,.mx-tabs{animation:mxfade .35s ease both}@keyframes mxfade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.mx-rv{animation:mxrv .55s cubic-bezier(.2,.8,.2,1) both}@keyframes mxrv{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.mx-mini{background-size:200% 100%}.mx-mini .ic{animation:mxfloat 3.2s ease-in-out infinite}@keyframes mxfloat{50%{transform:translateY(-3px)}}
+.mx-hero::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(120deg,transparent 40%,rgba(255,255,255,.05) 50%,transparent 60%);background-size:250% 100%;animation:mxsheen 6s linear infinite}@keyframes mxsheen{from{background-position:150% 0}to{background-position:-100% 0}}
+@media (prefers-reduced-motion:reduce){.mx-orbit,.mx-bolt,.mx-energy i,.mx-mini .ic,.mx-hero::after,.mx-spin{animation:none}}
 </style>
 </head>
 <body>
@@ -4669,7 +4706,7 @@ function lbBump() {}
 
 
 <script id="mx-core">
-/* GameCore — mining / streak / quiz engine. Pure logic over a Firebase-RTDB-like `db`.
+/* GameCore — mining / streak engine. Pure logic over a Firebase-RTDB-like `db`.
    Runs unchanged in the browser (client mode) and in Cloud Functions (secure mode). */
 (function (root, factory) { if (typeof module === 'object' && module.exports) module.exports = factory(); else root.GameCore = factory(); })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
@@ -4741,7 +4778,7 @@ function lbBump() {}
     if ((type === 'token' || type === 'both') && token > 0) u.tokenBalance = rnd(num(u.tokenBalance) + token);
   }
 
-  /* ---------- engine ---------- */
+  
   function createEngine(db, o) {
     o = o || {}; const now = o.now || (() => Date.now());
     const cfgOf = async k => { const s = await db.ref('config/' + k).once('value'); return s.val() || {}; };
@@ -4757,13 +4794,17 @@ function lbBump() {}
     }
     async function after(uid, res) {
       if (!res || !res.writes) return;
-      for (const w of res.writes) { try { await db.ref(w[0]).set(w[1]); } catch (e) {} }
+      await Promise.all(res.writes.map(w => db.ref(w[0]).set(w[1]).catch(() => {})));
     }
     const ledger = (uid, id, amt, unit, src, t, note) => ['ledger/' + uid + '/' + id, { id, cat: 'earning', source: src, amount: rnd(amt), unit, ref: '', status: 'completed', note: note || '', timestamp: t }];
     const notif = (uid, key, title, body, t) => ['userNotifications/' + uid + '/' + key, { cat: 'security', title, body, ts: t, read: false }];
     const flag = async (uid, code) => { try { const t = now(); await db.ref('miningFlags/' + uid + '/' + code + '_' + Math.floor(t / 60000)).set({ code, ts: t }); } catch (e) {} };
-    const SUS = ['EARLY_CLAIM', 'NOT_ACTIVE', 'ALREADY_UPGRADED', 'QUIZ_REPLAY', 'STREAK_DUP', 'NOT_CLAIMABLE'];
-    const run = async (uid, fn) => { const r = await userTxn(uid, fn); await after(uid, r); if (!r.ok && SUS.includes(r.code)) flag(uid, r.code); delete r.writes; delete r.persist; return r; };
+    const SUS = ['EARLY_CLAIM', 'NOT_ACTIVE', 'ALREADY_UPGRADED', 'STREAK_DUP', 'NOT_CLAIMABLE'];
+    const run = async (uid, fn) => {
+      let r;
+      try { r = await userTxn(uid, fn); if (r.code === 'CONFLICT') r = await userTxn(uid, fn); }   /* safe: a non-committed transaction changed nothing */
+      catch (e) { const m = String((e && (e.code || e.message)) || e); return { ok: false, code: /permission/i.test(m) ? 'PERM' : 'NET', detail: m.slice(0, 120) }; }
+      await after(uid, r); if (!r.ok && SUS.includes(r.code)) flag(uid, r.code); delete r.writes; delete r.persist; return r; };
 
     /* apply inactivity lock to m if due (mutates). returns lock rec or null */
     function lazyLock(u, mc, t) {
@@ -4873,37 +4914,7 @@ function lbBump() {}
         return { ok: true, persist: true, day, reward: rw, bonus, completed: day === 30, writes: w };
       }); }); },
 
-      /* ---------- quiz (secure mode only: needs quizAnswers) ---------- */
-      quizStart(uid, qid) { return cfgOf('quiz').then(async qc => { const t = now(); if (qc.enabled !== true) return fail('QUIZ_OFF');
-        const q = (await db.ref('quizQuestions/' + qid).once('value')).val(); if (!q || q.enabled === false) return fail('QUIZ_UNAVAILABLE');
-        if (num(q.startAt) > t || (num(q.endAt) > 0 && num(q.endAt) < t)) return fail('QUIZ_SCHEDULE');
-        const cat = obj(obj(qc.categories)[q.category]); if (cat.enabled === false) return fail('QUIZ_UNAVAILABLE');
-        const tz = num(qc.tzOffsetMin), dk = dayNum(t, tz), per = q.challenge === 'daily' ? 'd' + dk : q.challenge === 'weekly' ? 'w' + weekNum(t, tz) : 'x', key = String(qid) + '_' + per;
-        const timer = Math.max(5, Math.min(600, num(q.timer) || num(qc.defaultTimer) || 30));
-        return run(uid, u => { u.id = u.id || uid; const z = u.quiz && typeof u.quiz === 'object' ? u.quiz : (u.quiz = {});
-          if (obj(z.done)[key]) return fail('QUIZ_DONE'); const day = obj(z.day); const dn = day.k === dk ? num(day.n) : 0;
-          if (z.open && num(z.open.expiresAt) + 3000 > t) { if (z.open.qid === String(qid)) return { ok: true, persist: false, attemptId: z.open.id, expiresAt: z.open.expiresAt, timer, resumed: true }; return fail('QUIZ_OPEN'); }
-          const lim = num(qc.dailyAttempts) > 0 ? num(qc.dailyAttempts) : 20; if (dn >= lim) return fail('QUIZ_LIMIT');
-          const qa = obj(z.q); const mx = q.challenge ? 1 : (num(q.maxAttempts) > 0 ? num(q.maxAttempts) : 1); if (num(obj(qa[qid]).n) >= mx && !q.challenge) return fail('QUIZ_MAX_ATTEMPTS');
-          const aid = 'A' + t + rid(); z.open = { id: aid, qid: String(qid), key, startedAt: t, expiresAt: t + timer * 1000 }; z.day = { k: dk, n: dn + 1 }; qa[qid] = { n: num(obj(qa[qid]).n) + 1 }; z.q = qa;
-          return { ok: true, persist: true, attemptId: aid, expiresAt: z.open.expiresAt, timer }; }); }); },
-
-      quizSubmit(uid, attemptId, choice) { return cfgOf('quiz').then(async qc => { const t = now(); choice = Math.floor(num(choice));
-        const cur = (await db.ref('users/' + uid + '/quiz/open').once('value')).val(); if (!cur || cur.id !== attemptId) return flagRet(uid, fail('QUIZ_REPLAY'));
-        const q = obj((await db.ref('quizQuestions/' + cur.qid).once('value')).val()), a = obj((await db.ref('quizAnswers/' + cur.qid).once('value')).val());
-        if (a.correct == null) return fail('QUIZ_UNAVAILABLE'); const right = num(a.correct) === choice;
-        return run(uid, u => { u.id = u.id || uid; const z = obj(u.quiz); if (!z.open || z.open.id !== attemptId) return fail('QUIZ_REPLAY');
-          const late = t > num(z.open.expiresAt) + 3000, ok = right && !late && choice >= 0 && choice < 4, done = obj(z.done); let paid = { main: 0, token: 0 };
-          const key = z.open.key; if (ok && !done[key]) { const type = ['main', 'token', 'both'].includes(q.rewardType) ? q.rewardType : 'main'; paid = { main: Math.max(0, num(q.main)), token: Math.max(0, num(q.token)) }; credit(u, type, paid.main, paid.token); done[key] = t; z.done = done; paid.type = type; }
-          z.open = null; z.stats = { total: num(obj(z.stats).total) + 1, correct: num(obj(z.stats).correct) + (ok ? 1 : 0) }; u.quiz = z;
-          const pts = ok ? (num(q.points) || ({ easy: 1, medium: 2, hard: 3 }[q.difficulty] || 1)) : 0;
-          const rec = { id: attemptId, qid: String(cur.qid), category: q.category || '', difficulty: q.difficulty || '', choice, correct: ok, timeout: late, main: paid.main, token: paid.token, ts: t };
-          return { ok: true, persist: true, correct: ok, timeout: late, correctIndex: late ? null : num(a.correct), explanation: a.explanation || '', reward: paid, points: pts, writes: [['quizAttempts/' + uid + '/' + attemptId, rec]].concat(paid.main > 0 ? [ledger(uid, 'QZM_' + attemptId, paid.main, 'main', 'quiz', t, 'Quiz reward')] : []).concat(paid.token > 0 ? [ledger(uid, 'QZT_' + attemptId, paid.token, 'token', 'quiz', t, 'Quiz reward')] : []), _lb: { pts, ok, name: u.name || '' } }; })
-          .then(async r => { return r; }); }); },
     };
-    function flagRet(uid, r) { flag(uid, r.code); return r; }
-    /* leaderboard bump (best-effort, non-financial) */
-    api.quizLb = async function (uid, name, pts, ok) { const t = now(), wk = weekNum(t, 0); try { await db.ref('quizLeaderboard/' + uid).transaction(c => { c = c || {}; c.name = name || c.name || ''; c.score = num(c.score) + pts; c.correct = num(c.correct) + (ok ? 1 : 0); c.attempts = num(c.attempts) + 1; if (c.wk !== wk) { c.wk = wk; c.wkScore = 0; } c.wkScore = num(c.wkScore) + pts; c.updatedAt = t; return c; }); } catch (e) {} };
     return api;
   }
   return { createEngine, miningCfg, streakCfg, streakView, derive, rewardOf, lockDueAt, dayNum, weekNum, H, DAY };
@@ -4915,7 +4926,7 @@ function lbBump() {}
 (function () {
   'use strict';
   const GC = window.GameCore, H = GC.H;
-  const MX = { hist: {}, qs: null, att: [], lb: [], l: {}, q: { tab: 'simple', play: null }, busy: {}, apQ: '', apCat: 'all', upAll: false, lastKey: '' };
+  const MX = { hist: {}, l: {}, busy: {}, apQ: '', apCat: 'all', upAll: false, lastKey: '' };
   const E = GC.createEngine(db, { now: () => nowMs() });
   const cfg = k => (S.cfg || {})[k] || {};
   const mcfg = () => GC.miningCfg(cfg('mining'));
@@ -4937,9 +4948,7 @@ function lbBump() {}
     BOOST_OFF: ['Boosts are unavailable.', 'বুস্ট বন্ধ আছে।'], BOOST_UNAVAILABLE: ['This boost is unavailable.', 'এই বুস্টটি পাওয়া যাচ্ছে না।'], BOOST_LEVEL: ['Your level is not eligible for this boost.', 'আপনার লেভেল এই বুস্টের জন্য প্রযোজ্য নয়।'],
     BOOST_ACTIVE: ['A boost is already active.', 'একটি বুস্ট আগে থেকেই চালু আছে।'], BOOST_MAX: ['Purchase limit reached for this boost.', 'এই বুস্টের কেনার সীমা শেষ।'],
     STREAK_OFF: ['Daily streak is unavailable.', 'ডেইলি স্ট্রিক বন্ধ আছে।'], STREAK_DUP: ['Already claimed today.', 'আজকের বোনাস নেওয়া হয়ে গেছে।'], STREAK_WINDOW: ['Outside today’s claim window.', 'আজকের ক্লেইম সময়ের বাইরে।'], STREAK_NOT_CONFIGURED: ['Reward for this day is not configured.', 'এই দিনের রিওয়ার্ড সেট করা নেই।'],
-    QUIZ_OFF: ['Quiz is unavailable.', 'কুইজ বন্ধ আছে।'], QUIZ_UNAVAILABLE: ['This question is unavailable.', 'এই প্রশ্নটি পাওয়া যাচ্ছে না।'], QUIZ_SCHEDULE: ['This question is not open right now.', 'এই প্রশ্ন এখন খোলা নেই।'], QUIZ_DONE: ['You already completed this question.', 'আপনি এই প্রশ্ন আগেই সম্পন্ন করেছেন।'],
-    QUIZ_OPEN: ['Finish your open question first.', 'আগে চলমান প্রশ্নটি শেষ করুন।'], QUIZ_LIMIT: ['Daily attempt limit reached.', 'আজকের চেষ্টার সীমা শেষ।'], QUIZ_MAX_ATTEMPTS: ['No attempts left for this question.', 'এই প্রশ্নে আর চেষ্টা বাকি নেই।'], QUIZ_REPLAY: ['This attempt is already closed.', 'এই চেষ্টাটি বন্ধ হয়ে গেছে।'],
-    QUIZ_NEEDS_SERVER: ['Quiz needs the secure server (Cloud Function) to be enabled by the admin.', 'কুইজ চালাতে অ্যাডমিনকে সিকিউর সার্ভার (Cloud Function) চালু করতে হবে।'],
+    PERM: ['The server refused this action (database rules not updated?). Ask the admin to publish the latest rules.', 'সার্ভার অনুরোধ নেয়নি (ডাটাবেস রুলস আপডেট হয়নি?)। অ্যাডমিনকে সর্বশেষ রুলস পাবলিশ করতে বলুন।'], NET: ['Network problem. Your balance was not changed — please retry.', 'নেটওয়ার্ক সমস্যা। আপনার ব্যালান্স বদলায়নি — আবার চেষ্টা করুন।'], UNSUPPORTED: ['Not supported.', 'সমর্থিত নয়।'],
     TIMEOUT: ['Server did not respond. Please try again.', 'সার্ভার সাড়া দেয়নি। আবার চেষ্টা করুন।'], AUTH: ['Telegram verification failed. Reopen the app from Telegram.', 'টেলিগ্রাম ভেরিফিকেশন ব্যর্থ। অ্যাপটি টেলিগ্রাম থেকে আবার খুলুন।'], CONFLICT: ['Busy, please try again.', 'ব্যস্ত, আবার চেষ্টা করুন।']
   };
   const em = r => { const e = ERR[r && r.code]; return e ? T2(e[0], e[1]) : T2('Something went wrong. Please try again.', 'কিছু ভুল হয়েছে। আবার চেষ্টা করুন।'); };
@@ -4961,9 +4970,9 @@ function lbBump() {}
       let r;
       if (secure()) r = await srv(op, params);
       else if (LOCAL[op]) r = await LOCAL[op](params || {});
-      else r = { ok: false, code: 'QUIZ_NEEDS_SERVER' };
+      else r = { ok: false, code: 'UNSUPPORTED' };
       return r;
-    } catch (e) { console.error(e); return { ok: false, code: 'TIMEOUT' }; }
+    } catch (e) { console.error(e); const m = String((e && (e.code || e.message)) || e); return { ok: false, code: /permission/i.test(m) ? 'PERM' : 'NET' }; }
     finally { MX.busy[op] = false; busy(false); renderAll(); }
   }
   const res = (r, okMsg) => { if (r && r.ok) { toast(okMsg); return true; } if (r) toast(em(r)); return false; };
@@ -4986,7 +4995,7 @@ function lbBump() {}
   function ring(s) {
     const R = 76, C = 2 * Math.PI * R, p = s.status === 'CLAIM_AVAILABLE' || s.status === 'CLAIMED' ? 1 : (s.progress || 0);
     const mid = s.status === 'MINING_ACTIVE' ? '<b data-mx-cd="' + s.session.endAt + '" class="mx-cd" data-mx-flip="1">' + cdText(s.remainingMs) + '</b><small>' + T2('remaining', 'বাকি') + '</small>' : s.status === 'CLAIM_AVAILABLE' ? '<b><i class="fas fa-gift"></i></b><small>' + T2('Reward ready', 'রিওয়ার্ড প্রস্তুত') + '</small>' : s.status === 'LOCKED' ? '<b><i class="fas fa-lock"></i></b><small>' + T2('Locked', 'লকড') + '</small>' : s.status === 'CLAIMED' ? '<b><i class="fas fa-check"></i></b><small>' + T2('Claimed', 'ক্লেইম হয়েছে') + '</small>' : '<b><i class="fas fa-bolt"></i></b><small>' + T2('Ready', 'প্রস্তুত') + '</small>';
-    return '<div class="mx-ringw"><svg viewBox="0 0 176 176"><circle class="bg" cx="88" cy="88" r="' + R + '"/><circle class="fg" id="mxFg" cx="88" cy="88" r="' + R + '" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (C * (1 - p)).toFixed(1) + '" ' + (s.status === 'MINING_ACTIVE' ? 'data-mx-ring="' + s.session.startAt + ',' + s.session.endAt + '"' : '') + '/></svg><div class="mx-ringc">' + mid + '</div></div>';
+    return '<div class="mx-ringw"><svg viewBox="0 0 176 176"><circle class="bg" cx="88" cy="88" r="' + R + '"/><circle class="fg" id="mxFg" cx="88" cy="88" r="' + R + '" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (C * (1 - p)).toFixed(1) + '" ' + (s.status === 'MINING_ACTIVE' ? 'data-mx-ring="' + s.session.startAt + ',' + s.session.endAt + '"' : '') + '/></svg><div class="mx-ringc">' + mid + '</div>' + (s.status === 'MINING_ACTIVE' ? '<div class="mx-orbit"><i></i><i></i><i></i></div>' : '') + '</div>';
   }
   SUBS.mining = {
     title: () => T2('Token Mining', 'টোকেন মাইনিং'), live: true,
@@ -5010,6 +5019,7 @@ function lbBump() {}
       h += '<div class="mx-grid">' + st(T2('Session earnings', 'সেশন আয়'), s.pending && sess.status === 'active' ? f4(s.pending.total) + ' ' + sy : lastRw ? f4(lastRw) + ' ' + sy : '—') + st(T2('Total mined', 'মোট মাইন'), f4(s.totalMined) + ' ' + sy) +
         st(T2('Started', 'শুরু'), sess ? dt(sess.startAt) : '—') + st(T2('Expires', 'শেষ'), sess && sess.status === 'active' ? dt(sess.endAt) : '—') +
         st(T2('Next claim', 'পরবর্তী ক্লেইম'), s.status === 'MINING_ACTIVE' ? cd(sess.endAt, true) : s.status === 'CLAIM_AVAILABLE' ? T2('Now', 'এখনই') : '—') + st(T2('Auto-lock at', 'অটো-লক'), s.lockAt && mc.lock.enabled ? dt(s.lockAt) : T2('Off', 'বন্ধ')) + '</div>';
+      h += '<div class="note"><i class="fas fa-forward"></i><span><b>' + T2('Next session', 'পরবর্তী সেশন') + ':</b> ' + (s.status === 'MINING_ACTIVE' ? T2('available after you claim, from ', 'ক্লেইম করার পর শুরু করা যাবে, ') + dt(sess.endAt) : s.status === 'CLAIM_AVAILABLE' ? T2('claim your reward to unlock the next session.', 'পরবর্তী সেশনের জন্য আগে রিওয়ার্ড ক্লেইম করুন।') : s.status === 'LOCKED' ? T2('unlock mining first.', 'আগে মাইনিং আনলক করুন।') : T2('you can start a new ' + mc.sessionHours + 'h session now.', 'এখনই নতুন ' + mc.sessionHours + ' ঘণ্টার সেশন শুরু করা যাবে।')) + '</span></div>';
       if (s.pending && sess.status === 'active' && s.pending.boost > 0) h += '<div class="note"><i class="fas fa-bolt"></i><span>' + T2('Base', 'বেস') + ' ' + f4(s.pending.base) + ' + ' + T2('Boost', 'বুস্ট') + ' ' + f4(s.pending.boost) + ' ' + sy + '</span></div>';
       h += '<div class="mx-mini" data-act="openSub" data-id="mxupgrade"><div class="ic"><i class="fas fa-arrow-up-right-dots"></i></div><div class="tx"><b>' + T2('Upgrade level', 'লেভেল আপগ্রেড') + '</b><small>' + (s.isMax ? T2('Maximum level reached', 'সর্বোচ্চ লেভেলে পৌঁছেছেন') : T2('Level', 'লেভেল') + ' ' + s.level + ' → ' + (s.level + 1)) + '</small></div><i class="fas fa-chevron-right"></i></div>';
       if (mc.boost.enabled) h += '<div class="mx-mini" data-act="openSub" data-id="mxboost"><div class="ic"><i class="fas fa-bolt"></i></div><div class="tx"><b>' + T2('Mining Boost', 'মাইনিং বুস্ট') + '</b><small>' + (s.boost ? T2('Active', 'চালু') + ' ×' + s.boostMult : T2('Temporarily increase your speed', 'সাময়িকভাবে গতি বাড়ান')) + '</small></div><i class="fas fa-chevron-right"></i></div>';
@@ -5037,13 +5047,13 @@ function lbBump() {}
         const cost = freeOk ? 0 : num(nl.cost), short = cost > tbal();
         h += '<div class="mx-hero"><div class="mx-cmp"><div><small>' + T2('Level', 'লেভেল') + ' ' + lvl + '</small><b>' + f4(s.speed) + '</b><small>' + sy + '/' + T2('hr', 'ঘণ্টা') + '</small></div><i class="fas fa-arrow-right"></i><div><small>' + T2('Level', 'লেভেল') + ' ' + nxt + '</small><b style="color:var(--pos)">' + f4(nl.speed) + '</b><small>' + sy + '/' + T2('hr', 'ঘণ্টা') + '</small></div></div>' + (nl.desc ? '<p class="tiny" style="margin-top:10px;text-align:center">' + esc(nl.desc) + '</p>' : '') + '</div>' +
           '<div class="mx-box">' + kv(T2('Upgrade cost', 'আপগ্রেড খরচ'), freeOk ? '<span style="color:var(--pos)">' + T2('FREE (one-time)', 'ফ্রি (একবার)') + '</span>' : f4(cost) + ' ' + sy) + kv(T2('Your token balance', 'আপনার টোকেন ব্যালান্স'), f4(tbal()) + ' ' + sy, short ? 'neg' : '') + kv(T2('Speed gain', 'গতি বৃদ্ধি'), '+' + f4(num(nl.speed) - s.speed) + ' ' + sy + '/' + T2('hr', 'ঘণ্টা'), 'pos') + '</div>' +
-          (short ? '<div class="note bad" style="margin:0 16px 12px"><i class="fas fa-circle-exclamation"></i><span>' + T2('Insufficient token balance. You need', 'টোকেন ব্যালান্স অপর্যাপ্ত। প্রয়োজন') + ' ' + f4(cost - tbal()) + ' ' + T2('more', 'আরও') + ' ' + sy + '.</span></div><div class="mx-act"><button class="btn" data-act="mxBuy"><i class="fas fa-cart-plus"></i> ' + T2('BUY TOKEN', 'টোকেন কিনুন') + '</button></div>' : '<div class="mx-act"><button class="btn" data-act="mxUpAsk" data-to="' + nxt + '"><i class="fas fa-arrow-up"></i> ' + (freeOk ? T2('FREE UPGRADE', 'ফ্রি আপগ্রেড') : T2('UPGRADE', 'আপগ্রেড')) + '</button></div>') +
+          (short ? '<div class="note bad" style="margin:0 16px 12px"><i class="fas fa-circle-exclamation"></i><span>' + T2('Insufficient token balance. You need', 'টোকেন ব্যালান্স অপর্যাপ্ত। প্রয়োজন') + ' ' + f4(cost - tbal()) + ' ' + T2('more', 'আরও') + ' ' + sy + '.</span></div><div class="mx-act"><button class="btn" data-act="mxBuy"><i class="fas fa-cart-plus"></i> ' + T2('BUY TOKEN', 'টোকেন কিনুন') + '</button>' + (featOn('deposit') && SUBS.deposit ? '<button class="btn ghost" data-act="openSub" data-id="deposit"><i class="fas fa-arrow-down"></i> ' + T2('DEPOSIT FUNDS', 'ডিপোজিট করুন') + '</button>' : '') + '</div>' : '<div class="mx-act"><button class="btn" data-act="mxUpAsk" data-to="' + nxt + '"><i class="fas fa-arrow-up"></i> ' + (freeOk ? T2('FREE UPGRADE', 'ফ্রি আপগ্রেড') : T2('UPGRADE', 'আপগ্রেড')) + '</button></div>') +
           '<div class="tiny" style="margin:-4px 20px 14px">' + T2('The new speed applies from your next mining session.', 'নতুন গতি পরবর্তী মাইনিং সেশন থেকে কার্যকর হবে।') + '</div>';
       }
       const top = MX.upAll ? mc.maxLevel : Math.min(mc.maxLevel, lvl + 8), rows = [];
       for (let n = Math.max(1, MX.upAll ? 1 : lvl - 1); n <= top; n++) { const l = mc.level(n); if (!l) continue; const cls = n === lvl ? 'cur' : n < lvl ? 'own' : n === lvl + 1 ? 'nx' : ''; rows.push('<div class="mx-lv ' + cls + '"><div class="n">' + n + '</div><div class="m">' + f4(l.speed) + ' ' + sy + '/' + T2('hr', 'ঘণ্টা') + '<small>' + (l.enabled === false ? T2('Not available', 'চালু নয়') : n <= lvl ? T2('Unlocked', 'আনলকড') : (n === lvl + 1 && freeOk ? T2('Free', 'ফ্রি') : f4(l.cost) + ' ' + sy)) + '</small></div><div class="r">' + (n === lvl ? chip('on', T2('Current', 'বর্তমান')) : n < lvl ? '<i class="fas fa-check" style="color:var(--pos)"></i>' : l.enabled === false ? '<i class="fas fa-lock" style="color:var(--faint)"></i>' : '') + '</div></div>'); }
       h += '<div class="mx-h"><span>' + T2('Level roadmap', 'লেভেল রোডম্যাপ') + '</span><a data-act="mxUpAll" style="color:var(--accent);cursor:pointer">' + (MX.upAll ? T2('Show less', 'কম দেখুন') : T2('Show all', 'সব দেখুন')) + '</a></div><div class="mx-box flat">' + rows.join('') + '</div>';
-      const hs = hist('upg'); h += '<div class="mx-h"><span>' + T2('Upgrade history', 'আপগ্রেড ইতিহাস') + '</span></div>' + (hs.length ? '<div class="mx-box flat">' + hs.slice(0, 12).map(x => '<div class="mx-lv"><div class="n"><i class="fas fa-arrow-up"></i></div><div class="m">' + T2('Level', 'লেভেল') + ' ' + x.from + ' → ' + x.to + (x.free ? ' · ' + T2('Free', 'ফ্রি') : '') + (x.reset ? ' · ' + T2('Reset', 'রিসেট') : '') + '<small>' + dt(x.ts) + '</small></div><div class="r">' + (num(x.cost) > 0 ? '-' + f4(x.cost) : '') + '</div></div>').join('') + '</div>' : empty('fa-clock-rotate-left', T2('No upgrades yet', 'এখনও কোনো আপগ্রেড নেই')));
+      const hs = hist('upg'); h += '<div class="mx-h"><span>' + T2('Upgrade history', 'আপগ্রেড ইতিহাস') + '</span></div>' + (hs.length ? '<div class="mx-box flat">' + hs.slice(0, 12).map(x => '<div class="mx-lv"><div class="n"><i class="fas fa-arrow-up"></i></div><div class="m">' + T2('Level', 'লেভেল') + ' ' + x.from + ' → ' + x.to + (x.free ? ' · ' + T2('Free', 'ফ্রি') : '') + (x.reset ? ' · ' + T2('Reset', 'রিসেট') : '') + '<small>' + dt(x.ts) + ' · ' + T2('Ref', 'রেফ') + ' ' + esc(String(x.id || '').slice(-12)) + '</small></div><div class="r">' + (num(x.cost) > 0 ? '-' + f4(x.cost) : '') + '<small style="display:block;color:var(--pos);font-size:.62rem">' + T2('Completed', 'সম্পন্ন') + '</small></div></div>').join('') + '</div>' : empty('fa-clock-rotate-left', T2('No upgrades yet', 'এখনও কোনো আপগ্রেড নেই')));
       return h;
     }
   };
@@ -5093,64 +5103,6 @@ function lbBump() {}
   };
   ACT.mxStreak = async () => { const r = await act('streak.claim'); if (res(r, '')) openSheet('<div class="res"><div class="big ok"><i class="fas fa-fire"></i></div><h3>' + (r.completed ? T2('30-day streak completed!', '৩০ দিনের স্ট্রিক সম্পন্ন!') : T2('Day ', 'দিন ') + r.day + T2(' claimed', ' ক্লেইম হয়েছে')) + '</h3></div><div class="qbox">' + kv(T2('Reward', 'রিওয়ার্ড'), rw(r.reward), 'pos') + (r.bonus ? kv(T2('Completion bonus', 'কমপ্লিশন বোনাস'), rw(r.bonus), 'pos') : '') + '</div><div class="btns"><button class="btn" data-act="closeSheet">' + t('done') + '</button></div>'); };
 
-  /* ---------- QUIZ ---------- */
-  function qLoad() {
-    if (MX.l.qs) return; MX.l.qs = true;
-    db.ref('quizQuestions').on('value', s => { MX.qs = s.exists() ? s.val() : {}; renderAll(); }, () => { MX.qs = {}; renderAll(); });
-    db.ref('quizLeaderboard').orderByChild('score').limitToLast(20).on('value', s => { const a = []; s.forEach(c => { a.push(Object.assign({ id: c.key }, c.val())); }); MX.lb = a.sort((p, q) => num(q.score) - num(p.score)); renderAll(); }, () => {});
-    listen('quiz', 'quizAttempts/' + uid, 40);
-  }
-  const DIFF = { easy: ['Easy', 'সহজ', 'ok'], medium: ['Medium', 'মাঝারি', 'warn'], hard: ['Hard', 'কঠিন', 'bad'] };
-  function qDone(q, id) {
-    const z = ((S.user || {}).quiz) || {}, tz = num(cfg('quiz').tzOffsetMin), t0 = nowMs(), per = q.challenge === 'daily' ? 'd' + GC.dayNum(t0, tz) : q.challenge === 'weekly' ? 'w' + GC.weekNum(t0, tz) : 'x';
-    return !!(z.done || {})[id + '_' + per];
-  }
-  function qVisible(q, qc) { const t0 = nowMs(), cat = (qc.categories || {})[q.category] || {}; return q && q.enabled !== false && cat.enabled !== false && !(num(q.startAt) > t0) && !(num(q.endAt) > 0 && num(q.endAt) < t0); }
-  SUBS.mxquiz = {
-    title: () => T2('Quiz Earn', 'কুইজ আর্ন'), live: true,
-    render() {
-      qLoad(); const qc = cfg('quiz'); if (!S.cfgReady || MX.qs === null) return '<div class="mx-sk"></div><div class="mx-sk"></div>';
-      if (qc.enabled !== true) return empty('fa-circle-question', T2('Quiz is currently unavailable.', 'কুইজ বর্তমানে বন্ধ আছে।'));
-      const tab = MX.q.tab, tabs = [['simple', T2('Simple', 'সাধারণ')], ['advanced', T2('Advanced', 'অ্যাডভান্সড')], ['challenge', T2('Challenges', 'চ্যালেঞ্জ')], ['history', T2('History', 'ইতিহাস')], ['board', T2('Leaderboard', 'লিডারবোর্ড')]];
-      let h = '<div class="mx-tabs">' + tabs.map(x => '<button class="' + (tab === x[0] ? 'on' : '') + '" data-act="mxQTab" data-id="' + x[0] + '">' + x[1] + '</button>').join('') + '</div>';
-      const z = ((S.user || {}).quiz) || {}, dk = GC.dayNum(nowMs(), num(qc.tzOffsetMin)), used = z.day && z.day.k === dk ? num(z.day.n) : 0, lim = num(qc.dailyAttempts) > 0 ? num(qc.dailyAttempts) : 20, stt = z.stats || {};
-      if (!secure()) h += '<div class="note warn" style="margin:0 16px 12px"><i class="fas fa-shield-halved"></i><span>' + T2('Quiz answers are checked on the secure server, which the admin has not enabled yet.', 'কুইজের উত্তর সিকিউর সার্ভারে যাচাই হয়, যা অ্যাডমিন এখনও চালু করেননি।') + '</span></div>';
-      if (tab === 'history') { const a = hist('quiz'); return h + (a.length ? '<div class="mx-box flat">' + a.map(x => '<div class="mx-lv"><div class="n"><i class="fas fa-' + (x.correct ? 'check' : x.timeout ? 'clock' : 'xmark') + '" style="color:var(--' + (x.correct ? 'pos' : 'neg') + ')"></i></div><div class="m">' + esc(((MX.qs || {})[x.qid] || {}).question || x.qid).slice(0, 60) + '<small>' + dt(x.ts) + ' · ' + (x.correct ? T2('Correct', 'সঠিক') : x.timeout ? T2('Time up', 'সময় শেষ') : T2('Wrong', 'ভুল')) + '</small></div><div class="r">' + (num(x.main) > 0 ? '+' + fmt(x.main) + ' ' + sym() : '') + (num(x.token) > 0 ? ' +' + f4(x.token) + ' ' + tk() : '') + '</div></div>').join('') + '</div>' : empty('fa-clock-rotate-left', T2('No quiz attempts yet', 'এখনও কোনো কুইজ চেষ্টা নেই'))); }
-      if (tab === 'board') return h + (MX.lb.length ? '<div class="mx-box flat">' + MX.lb.map((x, i) => '<div class="mx-lv ' + (x.id === uid ? 'cur' : '') + '"><div class="n">' + (i + 1) + '</div><div class="m">' + esc(x.name || 'User') + (x.id === uid ? ' · ' + T2('You', 'আপনি') : '') + '<small>' + num(x.correct) + ' ' + T2('correct', 'সঠিক') + ' / ' + num(x.attempts) + '</small></div><div class="r">' + num(x.score) + ' ' + T2('pts', 'পয়েন্ট') + '</div></div>').join('') + '</div>' : empty('fa-ranking-star', T2('No scores yet', 'এখনও কোনো স্কোর নেই')));
-      h += '<div class="mx-grid">' + st(T2('Today attempts', 'আজকের চেষ্টা'), used + '/' + lim) + st(T2('Correct answers', 'সঠিক উত্তর'), num(stt.correct) + '/' + num(stt.total)) + '</div>';
-      const qs = Object.keys(MX.qs || {}).map(k => Object.assign({ id: k }, MX.qs[k])).filter(q => qVisible(q, qc) && (tab === 'challenge' ? !!q.challenge : !q.challenge && (q.category || 'simple') === tab));
-      if (!qs.length) return h + empty('fa-circle-question', T2('No questions available here right now.', 'এখানে এখন কোনো প্রশ্ন নেই।'));
-      return h + qs.map(q => { const d = DIFF[q.difficulty] || DIFF.easy, done = qDone(q, q.id); return '<div class="mx-q"><div class="mx-between" style="margin-bottom:8px"><div class="mx-row">' + chip(d[2], T2(d[0], d[1])) + (q.challenge ? chip('on', q.challenge === 'daily' ? T2('Daily', 'দৈনিক') : T2('Weekly', 'সাপ্তাহিক')) : '') + '</div><span class="tiny"><i class="fas fa-clock"></i> ' + (num(q.timer) || num(qc.defaultTimer) || 30) + 's</span></div><h4>' + esc(q.question) + '</h4><div class="mx-between"><span class="tiny" style="color:var(--accent)">' + rw({ type: q.rewardType || 'main', main: q.main, token: q.token }) + '</span>' + (done ? chip('ok', T2('Completed', 'সম্পন্ন')) : '<button class="btn sm" data-act="mxQStart" data-id="' + esc(q.id) + '"><i class="fas fa-play"></i> ' + T2('Start', 'শুরু') + '</button>') + '</div></div>'; }).join('');
-    }
-  };
-  ACT.mxQTab = d => { MX.q.tab = d.id; renderAll(); };
-  ACT.mxQStart = async d => {
-    const r = await act('quiz.start', { qid: d.id }, T2('Starting…', 'শুরু হচ্ছে…')); if (!r || !r.ok) { if (r) toast(em(r)); return; }
-    MX.q.play = { qid: d.id, attemptId: r.attemptId, expiresAt: num(r.expiresAt), timer: num(r.timer), sel: -1, result: null, sending: false }; openSub('mxplay');
-  };
-  SUBS.mxplay = {
-    title: () => T2('Quiz', 'কুইজ'), live: true,
-    render() {
-      const p = MX.q.play, q = p && (MX.qs || {})[p.qid]; if (!p || !q) return empty('fa-circle-question', T2('Question not found.', 'প্রশ্ন পাওয়া যায়নি।'));
-      const opts = (Array.isArray(q.options) ? q.options : Object.values(q.options || {})).slice(0, 4), L = ['A', 'B', 'C', 'D'], r = p.result;
-      let h = '<div class="mx-q" style="margin-top:4px"><div class="mx-between" style="margin-bottom:10px">' + chip((DIFF[q.difficulty] || DIFF.easy)[2], T2((DIFF[q.difficulty] || DIFF.easy)[0], (DIFF[q.difficulty] || DIFF.easy)[1])) + (r ? '' : chip('on', '<i class="fas fa-clock"></i> ' + cd(p.expiresAt))) + '</div>' + (r ? '' : '<div class="mx-bar" style="margin-bottom:12px"><i id="mxQBar" style="width:100%"></i></div>') + '<h4 style="font-size:1rem">' + esc(q.question) + '</h4></div><div style="padding:0 16px">' +
-        opts.map((o, i) => '<button class="mx-opt ' + (r ? (r.correctIndex === i ? 'right' : p.sel === i ? 'wrong' : '') : p.sel === i ? 'sel' : '') + '" ' + (r || p.sending ? 'disabled' : 'data-act="mxPick" data-i="' + i + '"') + '><b>' + L[i] + '</b>' + esc(o) + '</button>').join('') + '</div>';
-      if (!r) h += '<div class="mx-act"><button class="btn" data-act="mxSubmit" ' + (p.sel < 0 || p.sending ? 'disabled' : '') + '><i class="fas fa-paper-plane"></i> ' + T2('SUBMIT ANSWER', 'উত্তর জমা দিন') + '</button></div>';
-      else h += '<div class="mx-box"><div class="mx-row" style="margin-bottom:8px">' + chip(r.correct ? 'ok' : 'bad', r.correct ? T2('Correct!', 'সঠিক!') : r.timeout ? T2('Time is up', 'সময় শেষ') : T2('Wrong answer', 'ভুল উত্তর')) + '</div>' + (r.correct && (num(r.reward.main) > 0 || num(r.reward.token) > 0) ? kv(T2('Reward', 'রিওয়ার্ড'), rw({ type: r.reward.type, main: r.reward.main, token: r.reward.token }), 'pos') : '') + (r.explanation ? '<p class="tiny" style="margin-top:8px;line-height:1.6">' + esc(r.explanation) + '</p>' : '') + '</div><div class="mx-act"><button class="btn" data-act="mxQDone">' + t('done') + '</button></div>';
-      return h;
-    }
-  };
-  ACT.mxPick = d => { const p = MX.q.play; if (!p || p.result || p.sending) return; p.sel = num(d.i); renderSub(false); };
-  ACT.mxQDone = () => { MX.q.play = null; closeSub(); };
-  async function qSubmit(choice) {
-    const p = MX.q.play; if (!p || p.result || p.sending) return; p.sending = true; renderSub(false);
-    const r = await act('quiz.submit', { attemptId: p.attemptId, choice }, T2('Checking…', 'যাচাই হচ্ছে…')); p.sending = false;
-    if (!r || !r.ok) { if (r) toast(em(r)); if (r && r.code === 'QUIZ_REPLAY') { MX.q.play = null; closeSub(); } else renderSub(false); return; }
-    p.result = { correct: !!r.correct, timeout: !!r.timeout, correctIndex: r.correctIndex, explanation: r.explanation, reward: r.reward || {} };
-    if (!secure() && r._lb) E.quizLb(uid, tgUser.first_name || '', r._lb.pts, r._lb.ok); renderSub(false);
-  }
-  ACT.mxSubmit = () => { const p = MX.q.play; if (p && p.sel >= 0) qSubmit(p.sel); };
-
   /* ---------- ALL PAGES directory ---------- */
   const CATS = [['dash', 'Dashboard', 'ড্যাশবোর্ড'], ['tok', 'Token Ecosystem', 'টোকেন ইকোসিস্টেম'], ['earn', 'Rewards & Earnings', 'রিওয়ার্ড ও আয়'], ['fin', 'Wallet & Finance', 'ওয়ালেট ও ফাইন্যান্স'], ['acc', 'Account & Support', 'অ্যাকাউন্ট ও সাপোর্ট']];
   const spinOn = () => { const c = cfg('spinWheel'); return c.enabled === true || (cfg('spin').enabled === true); };
@@ -5171,7 +5123,6 @@ function lbBump() {}
     { id: 'transfer', cat: 'tok', ic: 'fa-paper-plane', en: 'Transfer', bn: 'ট্রান্সফার', op: 1, on: () => featOn('token') },
     { id: 'earn', cat: 'earn', ic: 'fa-bolt', en: 'Earn', bn: 'আর্ন', tab: 1 },
     { id: 'mxstreak', cat: 'earn', ic: 'fa-fire', en: '30-Day Streak', bn: '৩০ দিনের স্ট্রিক', sub: 1, nw: 1, on: () => GC.streakCfg(cfg('streak')).enabled },
-    { id: 'mxquiz', cat: 'earn', ic: 'fa-circle-question', en: 'Quiz Earn', bn: 'কুইজ আর্ন', sub: 1, nw: 1, on: () => cfg('quiz').enabled === true },
     { id: 'bonus', cat: 'earn', ic: 'fa-gift', en: 'Daily Bonus', bn: 'ডেইলি বোনাস', sub: 1, on: () => featOn('dailyBonus') },
     { id: 'spin', cat: 'earn', ic: 'fa-dharmachakra', en: 'Spin Wheel', bn: 'স্পিন হুইল', sub: 1, on: spinOn },
     { id: 'vault', cat: 'earn', ic: 'fa-gem', en: 'Reward Vault', bn: 'রিওয়ার্ড ভল্ট', sub: 1, on: () => featOn('vault') },
@@ -5197,7 +5148,7 @@ function lbBump() {}
     const q = MX.apQ.trim().toLowerCase(), fv = favs(), all = REG.filter(regOk).map(p => Object.assign({}, p, { title: pcfg(p.id).label || T2(p.en, p.bn) }));
     const fl = all.filter(p => (MX.apCat === 'all' || MX.apCat === 'fav' ? true : p.cat === MX.apCat) && (MX.apCat !== 'fav' || fv[p.id]) && (!q || (p.title + ' ' + p.en + ' ' + p.bn).toLowerCase().includes(q)));
     if (!fl.length) return empty('fa-magnifying-glass', T2('No pages found', 'কোনো পেজ পাওয়া যায়নি'));
-    const card = p => '<div class="mx-pg" data-act="mxGo" data-id="' + p.id + '">' + (isNew(p) ? '<span class="mx-new">NEW</span>' : '') + '<span class="fv ' + (fv[p.id] ? 'on' : '') + '" data-act="mxFav" data-id="' + p.id + '"><i class="fas fa-star"></i></span><div class="ic"><i class="fas ' + p.ic + '"></i></div>' + esc(p.title) + '</div>';
+    const CC = { dash: ['#3D8BFF', '#6A5CFF'], tok: ['#1FD6C1', '#2B8CFF'], earn: ['#FFB547', '#FF6B6B'], fin: ['#35D98B', '#16A5C9'], acc: ['#B06CFF', '#FF5FA2'] }, card = p => '<div class="mx-pg" data-act="mxGo" data-id="' + p.id + '" style="--c1:' + CC[p.cat][0] + ';--c2:' + CC[p.cat][1] + '">' + (isNew(p) ? '<span class="mx-new">NEW</span>' : '') + '<span class="fv ' + (fv[p.id] ? 'on' : '') + '" data-act="mxFav" data-id="' + p.id + '"><i class="fas fa-star"></i></span><div class="ic"><i class="fas ' + p.ic + '"></i></div>' + esc(p.title) + '</div>';
     const by = c => fl.filter(p => p.cat === c); let h = '';
     if (MX.apCat === 'all' && !q) { const f = fl.filter(p => fv[p.id]); if (f.length) h += '<div class="mx-h"><span><i class="fas fa-star" style="color:var(--warn)"></i> ' + T2('Favorites', 'ফেভারিট') + '</span></div><div class="mx-ap">' + f.map(card).join('') + '</div>'; }
     CATS.forEach(c => { const a = by(c[0]); if (a.length) h += '<div class="mx-h"><span>' + T2(c[1], c[2]) + '</span><span>' + a.length + '</span></div><div class="mx-ap">' + a.map(card).join('') + '</div>'; });
@@ -5225,7 +5176,7 @@ function lbBump() {}
     return '<div class="mx-mini" id="mxCard" data-act="openSub" data-id="mining"><div class="ic"><i class="fas fa-hammer"></i></div><div class="tx"><b>' + T2('Token Mining', 'টোকেন মাইনিং') + ' · ' + T2('Lv', 'লেভেল') + ' ' + s.level + '</b><small>' + sub + '</small></div>' + stChip(s.status) + '</div>';
   }
   function strip() {
-    const it = [['mxstreak', 'fa-fire', T2('Streak', 'স্ট্রিক'), GC.streakCfg(cfg('streak')).enabled], ['mxquiz', 'fa-circle-question', T2('Quiz', 'কুইজ'), cfg('quiz').enabled === true], ['allpages', 'fa-table-cells-large', T2('All Pages', 'সব পেজ'), true]].filter(x => x[3] && pcfg(x[0]).visible !== false);
+    const it = [['mxstreak', 'fa-fire', T2('Streak', 'স্ট্রিক'), GC.streakCfg(cfg('streak')).enabled], ['allpages', 'fa-table-cells-large', T2('All Pages', 'সব পেজ'), true]].filter(x => x[3] && pcfg(x[0]).visible !== false);
     return it.length > 1 ? '<div class="mx-strip" id="mxStrip" style="grid-template-columns:repeat(' + it.length + ',1fr)">' + it.map(x => '<button data-act="openSub" data-id="' + x[0] + '"><i class="fas ' + x[1] + '"></i>' + x[2] + '</button>').join('') + '</div>' : '';
   }
   function inject(tabId, html) { try { const root = $(tabId); if (!root || !html) return; const d = document.createElement('div'); d.innerHTML = html; const n = d.firstElementChild, top = root.querySelector('.top') || root.firstElementChild; if (n && top) top.after(n); } catch (e) { console.warn(e); } }
@@ -5237,12 +5188,173 @@ function lbBump() {}
     const n = nowMs();
     document.querySelectorAll('[data-mx-cd]').forEach(el => { const ms = num(el.dataset.mxCd) - n; el.textContent = cdText(ms); if (ms <= 0 && el.dataset.mxFlip && !el._f) { el._f = 1; renderAll(); } });
     const r = document.querySelector('[data-mx-ring]'); if (r) { const [a, b] = r.dataset.mxRing.split(',').map(Number), p = Math.min(1, Math.max(0, (n - a) / (b - a))), C = 2 * Math.PI * 76; r.setAttribute('stroke-dashoffset', (C * (1 - p)).toFixed(1)); const bar = $('mxBar'); if (bar) bar.style.width = (p * 100).toFixed(1) + '%'; }
-    const p = MX.q.play; if (p && !p.result && !p.sending && n > p.expiresAt && subStack.length && subStack[subStack.length - 1].id === 'mxplay') qSubmit(p.sel);
     if (S.booted && S.userReady) { const k = mst().status + ':' + mcfg().enabled; if (MX.lastKey && k !== MX.lastKey) renderAll(); MX.lastKey = k; }
     const lbl = $('mxNavLbl'); if (lbl) lbl.textContent = T2('All Pages', 'সব পেজ');
     const nb = document.querySelector('#nav .nv[data-id="allpages"]'); if (nb) { const nw = S.cfgReady && REG.some(p => regOk(p) && isNew(p)); let dot = nb.querySelector('.mx-nvdot'); if (nw && !dot) { dot = document.createElement('i'); dot.className = 'mx-nvdot'; nb.appendChild(dot); } else if (!nw && dot) dot.remove(); }
   }, 1000);
   /* the SUBS.mining "claimed / unlocked" flip guard resets whenever DOM is rebuilt, so _f flags never stick */
+
+  /* ================= PREMIUM BOOST PAGE (replaces the first version) ================= */
+  SUBS.mxboost = {
+    title: () => T2('Mining Boost', 'মাইনিং বুস্ট'), live: true,
+    render() {
+      listen('boosts', 'miningBoosts/' + uid, 20);
+      const mc = mcfg(), s = mst(), sy = tk(); if (!mc.enabled || !mc.boost.enabled) return empty('fa-bolt', T2('Boosts are currently unavailable.', 'বুস্ট বর্তমানে বন্ধ আছে।'));
+      const m = ((S.user || {}).mining) || {}, bb = m.boostBuys || {}; let h = '';
+      if (s.boost) { const b = s.boost, tot = Math.max(1, num(b.until) - num(b.startAt)), pr = Math.min(1, Math.max(0, (nowMs() - num(b.startAt)) / tot));
+        h += '<div class="mx-hero mx-bactive"><div class="mx-between"><div class="mx-row"><span class="mx-bolt"><i class="fas fa-bolt"></i></span><div><b style="font-size:1rem">' + esc(b.name || T2('Active boost', 'চালু বুস্ট')) + '</b><div class="tiny">' + T2('Boost active', 'বুস্ট চালু') + '</div></div></div><div class="mx-bx">×' + s.boostMult + '</div></div><div class="mx-between" style="margin:12px 0 8px;font-size:.78rem;font-weight:800"><span>' + T2('Remaining', 'বাকি') + '</span><b class="mx-cd" data-mx-cd="' + b.until + '" data-mx-flip="1">' + cdText(num(b.until) - nowMs()) + '</b></div><div class="mx-bar"><i data-mx-bar="' + b.startAt + ',' + b.until + '" style="width:' + (pr * 100).toFixed(1) + '%"></i></div><p class="tiny" style="margin-top:10px">' + T2('Effective speed', 'কার্যকর গতি') + ': <b style="color:var(--accent)">' + f4(s.speed * s.boostMult) + ' ' + sy + '/' + T2('hr', 'ঘণ্টা') + '</b> (' + T2('base', 'বেস') + ' ' + f4(s.speed) + ' ' + T2('+ boost', '+ বুস্ট') + ' ' + f4(s.speed * (s.boostMult - 1)) + '). ' + T2('Returns to base speed automatically when it ends.', 'শেষ হলে নিজে থেকেই বেস গতিতে ফিরবে।') + '</p></div>'; }
+      const packs = Object.keys(mc.boost.packs).map(k => Object.assign({ id: k }, mc.boost.packs[k])).filter(p => p && p.enabled !== false && num(p.mult) > 1 && num(p.hours) > 0).sort((a, b) => num(a.mult) - num(b.mult));
+      h += '<div class="mx-h"><span>' + T2('Available boosts', 'উপলব্ধ বুস্ট') + '</span><span>' + packs.length + '</span></div>';
+      if (!packs.length) h += empty('fa-bolt', T2('No boosts available right now.', 'এখন কোনো বুস্ট নেই।'));
+      h += packs.map((p, i) => {
+        const lvOk = s.level >= num(p.minLevel) && !(num(p.maxLevel) > 0 && s.level > num(p.maxLevel)), left = num(p.maxPurchases) > 0 ? num(p.maxPurchases) - num(bb[p.id]) : null, cost = num(p.cost), short = cost > tbal();
+        const why = !lvOk ? T2('Requires level ' + (num(p.minLevel) || 1) + (num(p.maxLevel) > 0 ? '–' + p.maxLevel : '+'), 'লেভেল ' + (num(p.minLevel) || 1) + (num(p.maxLevel) > 0 ? '–' + p.maxLevel : '+') + ' প্রয়োজন') : left !== null && left <= 0 ? T2('Purchase limit reached', 'কেনার সীমা শেষ') : s.boost ? T2('A boost is already active', 'বুস্ট চালু আছে') : s.status === 'LOCKED' ? T2('Unlock mining first', 'আগে মাইনিং আনলক করুন') : '';
+        const hue = [210, 275, 330, 28, 150, 190][i % 6];
+        return '<div class="mx-bc" style="--bh:' + hue + '"><div class="mx-bc-top"><div class="mx-bmul"><b>×' + num(p.mult) + '</b><small>' + T2('speed', 'গতি') + '</small></div><div class="mx-bmeta"><b>' + esc(p.name || 'Boost') + '</b><div class="mx-bchips"><span><i class="fas fa-clock"></i> ' + p.hours + T2('h', ' ঘণ্টা') + '</span>' + (left !== null ? '<span><i class="fas fa-ticket"></i> ' + left + ' ' + T2('left', 'বাকি') + '</span>' : '') + '</div></div><div class="mx-energy"><i></i><i></i><i></i><i></i></div></div>' +
+          '<div class="mx-bc-info"><div><small>' + T2('Mining speed', 'মাইনিং গতি') + '</small><b>' + f4(s.speed) + ' → <em>' + f4(s.speed * num(p.mult)) + '</em></b></div><div><small>' + T2('Token cost', 'টোকেন খরচ') + '</small><b>' + (cost > 0 ? f4(cost) + ' ' + sy : T2('Free', 'ফ্রি')) + '</b></div></div>' + (p.desc ? '<p class="tiny" style="margin:0 0 10px">' + esc(p.desc) + '</p>' : '') +
+          (why ? '<button class="btn ghost" disabled>' + why + '</button>' : short ? '<div class="note bad" style="margin:0 0 10px"><i class="fas fa-circle-exclamation"></i><span>' + T2('Insufficient token balance', 'টোকেন ব্যালান্স অপর্যাপ্ত') + ': ' + f4(tbal()) + ' ' + sy + '</span></div><button class="btn" data-act="mxBuy"><i class="fas fa-cart-plus"></i> ' + T2('BUY TOKEN', 'টোকেন কিনুন') + '</button>' : '<button class="btn" data-act="mxBoostAsk" data-id="' + esc(p.id) + '"><i class="fas fa-bolt"></i> ' + T2('ACTIVATE BOOST', 'বুস্ট চালু করুন') + '</button>') + '</div>';
+      }).join('');
+      const hs = hist('boosts'); h += '<div class="mx-h"><span>' + T2('Boost history', 'বুস্ট ইতিহাস') + '</span></div>' + (hs.length ? '<div class="mx-box flat">' + hs.slice(0, 12).map(x => '<div class="mx-lv"><div class="n"><i class="fas fa-bolt"></i></div><div class="m">×' + x.mult + ' · ' + x.hours + T2('h', ' ঘণ্টা') + '<small>' + dt(x.ts) + ' · ' + (num(x.until) > nowMs() ? T2('Active', 'চালু') : T2('Expired', 'শেষ')) + '</small></div><div class="r">' + (num(x.cost) > 0 ? '-' + f4(x.cost) : '') + '</div></div>').join('') + '</div>' : empty('fa-clock-rotate-left', T2('No boosts purchased yet', 'এখনও কোনো বুস্ট কেনা হয়নি')));
+      return h;
+    }
+  };
+  ACT.mxBoostAsk = d => {
+    const mc = mcfg(), p = (mc.boost.packs || {})[d.id] || {}, s = mst();
+    openSheet('<h3><i class="fas fa-bolt" style="color:var(--warn)"></i>' + T2('Activate boost', 'বুস্ট চালু করুন') + '</h3><div class="qbox">' + kv(T2('Boost', 'বুস্ট'), esc(p.name || '')) + kv(T2('Multiplier', 'মাল্টিপ্লায়ার'), '×' + num(p.mult)) + kv(T2('Duration', 'সময়'), p.hours + T2(' hours', ' ঘণ্টা')) + kv(T2('Speed', 'গতি'), f4(s.speed) + ' → ' + f4(s.speed * num(p.mult)) + ' ' + tk() + '/' + T2('hr', 'ঘণ্টা')) + kv(T2('Cost', 'খরচ'), f4(p.cost) + ' ' + tk(), 'neg') + '</div><div class="btns"><button class="btn ghost" data-act="closeSheet">' + t('cancel') + '</button><button class="btn" data-act="mxBoostGo" data-id="' + esc(d.id) + '"><i class="fas fa-check"></i> ' + t('confirm') + '</button></div>');
+  };
+  ACT.mxBoostGo = async d => { closeSheet(); const r = await act('mining.boost', { pack: d.id }, T2('Activating boost…', 'বুস্ট চালু হচ্ছে…')); if (res(r, '')) openSheet('<div class="res"><div class="big ok"><i class="fas fa-bolt"></i></div><h3>' + T2('Boost activated', 'বুস্ট চালু হয়েছে') + '</h3></div><div class="qbox">' + kv(T2('Multiplier', 'মাল্টিপ্লায়ার'), '×' + r.boost.mult) + kv(T2('Ends', 'শেষ'), dt(r.boost.until)) + kv(T2('Paid', 'পরিশোধ'), f4(r.cost) + ' ' + tk()) + '</div><div class="btns"><button class="btn" data-act="closeSheet">' + t('done') + '</button></div>'); };
+
+  /* ================= TASKS (official + community) with 10-second server-timestamp countdown ================= */
+  const TK = { f: 'all', q: '', start: null, fail: {}, tab: 'tasks', on: false };
+  const tsec = () => Math.max(10, num(cfg('taskVerify').seconds) || 10);
+  function tkLoad() { if (TK.on) return; TK.on = true; try { ensureActiveTasksListener(); } catch (e) {} db.ref('taskStarts/' + uid).on('value', s => { TK.start = s.exists() ? s.val() : {}; renderAll(); }, () => { TK.start = {}; }); }
+  function taskList() {
+    const out = [], w = cfg('webTasks'), done = (S.user || {}).taskHistory || {};
+    Object.keys(w).forEach(k => { const x = w[k]; if (!taskLive(x)) return; out.push({ id: k, kind: 'web', title: x.name || x.title || 'Task', desc: x.description || x.desc || '', cat: x.category || T2('Official', 'অফিসিয়াল'), reward: num(x.reward), url: x.url, icon: x.icon, done: !!done[k], raw: x, lock: num(x.minReferrals) > num((S.user || {}).referrals) ? T2('Needs ' + num(x.minReferrals) + ' referrals', num(x.minReferrals) + ' রেফারেল দরকার') : (num(x.completionLimit) > 0 && num(x.completedCount) >= num(x.completionLimit)) ? T2('All slots taken', 'স্লট শেষ') : '' }); });
+    (S.activeTasks || []).forEach(x => { if (x.status !== 'active') return; const mine = String(x.creatorId) === uid, had = !!(x.participants && x.participants[uid]); out.push({ id: x.taskId, kind: 'active', title: x.type || 'Task', desc: x.link || '', cat: T2('Community', 'কমিউনিটি'), reward: num(x.reward), url: x.link, done: had, raw: x, lock: mine ? T2('Your own task', 'আপনার নিজের টাস্ক') : num(x.participantsCompleted) >= num(x.participantLimit) ? T2('All slots taken', 'স্লট শেষ') : '' }); });
+    return out;
+  }
+  function tstate(x) {
+    if (x.done) return 'COMPLETED'; if (TK.fail[x.id]) return 'FAILED'; const st = TK.start && TK.start[x.id]; if (!st) return 'AVAILABLE';
+    return nowMs() - num(st) < tsec() * 1000 ? 'IN_PROGRESS' : 'WAITING';
+  }
+  const TS = { AVAILABLE: ['Available', 'উপলব্ধ', 'on'], IN_PROGRESS: ['In progress', 'চলমান', 'warn'], WAITING: ['Ready to verify', 'ভেরিফাই প্রস্তুত', 'ok'], COMPLETED: ['Completed', 'সম্পন্ন', 'ok'], FAILED: ['Failed', 'ব্যর্থ', 'bad'] };
+  SUBS.mxtasks = {
+    title: () => T2('Tasks', 'টাস্ক'), live: true,
+    render() {
+      tkLoad(); if (!S.cfgReady || TK.start === null) return '<div class="mx-sk"></div><div class="mx-sk"></div>';
+      const all = taskList().map(x => Object.assign(x, { s: tstate(x) })), cnt = k => all.filter(x => k === 'pending' ? (x.s === 'IN_PROGRESS' || x.s === 'WAITING') : k === 'avail' ? (x.s === 'AVAILABLE' || x.s === 'FAILED') : x.s === 'COMPLETED').length;
+      let h = '<div class="mx-grid" style="grid-template-columns:repeat(3,1fr)">' + st(T2('Available', 'উপলব্ধ'), cnt('avail')) + st(T2('Pending', 'চলমান'), cnt('pending')) + st(T2('Completed', 'সম্পন্ন'), cnt('done')) + '</div>';
+      if (TK.tab === 'history') {
+        const th = (S.user || {}).taskHistory || {}, ah = (S.user || {}).activeTaskHistory || {}, w = cfg('webTasks'), rows = Object.keys(th).map(k => ({ t: num(th[k]), n: (w[k] || {}).name || k, r: num((w[k] || {}).reward) })).concat(Object.keys(ah).map(k => ({ t: num(ah[k].timestamp), n: T2('Community task', 'কমিউনিটি টাস্ক'), r: num(ah[k].reward) }))).sort((a, b) => b.t - a.t).slice(0, 40);
+        return h + '<div class="mx-tabs"><button data-act="mxTkTab" data-id="tasks">' + T2('Tasks', 'টাস্ক') + '</button><button class="on" data-act="mxTkTab" data-id="history">' + T2('History', 'ইতিহাস') + '</button></div>' + (rows.length ? '<div class="mx-box flat">' + rows.map(x => '<div class="mx-lv own"><div class="n"><i class="fas fa-check"></i></div><div class="m">' + esc(String(x.n).slice(0, 40)) + '<small>' + dt(x.t) + '</small></div><div class="r">' + (x.r ? '+' + fmt(x.r) + ' ' + sym() : '') + '</div></div>').join('') + '</div>' : empty('fa-clock-rotate-left', T2('No completed tasks yet', 'এখনও কোনো টাস্ক সম্পন্ন হয়নি')));
+      }
+      h += '<div class="mx-search"><i class="fas fa-magnifying-glass"></i><input data-in="mxTkQ" value="' + esc(TK.q) + '" placeholder="' + T2('Search tasks…', 'টাস্ক খুঁজুন…') + '"></div><div class="mx-tabs"><button data-act="mxTkTab" class="on" data-id="tasks">' + T2('Tasks', 'টাস্ক') + '</button><button data-act="mxTkTab" data-id="history">' + T2('History', 'ইতিহাস') + '</button></div><div class="mx-tabs">' + [['all', T2('All', 'সব')], ['AVAILABLE', T2('Available', 'উপলব্ধ')], ['pending', T2('Pending', 'চলমান')], ['COMPLETED', T2('Completed', 'সম্পন্ন')]].map(x => '<button class="' + (TK.f === x[0] ? 'on' : '') + '" data-act="mxTkF" data-id="' + x[0] + '">' + x[1] + '</button>').join('') + '</div>';
+      const q = TK.q.trim().toLowerCase(), list = all.filter(x => (TK.f === 'all' || (TK.f === 'pending' ? (x.s === 'IN_PROGRESS' || x.s === 'WAITING') : TK.f === 'AVAILABLE' ? (x.s === 'AVAILABLE' || x.s === 'FAILED') : x.s === TK.f)) && (!q || (x.title + ' ' + x.desc + ' ' + x.cat).toLowerCase().includes(q)));
+      if (!list.length) return h + empty('fa-list-check', T2('No tasks found', 'কোনো টাস্ক পাওয়া যায়নি'));
+      return h + list.map(x => {
+        const sc = TS[x.s], st0 = TK.start && TK.start[x.id], end = num(st0) + tsec() * 1000;
+        let btn;
+        if (x.s === 'COMPLETED') btn = '<button class="btn" disabled style="background:var(--pos-soft);color:var(--pos);box-shadow:none"><i class="fas fa-check"></i> ' + T2('COMPLETED', 'সম্পন্ন') + '</button>';
+        else if (x.lock) btn = '<button class="btn ghost" disabled><i class="fas fa-lock"></i> ' + x.lock + '</button>';
+        else if (x.s === 'IN_PROGRESS') btn = '<button class="btn" disabled><i class="fas fa-hourglass-half"></i> ' + T2('VERIFY in ', 'ভেরিফাই ') + '<span class="mx-cd" data-mx-cd="' + end + '" data-mx-flip="1" data-mx-sec="1">' + Math.max(0, Math.ceil((end - nowMs()) / 1000)) + '</span>s</button>';
+        else if (x.s === 'WAITING') btn = '<button class="btn" data-act="mxTaskVerify" data-id="' + esc(x.id) + '"><i class="fas fa-shield-check"></i> ' + T2('VERIFY', 'ভেরিফাই') + '</button><button class="btn ghost" style="margin-top:8px" data-act="mxTaskGo" data-id="' + esc(x.id) + '"><i class="fas fa-arrow-up-right-from-square"></i> ' + T2('Open task again', 'আবার খুলুন') + '</button>';
+        else btn = '<button class="btn" data-act="mxTaskGo" data-id="' + esc(x.id) + '"><i class="fas fa-arrow-up-right-from-square"></i> ' + T2('GO TO TASK', 'টাস্কে যান') + '</button>' + (x.s === 'FAILED' ? '<div class="tiny" style="color:var(--neg);margin-top:8px">' + esc(TK.fail[x.id]) + '</div>' : '');
+        const bar = x.s === 'IN_PROGRESS' ? '<div class="mx-bar" style="margin:10px 0"><i data-mx-bar="' + st0 + ',' + end + '" style="width:' + Math.min(100, (nowMs() - num(st0)) / (tsec() * 10)).toFixed(1) + '%"></i></div>' : '';
+        return '<div class="mx-tk ' + x.s.toLowerCase() + '"><div class="mx-between"><div class="mx-row" style="min-width:0">' + (x.icon ? '<img class="mx-tki" src="' + esc(x.icon) + '" onerror="this.style.display=\'none\'">' : '<span class="mx-tki"><i class="fas fa-list-check"></i></span>') + '<div style="min-width:0"><b class="mx-tkt">' + esc(x.title) + '</b><div class="mx-row" style="gap:6px;margin-top:4px">' + chip('', esc(x.cat)) + chip(sc[2], T2(sc[0], sc[1])) + '</div></div></div><div class="mx-tkr"><small>' + T2('Reward', 'রিওয়ার্ড') + '</small><b>' + fmt(x.reward) + '<em>' + esc(sym()) + '</em></b></div></div>' + (x.desc ? '<p class="mx-tkd">' + esc(String(x.desc).slice(0, 140)) + '</p>' : '') + bar + btn + '</div>';
+      }).join('');
+    },
+    onData() {}
+  };
+  INP.mxTkQ = el => { TK.q = el.value; renderSub(false); const i = document.querySelector('#subBody [data-in="mxTkQ"]'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } };
+  ACT.mxTkF = d => { TK.f = d.id; renderSub(false); };
+  ACT.mxTkTab = d => { TK.tab = d.id; renderSub(false); };
+  const findTask = id => taskList().find(x => x.id === id);
+  ACT.mxTaskGo = async d => {
+    const x = findTask(d.id); if (!x || TK.busy) return; if (x.lock) return toast(x.lock); if (!featOn('tasks') && x.kind === 'web') return toast(t('feat_off'));
+    TK.busy = true; delete TK.fail[x.id];
+    try {
+      const ref = db.ref('taskStarts/' + uid + '/' + x.id);
+      try { await ref.set(firebase.database.ServerValue.TIMESTAMP); } catch (e) { return toast(em({ code: 'PERM' })); }
+      const v = (await ref.once('value')).val(); TK.start = Object.assign({}, TK.start || {}, { [x.id]: num(v) }); openLink(x.url); renderSub(false);
+    } finally { TK.busy = false; }
+  };
+  ACT.mxTaskVerify = async d => {
+    const x = findTask(d.id); if (!x || _tb[x.id] || TK.busy) return; TK.busy = true; _tb[x.id] = true; busy(true, T2('Verifying…', 'যাচাই হচ্ছে…'), 40);
+    const fail = m => { TK.fail[x.id] = m; toast(m); };
+    try {
+      const sv = (await db.ref('taskStarts/' + uid + '/' + x.id).once('value')).val(); const el = nowMs() - num(sv);
+      if (!sv) return fail(T2('Start the task first.', 'আগে টাস্ক শুরু করুন।'));
+      if (el < tsec() * 1000) { TK.start = Object.assign({}, TK.start, { [x.id]: num(sv) }); return toast(T2('Please wait for the countdown to finish.', 'কাউন্টডাউন শেষ হওয়া পর্যন্ত অপেক্ষা করুন।')); }
+      if (el > 6 * 3600 * 1000) { await db.ref('taskStarts/' + uid + '/' + x.id).remove(); return fail(T2('This attempt expired. Start again.', 'এই চেষ্টার মেয়াদ শেষ। আবার শুরু করুন।')); }
+      let ok = false;
+      if (x.kind === 'web') {
+        const w = x.raw, k = x.id; if (!taskLive(w)) return fail(t('feat_off'));
+        const r = await db.ref('users/' + uid + '/taskHistory/' + k).transaction(c => c ? undefined : nowMs()); if (!r.committed) return fail(t('task_already'));
+        if (num(w.completionLimit) > 0) { const cc = await db.ref('config/webTasks/' + k + '/completedCount').transaction(c => num(c) >= num(w.completionLimit) ? undefined : num(c) + 1); if (!cc.committed) { await db.ref('users/' + uid + '/taskHistory/' + k).remove(); return fail(t('task_full')); } }
+        if (await earn(num(w.reward), 'task', k)) { ok = true; toast('+' + num(w.reward) + ' ' + sym() + ' ' + t('task_done')); NT.send(uid, 'task_done', 'taskdone_' + k, { id: k, title: w.title || w.name || '', type: 'Web' }); NT.send(uid, 'task_reward', 'taskrw_' + k, { id: k, title: w.title || w.name || '', reward: num(w.reward) }); }
+        else { await db.ref('users/' + uid + '/taskHistory/' + k).remove(); if (num(w.completionLimit) > 0) db.ref('config/webTasks/' + k + '/completedCount').transaction(c => Math.max(0, num(c) - 1)); return fail(t('fail_generic')); }
+      } else {
+        const id = x.id, r = await db.ref('activeTasks/' + id).transaction(c => { if (!c) return c; if (c.status !== 'active' || String(c.creatorId) === uid) return; const dn = num(c.participantsCompleted), lim = num(c.participantLimit); if (dn >= lim || (c.participants && c.participants[uid])) return; c.participants = c.participants || {}; c.participants[uid] = { timestamp: nowMs(), name: tgUser.first_name || 'User' }; c.participantsCompleted = dn + 1; if (dn + 1 >= lim) c.status = 'completed'; return c; });
+        if (!r.committed || !r.snapshot.exists()) return fail(t('slots_full'));
+        const nv = r.snapshot.val(); await db.ref('userTasks/' + id).update(Object.assign({ participants: num(nv.participantsCompleted) }, nv.status === 'completed' ? { status: 'completed' } : {}));
+        const reward = num(x.raw.reward);
+        if (await earn(reward, 'active_task', id)) { ok = true; await db.ref('users/' + uid + '/activeTaskHistory/' + id).set({ reward, timestamp: nowMs() }); toast('+' + reward + ' ' + sym() + ' ' + t('task_done')); NT.send(uid, 'task_done', 'taskdone_a' + id, { id, title: x.raw.title || x.raw.name || x.raw.type || '', type: x.raw.type || '' }); NT.send(uid, 'task_reward', 'taskrw_a' + id, { id, title: x.raw.title || x.raw.name || x.raw.type || '', reward }); }
+      }
+      if (ok) { try { await db.ref('taskStarts/' + uid + '/' + x.id).remove(); } catch (e) {} flashBtn(true); }
+    } catch (e) { console.error(e); fail(T2('Verification failed. Please try again.', 'ভেরিফিকেশন ব্যর্থ। আবার চেষ্টা করুন।')); flashBtn(false); }
+    finally { TK.busy = false; delete _tb[x.id]; busy(false); renderAll(); }
+  };
+  /* old Earn-tab task buttons now enter the verified flow */
+  ACT.doAdminTask = () => openSub('mxtasks'); ACT.doActiveTask = () => openSub('mxtasks');
+  REG.splice(REG.findIndex(p => p.id === 'bonus'), 0, { id: 'mxtasks', cat: 'earn', ic: 'fa-list-check', en: 'Tasks', bn: 'টাস্ক', sub: 1, nw: 1, on: () => featOn('tasks') });
+
+  /* ================= GLOBAL BUTTON LOADING / DUPLICATE-CLICK GUARD ================= */
+  let lastBtn = null, curBtn = null, wd = null;
+  document.addEventListener('click', e => { const b = e.target.closest('.btn'); if (!b) return; if (b.classList.contains('mx-ld')) { e.stopImmediatePropagation(); e.preventDefault(); return; } lastBtn = b; setTimeout(() => { if (lastBtn === b) lastBtn = null; }, 1500); }, true);
+  function endLoad(ok) { if (curBtn) { const b = curBtn; curBtn = null; b.classList.remove('mx-ld'); if (b.dataset.mxHtml != null) { b.innerHTML = b.dataset.mxHtml; delete b.dataset.mxHtml; } if (ok !== undefined) { b.classList.add(ok ? 'mx-okf' : 'mx-erf'); setTimeout(() => b.classList.remove('mx-okf', 'mx-erf'), 900); } } if (wd) { clearTimeout(wd); wd = null; } }
+  window.flashBtn = ok => { MX.flash = ok; };
+  const busy0 = window.busy;
+  window.busy = function (show, text, pct) {
+    busy0.apply(this, arguments);
+    if (show) {
+      if (!curBtn && lastBtn && document.contains(lastBtn)) { curBtn = lastBtn; lastBtn = null; curBtn.dataset.mxHtml = curBtn.innerHTML; curBtn.classList.add('mx-ld'); curBtn.innerHTML = '<span class="mx-spin"></span><span>' + (text || t('processing')) + '</span>'; }
+      else if (curBtn && text) { const sp2 = curBtn.querySelector('span:last-child'); if (sp2) sp2.textContent = text; }
+      if (!wd) wd = setTimeout(() => { wd = null; busy0(false); endLoad(false); toast(T2('This is taking longer than usual. Check your history before trying again.', 'সময় বেশি লাগছে। আবার চেষ্টার আগে ইতিহাস দেখে নিন।')); }, 45000);
+    } else { const f = MX.flash; MX.flash = undefined; endLoad(f); }
+  };
+  try { const sr = showTokResult; window.showTokResult = function (rec) { MX.flash = !!rec && rec.status === 'completed'; return sr.apply(this, arguments); }; } catch (e) {}
+  const act0 = act;  /* mining/streak actions flash success / error on their button */
+
+  /* ================= HOME ANIMATION (opacity/transform only, plays once per visit) ================= */
+  let homeNext = true;
+  try { const st0 = showTab; window.showTab = function (id) { if (id === 'home') homeNext = true; return st0.apply(this, arguments); }; } catch (e) {}
+  function animHome() {
+    if (!homeNext) return; homeNext = false; const root = $('tab-home'); if (!root || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const kids = [...root.children].slice(0, 12); kids.forEach((c, i) => { c.classList.add('mx-rv'); c.style.animationDelay = (i * 60) + 'ms'; });
+    setTimeout(() => kids.forEach(c => { c.classList.remove('mx-rv'); c.style.animationDelay = ''; }), 1300);
+  }
+  try { const rh = window.renderHome; window.renderHome = function () { rh.apply(this, arguments); animHome(); }; } catch (e) {}
+
+  /* ================= WITHDRAWAL METHOD CARDS (visual layer over the existing <select id="wd-method">) ================= */
+  const BR = [[/bkash/i, '#E2136E', '#B80E57', 'bKash', 'mobile'], [/nagad/i, '#F6921E', '#E2231A', 'Nagad', 'mobile'], [/rocket/i, '#8C3494', '#5B1F66', 'Rocket', 'mobile'], [/upay/i, '#FFC20E', '#F58220', 'Upay', 'mobile'], [/binance/i, '#F3BA2F', '#C99400', 'Binance', 'wallet'], [/usdt|tether|trc|bep|crypto/i, '#26A17B', '#168162', 'USDT', 'wallet'], [/paypal/i, '#0070BA', '#003087', 'PayPal', 'email'], [/payeer/i, '#00A3E0', '#0077B6', 'Payeer', 'wallet'], [/bank|dbbl|brac|city|islami/i, '#3D8BFF', '#2B5FD9', 'Bank', 'bank']];
+  const brand = n => { const b = BR.find(x => x[0].test(n)); return b ? { c1: b[1], c2: b[2], lt: String(n).slice(0, 2), kind: b[4] } : { c1: '#6A5CFF', c2: '#3D8BFF', lt: String(n).slice(0, 2), kind: 'other' }; };
+  function wdSync() {
+    const sel = $('wd-method'); if (!sel) return; const field = sel.closest('.field'); if (!field) return;
+    let host = $('mxPM'); const names = [...sel.options].filter(o => o.value).map(o => o.value), sig = names.join('|');
+    if (!host) { host = document.createElement('div'); host.id = 'mxPM'; field.before(host); field.style.display = 'none'; }
+    if (host.dataset.sig !== sig) { host.dataset.sig = sig; host.innerHTML = '<div class="mx-pmg">' + names.map(n => { const b = brand(n); return '<button type="button" class="mx-pm" data-act="mxPM" data-id="' + esc(n) + '" style="--c1:' + b.c1 + ';--c2:' + b.c2 + '"><span class="mx-pmi">' + esc(b.lt) + '</span><b>' + esc(n) + '</b><i class="fas fa-circle-check mx-pmc"></i></button>'; }).join('') + '</div><div class="mx-pmd" id="mxPMd"></div>'; }
+    const cur = sel.value; host.querySelectorAll('.mx-pm').forEach(b => b.classList.toggle('on', b.dataset.id === cur));
+    const d = $('mxPMd'); if (d) { if (cur) { const b = brand(cur), ph = { mobile: T2('Enter the ' + cur + ' mobile number', cur + ' মোবাইল নম্বর দিন'), wallet: T2('Enter your ' + cur + ' wallet / pay ID', cur + ' ওয়ালেট / পে আইডি দিন'), email: T2('Enter your ' + cur + ' email', cur + ' ইমেইল দিন'), bank: T2('Enter bank account details', 'ব্যাংক অ্যাকাউন্টের তথ্য দিন'), other: T2('Enter your ' + cur + ' account', cur + ' অ্যাকাউন্ট দিন') }[b.kind]; d.style.setProperty('--c1', b.c1); d.innerHTML = '<span class="mx-pmi" style="--c1:' + b.c1 + ';--c2:' + b.c2 + '">' + esc(b.lt) + '</span><div><b>' + esc(cur) + '</b><small>' + ph + '</small></div>'; d.classList.add('open'); } else { d.classList.remove('open'); d.innerHTML = ''; } }
+  }
+  ACT.mxPM = d => { const sel = $('wd-method'); if (!sel) return; sel.value = d.id; sel.dispatchEvent(new Event('change', { bubbles: true })); try { wdFeePreview(); } catch (e) {} wdSync(); const a = $('wd-account'); if (a) setTimeout(() => a.focus({ preventScroll: true }), 250); };
+  try { const wr = window.wdRefresh; window.wdRefresh = function () { wr.apply(this, arguments); wdSync(); }; } catch (e) {}
+
+  /* ---------- extend ticker: server-timestamp bars & second counters ---------- */
+  setInterval(() => {
+    const n = nowMs(); document.querySelectorAll('[data-mx-bar]').forEach(el => { const [a, b] = el.dataset.mxBar.split(',').map(Number); el.style.width = Math.min(100, Math.max(0, (n - a) / (b - a) * 100)).toFixed(1) + '%'; });
+    document.querySelectorAll('[data-mx-sec]').forEach(el => { el.textContent = Math.max(0, Math.ceil((num(el.dataset.mxCd) - n) / 1000)); });
+  }, 250);
 })();
 
 </script>

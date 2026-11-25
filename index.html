@@ -3635,7 +3635,7 @@ window.onload = async () => {
     tryFinishBoot();
   }, () => { configLoaded = true; tryFinishBoot(); });
 
-  startDepositListeners().catch(() => {});
+  try { startDepositListeners(); } catch(e){}
 
   loaderStep(3, 'Loading your account…');
 

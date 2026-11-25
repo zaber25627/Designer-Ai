@@ -1040,7 +1040,6 @@ button{cursor:pointer;}
       <div class="profile-link-item" onclick="openProfileLink('official')"><div class="pli" style="color:#3D7BDB;"><i class="fab fa-telegram-plane"></i></div><div class="plb">Official Channel</div><i class="fas fa-chevron-right chev"></i></div>
       <div class="profile-link-item" onclick="openProfileLink('bot')"><div class="pli" style="color:#3D7BDB;"><i class="fas fa-robot"></i></div><div class="plb">Official Bot</div><i class="fas fa-chevron-right chev"></i></div>
       <div class="profile-link-item" onclick="openProfileLink('tutorial')"><div class="pli" style="color:var(--bad);"><i class="fab fa-youtube"></i></div><div class="plb">Tutorial Video</div><i class="fas fa-chevron-right chev"></i></div>
-      <div class="profile-link-item" onclick="openProfileLink('admin')"><div class="pli" style="background:rgba(122,90,248,.12);color:#7A5AF8;"><i class="fas fa-user-shield"></i></div><div class="plb">Admin Panel</div><i class="fas fa-chevron-right chev"></i></div>
     </div>
     <div class="card">
       <div class="card-title"><i class="fas fa-chart-bar"></i> My Stats</div>
@@ -3315,8 +3314,7 @@ function openProfileLink(key){
   const map = {
     channel: c.telegramChannel,
     bot: c.botUsername ? 'https://t.me/' + c.botUsername : '',
-    support: (c.supportLinks && c.supportLinks.telegram) || c.telegramChannel || '',
-    admin: 'admin.html'
+    support: (c.supportLinks && c.supportLinks.telegram) || c.telegramChannel || ''
   };
   const url = map[key];
   if (!url) return toast('This link is not configured yet');

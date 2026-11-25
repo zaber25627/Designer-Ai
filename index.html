@@ -2108,8 +2108,11 @@ async function confirmInvest(){
   if (amt > num(state.user.balance)) return toast('Insufficient Main Balance');
   const btn = $('invSubmitBtn'); btn.disabled = true;
   try {
-    const nb = await adjustBalance(uid, 'balance', -amt);
-    if (nb === null) throw new Error('Balance update failed (insufficient funds or conflict). No charge was made.');
+    const res = await db.ref('users/' + uid + '/balance').transaction(v => {
+      const cur = num(v); if (cur < amt) return; return (cur - amt).toFixed(2);
+    });
+    if (!res.committed) throw new Error('Insufficient Main Balance. Deposit first from the Wallet.');
+    const nb = Number(res.snapshot.val());
     const invRef = db.ref('investments').push();
     const invId = invRef.key;
     const startAt = Date.now();

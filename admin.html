@@ -2810,11 +2810,8 @@ const RULES = () => {
       miningUpgrades: { '.read': true, '.write': GW },
       miningBoosts: { '.read': true, '.write': GW },
       streakHistory: { '.read': true, '.write': GW },
-      quizAttempts: { '.read': true, '.write': GW },
       miningFlags: { '.read': adm, '.write': GW },
-      quizQuestions: { '.read': true, '.write': adm },
-      quizAnswers: { '.read': adm, '.write': adm },
-      quizLeaderboard: { '.read': true, '.write': GW, '.indexOn': ['score'] }
+      taskStarts: { '.read': adm, '$uid': { '.read': true, '$k': { '.write': true, '.validate': 'newData.val() === now' } } }
     }
   }, null, 2);
 };
@@ -3292,7 +3289,7 @@ function swapIcons(root) {
 (function () { let q = 0; const run = () => { q = 0; swapIcons(); }; new MutationObserver(() => { if (!q) q = requestAnimationFrame(run); }).observe(document.documentElement, { childList: true, subtree: true }); document.addEventListener('DOMContentLoaded', run); })();
 </script>
 <script id="mx-core">
-/* GameCore — mining / streak / quiz engine. Pure logic over a Firebase-RTDB-like `db`.
+/* GameCore — mining / streak engine. Pure logic over a Firebase-RTDB-like `db`.
    Runs unchanged in the browser (client mode) and in Cloud Functions (secure mode). */
 (function (root, factory) { if (typeof module === 'object' && module.exports) module.exports = factory(); else root.GameCore = factory(); })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
@@ -3364,7 +3361,7 @@ function swapIcons(root) {
     if ((type === 'token' || type === 'both') && token > 0) u.tokenBalance = rnd(num(u.tokenBalance) + token);
   }
 
-  /* ---------- engine ---------- */
+  
   function createEngine(db, o) {
     o = o || {}; const now = o.now || (() => Date.now());
     const cfgOf = async k => { const s = await db.ref('config/' + k).once('value'); return s.val() || {}; };
@@ -3380,13 +3377,17 @@ function swapIcons(root) {
     }
     async function after(uid, res) {
       if (!res || !res.writes) return;
-      for (const w of res.writes) { try { await db.ref(w[0]).set(w[1]); } catch (e) {} }
+      await Promise.all(res.writes.map(w => db.ref(w[0]).set(w[1]).catch(() => {})));
     }
     const ledger = (uid, id, amt, unit, src, t, note) => ['ledger/' + uid + '/' + id, { id, cat: 'earning', source: src, amount: rnd(amt), unit, ref: '', status: 'completed', note: note || '', timestamp: t }];
     const notif = (uid, key, title, body, t) => ['userNotifications/' + uid + '/' + key, { cat: 'security', title, body, ts: t, read: false }];
     const flag = async (uid, code) => { try { const t = now(); await db.ref('miningFlags/' + uid + '/' + code + '_' + Math.floor(t / 60000)).set({ code, ts: t }); } catch (e) {} };
-    const SUS = ['EARLY_CLAIM', 'NOT_ACTIVE', 'ALREADY_UPGRADED', 'QUIZ_REPLAY', 'STREAK_DUP', 'NOT_CLAIMABLE'];
-    const run = async (uid, fn) => { const r = await userTxn(uid, fn); await after(uid, r); if (!r.ok && SUS.includes(r.code)) flag(uid, r.code); delete r.writes; delete r.persist; return r; };
+    const SUS = ['EARLY_CLAIM', 'NOT_ACTIVE', 'ALREADY_UPGRADED', 'STREAK_DUP', 'NOT_CLAIMABLE'];
+    const run = async (uid, fn) => {
+      let r;
+      try { r = await userTxn(uid, fn); if (r.code === 'CONFLICT') r = await userTxn(uid, fn); }   /* safe: a non-committed transaction changed nothing */
+      catch (e) { const m = String((e && (e.code || e.message)) || e); return { ok: false, code: /permission/i.test(m) ? 'PERM' : 'NET', detail: m.slice(0, 120) }; }
+      await after(uid, r); if (!r.ok && SUS.includes(r.code)) flag(uid, r.code); delete r.writes; delete r.persist; return r; };
 
     /* apply inactivity lock to m if due (mutates). returns lock rec or null */
     function lazyLock(u, mc, t) {
@@ -3496,37 +3497,7 @@ function swapIcons(root) {
         return { ok: true, persist: true, day, reward: rw, bonus, completed: day === 30, writes: w };
       }); }); },
 
-      /* ---------- quiz (secure mode only: needs quizAnswers) ---------- */
-      quizStart(uid, qid) { return cfgOf('quiz').then(async qc => { const t = now(); if (qc.enabled !== true) return fail('QUIZ_OFF');
-        const q = (await db.ref('quizQuestions/' + qid).once('value')).val(); if (!q || q.enabled === false) return fail('QUIZ_UNAVAILABLE');
-        if (num(q.startAt) > t || (num(q.endAt) > 0 && num(q.endAt) < t)) return fail('QUIZ_SCHEDULE');
-        const cat = obj(obj(qc.categories)[q.category]); if (cat.enabled === false) return fail('QUIZ_UNAVAILABLE');
-        const tz = num(qc.tzOffsetMin), dk = dayNum(t, tz), per = q.challenge === 'daily' ? 'd' + dk : q.challenge === 'weekly' ? 'w' + weekNum(t, tz) : 'x', key = String(qid) + '_' + per;
-        const timer = Math.max(5, Math.min(600, num(q.timer) || num(qc.defaultTimer) || 30));
-        return run(uid, u => { u.id = u.id || uid; const z = u.quiz && typeof u.quiz === 'object' ? u.quiz : (u.quiz = {});
-          if (obj(z.done)[key]) return fail('QUIZ_DONE'); const day = obj(z.day); const dn = day.k === dk ? num(day.n) : 0;
-          if (z.open && num(z.open.expiresAt) + 3000 > t) { if (z.open.qid === String(qid)) return { ok: true, persist: false, attemptId: z.open.id, expiresAt: z.open.expiresAt, timer, resumed: true }; return fail('QUIZ_OPEN'); }
-          const lim = num(qc.dailyAttempts) > 0 ? num(qc.dailyAttempts) : 20; if (dn >= lim) return fail('QUIZ_LIMIT');
-          const qa = obj(z.q); const mx = q.challenge ? 1 : (num(q.maxAttempts) > 0 ? num(q.maxAttempts) : 1); if (num(obj(qa[qid]).n) >= mx && !q.challenge) return fail('QUIZ_MAX_ATTEMPTS');
-          const aid = 'A' + t + rid(); z.open = { id: aid, qid: String(qid), key, startedAt: t, expiresAt: t + timer * 1000 }; z.day = { k: dk, n: dn + 1 }; qa[qid] = { n: num(obj(qa[qid]).n) + 1 }; z.q = qa;
-          return { ok: true, persist: true, attemptId: aid, expiresAt: z.open.expiresAt, timer }; }); }); },
-
-      quizSubmit(uid, attemptId, choice) { return cfgOf('quiz').then(async qc => { const t = now(); choice = Math.floor(num(choice));
-        const cur = (await db.ref('users/' + uid + '/quiz/open').once('value')).val(); if (!cur || cur.id !== attemptId) return flagRet(uid, fail('QUIZ_REPLAY'));
-        const q = obj((await db.ref('quizQuestions/' + cur.qid).once('value')).val()), a = obj((await db.ref('quizAnswers/' + cur.qid).once('value')).val());
-        if (a.correct == null) return fail('QUIZ_UNAVAILABLE'); const right = num(a.correct) === choice;
-        return run(uid, u => { u.id = u.id || uid; const z = obj(u.quiz); if (!z.open || z.open.id !== attemptId) return fail('QUIZ_REPLAY');
-          const late = t > num(z.open.expiresAt) + 3000, ok = right && !late && choice >= 0 && choice < 4, done = obj(z.done); let paid = { main: 0, token: 0 };
-          const key = z.open.key; if (ok && !done[key]) { const type = ['main', 'token', 'both'].includes(q.rewardType) ? q.rewardType : 'main'; paid = { main: Math.max(0, num(q.main)), token: Math.max(0, num(q.token)) }; credit(u, type, paid.main, paid.token); done[key] = t; z.done = done; paid.type = type; }
-          z.open = null; z.stats = { total: num(obj(z.stats).total) + 1, correct: num(obj(z.stats).correct) + (ok ? 1 : 0) }; u.quiz = z;
-          const pts = ok ? (num(q.points) || ({ easy: 1, medium: 2, hard: 3 }[q.difficulty] || 1)) : 0;
-          const rec = { id: attemptId, qid: String(cur.qid), category: q.category || '', difficulty: q.difficulty || '', choice, correct: ok, timeout: late, main: paid.main, token: paid.token, ts: t };
-          return { ok: true, persist: true, correct: ok, timeout: late, correctIndex: late ? null : num(a.correct), explanation: a.explanation || '', reward: paid, points: pts, writes: [['quizAttempts/' + uid + '/' + attemptId, rec]].concat(paid.main > 0 ? [ledger(uid, 'QZM_' + attemptId, paid.main, 'main', 'quiz', t, 'Quiz reward')] : []).concat(paid.token > 0 ? [ledger(uid, 'QZT_' + attemptId, paid.token, 'token', 'quiz', t, 'Quiz reward')] : []), _lb: { pts, ok, name: u.name || '' } }; })
-          .then(async r => { return r; }); }); },
     };
-    function flagRet(uid, r) { flag(uid, r.code); return r; }
-    /* leaderboard bump (best-effort, non-financial) */
-    api.quizLb = async function (uid, name, pts, ok) { const t = now(), wk = weekNum(t, 0); try { await db.ref('quizLeaderboard/' + uid).transaction(c => { c = c || {}; c.name = name || c.name || ''; c.score = num(c.score) + pts; c.correct = num(c.correct) + (ok ? 1 : 0); c.attempts = num(c.attempts) + 1; if (c.wk !== wk) { c.wk = wk; c.wkScore = 0; } c.wkScore = num(c.wkScore) + pts; c.updatedAt = t; return c; }); } catch (e) {} };
     return api;
   }
   return { createEngine, miningCfg, streakCfg, streakView, derive, rewardOf, lockDueAt, dayNum, weekNum, H, DAY };
@@ -3544,8 +3515,8 @@ function swapIcons(root) {
   const LBL = { READY_TO_START: ['Ready', 'ok'], MINING_ACTIVE: ['Mining', 'approved'], CLAIM_AVAILABLE: ['Claim ready', 'pending'], CLAIMED: ['Claimed', 'completed'], LOCKED: ['Locked', 'rejected'], DISABLED: ['Disabled', 'inactive'] };
   const sp = (a, b) => (a != null ? a : b);
   const grid = (n, h) => '<div class="grid g' + n + '" style="margin-bottom:16px">' + h + '</div>';
-  const secNote = () => (S.cfg.gameServer || {}).secure === true ? '<div class="note g"><i class="fas fa-shield-halved"></i><span>Secure server mode is <b>ON</b>: mining / streak / quiz run in the Cloud Function.</span></div>' : '<div class="note w"><i class="fas fa-triangle-exclamation"></i><span>Secure server mode is <b>OFF</b>: mining and streak run in the user\'s app (client mode). <b>Quiz is unavailable</b> until the Cloud Function is deployed and Secure server mode is turned ON (Mining Settings).</span></div>';
-  const lazy = (key, path, assign) => { if (S['_l' + key] || !S.uid) return; S['_l' + key] = true; db.ref(path).on('value', s => { assign(s.exists() ? s.val() : {}); if (['mxusers', 'mxquiz', 'mxhub'].includes(S.page) && !typing()) renderView(); }, e => { S['_l' + key] = false; console.warn(key, e && e.code); }); };
+  const secNote = () => (S.cfg.gameServer || {}).secure === true ? '<div class="note g"><i class="fas fa-shield-halved"></i><span>Secure server mode is <b>ON</b>: mining and streak run in the Cloud Function.</span></div>' : '<div class="note w"><i class="fas fa-triangle-exclamation"></i><span>Secure server mode is <b>OFF</b>: mining and streak run in the user\'s app (client mode). Turn Secure server mode ON after deploying the Cloud Function.</span></div>';
+  const lazy = (key, path, assign) => { if (S['_l' + key] || !S.uid) return; S['_l' + key] = true; db.ref(path).on('value', s => { assign(s.exists() ? s.val() : {}); if (['mxusers', 'mxhub', 'mxtasks'].includes(S.page) && !typing()) renderView(); }, e => { S['_l' + key] = false; console.warn(key, e && e.code); }); };
 
   /* ================= Mining Settings ================= */
   PG.mxhub = {
@@ -3565,7 +3536,7 @@ function swapIcons(root) {
         swRow('mx_lk_f', 'Forfeit the unclaimed reward on lock', 'ON: the expired reward is never paid (no double payout). OFF: reward stays claimable after unlock', lk.forfeitReward !== false) + '</div>' +
         '<div class="card"><div class="ct"><i class="fas fa-bolt"></i> Temporary boosts</div>' + swRow('mx_bo_on', 'Boosts enabled', 'Users buy temporary speed multipliers with tokens', bo.enabled === true) +
         '<div style="margin:8px 0">' + (packs.length ? '<div class="tw"><table><thead><tr><th>Name</th><th>Multiplier</th><th>Duration</th><th>Cost</th><th>Max buys</th><th>Levels</th><th>Status</th><th></th></tr></thead><tbody>' + packs.map(p => '<tr><td><b>' + esc(p.name || p._k) + '</b></td><td>×' + num(p.mult) + '</td><td>' + num(p.hours) + 'h</td><td>' + fmt(p.cost, 4) + '</td><td>' + (num(p.maxPurchases) || '∞') + '</td><td>' + (num(p.minLevel) || 1) + '–' + (num(p.maxLevel) || mc.maxLevel) + '</td><td>' + pill(p.enabled === false ? 'inactive' : 'active', p.enabled === false ? 'Off' : 'On') + '</td><td style="text-align:right"><button class="btn gh sm" data-act="mxBoostEdit" data-id="' + attr(p._k) + '"><i class="fas fa-pen"></i></button> <button class="btn gh sm" data-act="mxBoostDel" data-id="' + attr(p._k) + '"><i class="fas fa-trash"></i></button></td></tr>').join('') + '</tbody></table></div>' : empty('fa-bolt', 'No boost packs yet')) + '</div><button class="btn gh sm" data-act="mxBoostEdit"' + (can('settings') ? '' : ' disabled') + '><i class="fas fa-plus"></i> Add boost pack</button></div>' +
-        '<div class="card"><div class="ct"><i class="fas fa-server"></i> Server mode</div>' + swRow('mx_sec', 'Secure server mode (Cloud Function)', 'Turn ON only after deploying functions/ (see DEPLOY.md). Required for Quiz. Server verifies Telegram initData and uses its own clock', (S.cfg.gameServer || {}).secure === true) + '</div>';
+        '<div class="card"><div class="ct"><i class="fas fa-server"></i> Server mode</div>' + swRow('mx_sec', 'Secure server mode (Cloud Function)', 'Turn ON only after deploying functions/ (see DEPLOY.md). Server verifies Telegram initData and uses its own clock', (S.cfg.gameServer || {}).secure === true) + '</div>';
     }
   };
   ACT.mxSave = (d, el) => runBtn(el, async () => {
@@ -3655,64 +3626,75 @@ function swapIcons(root) {
     await saveCfg({ streak: { enabled: chk('sk_on'), tzOffsetMin: nv('sk_tz'), graceDays: Math.max(0, Math.floor(nv('sk_gr'))), claimFromHour: f, claimToHour: t, resetOnMiss: chk('sk_rs'), repeat: chk('sk_rp'), completion: { type: val('sk_ct'), main: nv('sk_cm'), token: nv('sk_ck') }, days } }, 'streak.config');
   });
 
-  /* ================= Quiz ================= */
-  const QD = ['easy', 'medium', 'hard'];
-  PG.mxquiz = {
-    title: 'Quiz Management', deps: ['config'], live: false,
-    render() {
-      lazy('qq', 'quizQuestions', v => { S.mxQ = v; }); lazy('qlb', 'quizLeaderboard', v => { S.mxLB = v; });
-      const c = S.cfg.quiz || {}, qs = Object.keys(S.mxQ || {}).map(k => Object.assign({ _k: k }, S.mxQ[k])), lb = Object.keys(S.mxLB || {}).map(k => Object.assign({ _k: k }, S.mxLB[k])).sort((a, b) => num(b.score) - num(a.score)).slice(0, 20);
-      const att = lb.reduce((a, x) => a + num(x.attempts), 0), cor = lb.reduce((a, x) => a + num(x.correct), 0), cat = c.categories || {};
-      return pageHead('Quiz Management', 'Questions, rewards, timers, limits, schedule and statistics', '<button class="btn gh" data-act="mxQNew"' + (can('content') ? '' : ' disabled') + '><i class="fas fa-plus"></i> New question</button> <button class="btn" data-act="mxQSave"' + (can('settings') ? '' : ' disabled') + '><i class="fas fa-floppy-disk"></i> Save settings</button>') + secNote() +
-        grid(4, statCard('fa-circle-question', 'Questions', fint(qs.length), fint(qs.filter(q => q.enabled !== false).length) + ' enabled') + statCard('fa-pen', 'Attempts (top 20 users)', fint(att), '') + statCard('fa-check', 'Correct rate', att ? Math.round(cor / att * 100) + '%' : '—', '') + statCard('fa-users', 'Players', fint(lb.length), 'on leaderboard')) +
-        '<div class="card"><div class="ct"><i class="fas fa-sliders"></i> Settings</div>' + swRow('qz_on', 'Quiz module enabled', 'Shows Quiz Earn to users', c.enabled === true) + '<div class="fr">' + fld('qz_da', 'Daily attempts per user', sp(c.dailyAttempts, 20), { type: 'number', min: 1 }) + fld('qz_dt', 'Default timer (seconds)', sp(c.defaultTimer, 30), { type: 'number', min: 5 }) + fld('qz_tz', 'Day boundary offset (minutes from UTC)', sp(c.tzOffsetMin, 0), { type: 'number' }) + '</div>' + swRow('qz_cs', 'Simple category enabled', '', (cat.simple || {}).enabled !== false) + swRow('qz_ca', 'Advanced category enabled', '', (cat.advanced || {}).enabled !== false) + '</div>' +
-        '<div class="card"><div class="ct"><i class="fas fa-list"></i> Questions</div>' + tbl('mxq', [{ h: 'Question', f: q => esc(String(q.question || '').slice(0, 70)), v: q => q.question }, { h: 'Category', f: q => esc(q.category || 'simple'), v: q => q.category }, { h: 'Level', f: q => esc(q.difficulty || 'easy') }, { h: 'Type', f: q => q.challenge ? pill('pending', q.challenge) : 'Regular' }, { h: 'Reward', f: q => (q.rewardType !== 'token' && num(q.main) ? fmt(q.main) + ' ' + esc(sym()) : '') + (q.rewardType !== 'main' && num(q.token) ? ' ' + fmt(q.token, 4) + ' ' + (hasT ? esc(tsym()) : 'TOKEN') : '') }, { h: 'Timer', f: q => (num(q.timer) || num(c.defaultTimer) || 30) + 's' }, { h: 'Status', f: q => pill(q.enabled === false ? 'inactive' : 'active', q.enabled === false ? 'Off' : 'On') }, { h: '', f: q => '<button class="btn gh sm" data-act="mxQEdit" data-id="' + attr(q._k) + '"><i class="fas fa-pen"></i></button> <button class="btn gh sm" data-act="mxQDel" data-id="' + attr(q._k) + '"><i class="fas fa-trash"></i></button>' }], qs, { hay: q => q.question + ' ' + q.category, ph: 'Search questions…', icon: 'fa-circle-question', empty: 'No questions yet', size: 15 }) + '</div>' +
-        '<div class="card"><div class="ct"><i class="fas fa-ranking-star"></i> Leaderboard</div>' + (lb.length ? '<div class="tw"><table><thead><tr><th>#</th><th>User</th><th>Score</th><th>Correct</th><th>Attempts</th></tr></thead><tbody>' + lb.map((x, i) => '<tr><td>' + (i + 1) + '</td><td>' + esc(x.name || x._k) + ' <small class="mono">' + esc(x._k) + '</small></td><td><b>' + num(x.score) + '</b></td><td>' + num(x.correct) + '</td><td>' + num(x.attempts) + '</td></tr>').join('') + '</tbody></table></div>' : empty('fa-ranking-star', 'No scores yet')) + '</div>' +
-        '<div class="card"><div class="ct"><i class="fas fa-user-clock"></i> User quiz history</div><div style="display:flex;gap:8px">' + '<input class="inp grow" id="qz_u" placeholder="User ID"><button class="btn gh" data-act="mxQHist">Load</button></div><div id="qz_h" style="margin-top:12px"></div></div>';
-    }
-  };
-  ACT.mxQSave = (d, el) => runBtn(el, async () => { if (nv('qz_da') < 1 || nv('qz_dt') < 5) return toast('Check limits', 'er'); await saveCfg({ 'quiz/enabled': chk('qz_on'), 'quiz/dailyAttempts': Math.floor(nv('qz_da')), 'quiz/defaultTimer': Math.floor(nv('qz_dt')), 'quiz/tzOffsetMin': nv('qz_tz'), 'quiz/categories/simple/enabled': chk('qz_cs'), 'quiz/categories/advanced/enabled': chk('qz_ca') }, 'quiz.settings'); });
-  const dtl = ts => { if (!ts) return ''; const d = new Date(num(ts) - new Date().getTimezoneOffset() * 6e4); return d.toISOString().slice(0, 16); };
-  async function qForm(id) {
-    if (!need('content')) return; const q = id ? (S.mxQ || {})[id] || {} : {}; let a = {}; if (id) { try { a = (await db.ref('quizAnswers/' + id).once('value')).val() || {}; } catch (e) {} }
-    const o = Array.isArray(q.options) ? q.options : Object.values(q.options || {});
-    formModal({ title: id ? 'Edit question' : 'New question', icon: 'fa-circle-question', wide: true, fields: [
-      { id: 'q', label: 'Question', type: 'textarea', rows: 3, value: q.question || '', req: true }, { id: 'o1', label: 'Option A', value: o[0] || '', req: true }, { id: 'o2', label: 'Option B', value: o[1] || '', req: true }, { id: 'o3', label: 'Option C', value: o[2] || '', req: true }, { id: 'o4', label: 'Option D', value: o[3] || '', req: true },
-      { id: 'ok', label: 'Correct option', type: 'select', options: [['0', 'A'], ['1', 'B'], ['2', 'C'], ['3', 'D']], value: String(a.correct == null ? 0 : a.correct) }, { id: 'ex', label: 'Explanation (shown only after answering)', type: 'textarea', rows: 2, value: a.explanation || '' },
-      { id: 'cat', label: 'Category', type: 'select', options: [['simple', 'Simple'], ['advanced', 'Advanced']], value: q.category || 'simple' }, { id: 'df', label: 'Difficulty', type: 'select', options: QD, value: q.difficulty || 'easy' }, { id: 'ch', label: 'Challenge', type: 'select', options: [['', 'Regular question'], ['daily', 'Daily challenge'], ['weekly', 'Weekly challenge']], value: q.challenge || '' },
-      { id: 'tm', label: 'Timer seconds (0 = default)', type: 'number', min: 0, value: sp(q.timer, 0) }, { id: 'ma', label: 'Max attempts (regular questions)', type: 'number', min: 1, value: sp(q.maxAttempts, 1) }, { id: 'pt', label: 'Leaderboard points (0 = by difficulty)', type: 'number', min: 0, value: sp(q.points, 0) },
-      { id: 'rt', label: 'Reward type', type: 'select', options: [['main', 'Main balance'], ['token', 'Token'], ['both', 'Combined']], value: q.rewardType || 'main' }, { id: 'rm', label: 'Main reward (' + sym() + ')', type: 'number', step: '0.01', min: 0, value: sp(q.main, 0) }, { id: 'rk', label: 'Token reward', type: 'number', step: '0.0001', min: 0, value: sp(q.token, 0) },
-      { id: 'st', label: 'Available from (optional)', type: 'datetime-local', value: dtl(q.startAt) }, { id: 'en', label: 'Available until (optional)', type: 'datetime-local', value: dtl(q.endAt) }, { id: 'on', label: 'Enabled', type: 'switch', value: q.enabled !== false }],
-      onSubmit: async v => {
-        const rm = num(v.rm), rk = num(v.rk); if (rm < 0 || rk < 0 || (v.rt === 'main' && !(rm > 0)) || (v.rt === 'token' && !(rk > 0)) || (v.rt === 'both' && !(rm > 0 || rk > 0))) { toast('Set a reward amount matching the reward type', 'er'); return false; }
-        const key = id || ('q' + Date.now().toString(36) + rid(3)), pub = { question: v.q, options: [v.o1, v.o2, v.o3, v.o4], category: v.cat, difficulty: v.df, challenge: v.ch || null, timer: Math.floor(num(v.tm)), maxAttempts: Math.max(1, Math.floor(num(v.ma))), points: Math.floor(num(v.pt)), rewardType: v.rt, main: rm, token: rk, startAt: v.st ? new Date(v.st).getTime() : null, endAt: v.en ? new Date(v.en).getTime() : null, enabled: v.on, updatedAt: Date.now() };
-        await db.ref().update({ ['quizQuestions/' + key]: pub, ['quizAnswers/' + key]: { correct: Math.floor(num(v.ok)), explanation: v.ex || '' } }); await audit(id ? 'quiz.update' : 'quiz.create', key, { question: v.q.slice(0, 80) }); toast('Question saved', 'ok');
-      } });
-  }
-  ACT.mxQNew = () => qForm(null); ACT.mxQEdit = d => qForm(d.id);
-  ACT.mxQDel = d => confirmBox({ title: 'Delete question?', msg: 'Users\' past attempts remain in their history.', cls: 'no', icon: 'fa-trash', onOk: async () => { if (!need('content')) return; await db.ref().update({ ['quizQuestions/' + d.id]: null, ['quizAnswers/' + d.id]: null }); await audit('quiz.delete', d.id, {}); toast('Deleted', 'ok'); } });
-  ACT.mxQHist = async () => { const u = val('qz_u'); if (!u) return; const s = await db.ref('quizAttempts/' + u).limitToLast(50).once('value'), a = []; s.forEach(c => a.push(c.val())); a.sort((x, y) => num(y.ts) - num(x.ts)); $('qz_h').innerHTML = a.length ? '<div class="tw"><table><thead><tr><th>When</th><th>Question</th><th>Result</th><th>Reward</th></tr></thead><tbody>' + a.map(x => '<tr><td>' + esc(fdt(x.ts)) + '</td><td>' + esc(String(((S.mxQ || {})[x.qid] || {}).question || x.qid).slice(0, 50)) + '</td><td>' + (x.correct ? pill('approved', 'Correct') : pill('rejected', x.timeout ? 'Timeout' : 'Wrong')) + '</td><td>' + (num(x.main) ? fmt(x.main) : '') + (num(x.token) ? ' ' + fmt(x.token, 4) : '') + '</td></tr>').join('') + '</tbody></table></div>' : empty('fa-inbox', 'No attempts'); };
-
   /* ================= Pages & modules ================= */
-  const PAGES = [['home', 'Home'], ['notifications', 'Notifications'], ['earnings', 'Earnings'], ['achievements', 'Achievements'], ['token', 'Token Market'], ['mining', 'Token Mining'], ['mxupgrade', 'Mining Upgrade'], ['mxboost', 'Mining Boost'], ['tokendetail', 'Token Details'], ['tokenwd', 'Token Withdraw'], ['buy', 'Buy Token'], ['sell', 'Sell Token'], ['swap', 'Swap'], ['transfer', 'Transfer'], ['earn', 'Earn'], ['mxstreak', '30-Day Streak'], ['mxquiz', 'Quiz Earn'], ['bonus', 'Daily Bonus'], ['spin', 'Spin Wheel'], ['vault', 'Reward Vault'], ['promo', 'Promo Code'], ['events', 'Events'], ['giveaway', 'Giveaway'], ['vip', 'VIP Membership'], ['wallet', 'Wallet'], ['deposit', 'Deposit'], ['withdraw', 'Withdraw'], ['history', 'Transaction History'], ['profile', 'Profile'], ['support', 'Support'], ['security', 'Security']];
+  const PAGES = [['home', 'Home'], ['notifications', 'Notifications'], ['earnings', 'Earnings'], ['achievements', 'Achievements'], ['token', 'Token Market'], ['mining', 'Token Mining'], ['mxupgrade', 'Mining Upgrade'], ['mxboost', 'Mining Boost'], ['tokendetail', 'Token Details'], ['tokenwd', 'Token Withdraw'], ['buy', 'Buy Token'], ['sell', 'Sell Token'], ['swap', 'Swap'], ['transfer', 'Transfer'], ['earn', 'Earn'], ['mxstreak', '30-Day Streak'], ['mxtasks', 'Tasks'], ['bonus', 'Daily Bonus'], ['spin', 'Spin Wheel'], ['vault', 'Reward Vault'], ['promo', 'Promo Code'], ['events', 'Events'], ['giveaway', 'Giveaway'], ['vip', 'VIP Membership'], ['wallet', 'Wallet'], ['deposit', 'Deposit'], ['withdraw', 'Withdraw'], ['history', 'Transaction History'], ['profile', 'Profile'], ['support', 'Support'], ['security', 'Security']];
   PG.mxpages = {
     title: 'Pages & Modules', deps: ['config'], live: false,
     render() {
       const pc = S.cfg.pages || {}, nav = S.cfg.nav || {};
       return pageHead('Pages & Modules', 'Control the ALL PAGES directory and global module availability', '<button class="btn" data-act="mxPgSave"' + (can('settings') ? '' : ' disabled') + '><i class="fas fa-floppy-disk"></i> Save</button>') + needLock('settings') +
-        '<div class="card"><div class="ct"><i class="fas fa-toggle-on"></i> Global modules</div>' + swRow('pm_nav', 'ALL PAGES item in the bottom navigation', 'Hides the nav item (the directory is still reachable from Home)', nav.allpages !== false) + swRow('pm_min', 'Token Mining module', 'Same as the master switch in Mining Settings', M().enabled === true) + swRow('pm_str', 'Daily Streak module', '', (S.cfg.streak || {}).enabled === true) + swRow('pm_quz', 'Quiz module', '', (S.cfg.quiz || {}).enabled === true) + '</div>' +
+        '<div class="card"><div class="ct"><i class="fas fa-toggle-on"></i> Global modules</div>' + swRow('pm_nav', 'ALL PAGES item in the bottom navigation', 'Hides the nav item (the directory is still reachable from Home)', nav.allpages !== false) + swRow('pm_min', 'Token Mining module', 'Same as the master switch in Mining Settings', M().enabled === true) + swRow('pm_str', 'Daily Streak module', '', (S.cfg.streak || {}).enabled === true) + '</div>' +
         '<div class="card"><div class="ct"><i class="fas fa-table-cells-large"></i> Directory entries <small>A page also disappears automatically when its own feature is disabled elsewhere</small></div><div class="tw"><table><thead><tr><th>Page</th><th>Visible</th><th>NEW badge</th><th>Custom label</th></tr></thead><tbody>' + PAGES.map(p => { const c = pc[p[0]] || {}; return '<tr><td><b>' + esc(p[1]) + '</b> <small class="mono">' + p[0] + '</small></td><td><label class="sw"><input type="checkbox" id="pp_v_' + p[0] + '"' + (c.visible === false ? '' : ' checked') + '><i></i></label></td><td><label class="sw"><input type="checkbox" id="pp_n_' + p[0] + '"' + (c.isNew === true ? ' checked' : '') + '><i></i></label></td><td><input class="inp" id="pp_l_' + p[0] + '" value="' + attr(c.label || '') + '" placeholder="' + attr(p[1]) + '"></td></tr>'; }).join('') + '</tbody></table></div></div>';
     }
   };
   ACT.mxPgSave = (d, el) => runBtn(el, async () => {
-    const up = { 'nav/allpages': chk('pm_nav'), 'mining/enabled': chk('pm_min'), 'streak/enabled': chk('pm_str'), 'quiz/enabled': chk('pm_quz') };
+    const up = { 'nav/allpages': chk('pm_nav'), 'mining/enabled': chk('pm_min'), 'streak/enabled': chk('pm_str') };
     if (chk('pm_min') && !mcOf().configured) return toast('Configure Level 1 before enabling mining', 'er');
     PAGES.forEach(p => { const c = {}; if (!chk('pp_v_' + p[0])) c.visible = false; if (chk('pp_n_' + p[0])) c.isNew = true; const l = val('pp_l_' + p[0]); if (l) c.label = l; up['pages/' + p[0]] = Object.keys(c).length ? c : null; });
     await saveCfg(up, 'pages.modules');
   });
 
+  /* ================= Mining Monitor (sessions / claims / upgrades / boosts) ================= */
+  const flat = (root, tf) => { const o = []; Object.keys(root || {}).forEach(u => Object.keys(root[u] || {}).forEach(k => { const v = root[u][k]; if (v && typeof v === 'object') o.push(Object.assign({ uid: u, _k: k }, v)); })); return o.sort((a, b) => num(b.ts) - num(a.ts)); };
+  PG.mxmon = {
+    title: 'Mining Monitor', deps: ['users', 'config'], live: false,
+    render() {
+      const tab = S.mxTab || 'sessions', U = Object.values(S.users), now = Date.now(), mc = mcOf();
+      const tabs = [['sessions', 'Sessions & claims'], ['claims', 'Claim history'], ['upgrades', 'Level upgrades'], ['boosts', 'Boosts']];
+      const act = U.filter(u => u.mining && u.mining.boost && num(u.mining.boost.until) > now);
+      let body = '';
+      if (tab === 'sessions') {
+        const rows = U.filter(u => u.mining && u.mining.session).map(u => ({ id: String(u.id), u, s: u.mining.session, st: stOf(u) }));
+        body = tbl('mxs', [{ h: 'User', f: r => userCell(r.id, r.u.name) }, { h: 'Started', f: r => esc(fdt(r.s.startAt)), v: r => num(r.s.startAt) }, { h: 'Expires', f: r => esc(fdt(r.s.endAt)), v: r => num(r.s.endAt) }, { h: 'Speed', f: r => fmt(r.s.speed, 4), v: r => num(r.s.speed), right: true }, { h: 'Status', f: r => pill((LBL[r.st.status] || LBL.DISABLED)[1], (LBL[r.st.status] || LBL.DISABLED)[0]), v: r => r.st.status }, { h: 'Pending reward', f: r => r.s.status === 'active' ? fmt(r.st.pending ? r.st.pending.total : 0, 4) : (r.s.reward != null ? fmt(r.s.reward, 4) : '—'), right: true }], rows, { hay: r => r.id + ' ' + (r.u.name || ''), ph: 'Search user…', icon: 'fa-hammer', csv: true, empty: 'No mining sessions yet' });
+      } else {
+        const key = { claims: 'miningHistory', upgrades: 'miningUpgrades', boosts: 'miningBoosts' }[tab];
+        if (!S.mxHist || !S.mxHist[key]) body = '<div style="text-align:center;padding:30px"><button class="btn" data-act="mxLoadHist" data-id="' + key + '"><i class="fas fa-download"></i> Load ' + esc(tabs.find(t => t[0] === tab)[1]) + '</button><div class="tiny" style="margin-top:8px">Reads the full collection once.</div></div>';
+        else {
+          const rows = flat(S.mxHist[key]).filter(x => tab !== 'claims' || x.type === 'claim' || x.type === 'lock' || x.type === 'unlock');
+          body = tbl('mxh_' + tab, [{ h: 'When', f: r => esc(fdt(r.ts)), v: r => num(r.ts) }, { h: 'User', f: r => userCell(r.uid) }].concat(tab === 'claims' ? [{ h: 'Event', f: r => esc(r.type) }, { h: 'Base', f: r => r.base != null ? fmt(r.base, 4) : '', right: true }, { h: 'Boost', f: r => r.boost != null ? fmt(r.boost, 4) : '', right: true }, { h: 'Amount / fee', f: r => '<b class="num">' + (r.amount != null ? '+' + fmt(r.amount, 4) : r.fee != null ? '-' + fmt(r.fee, 4) : '') + '</b>', right: true }] : tab === 'upgrades' ? [{ h: 'Change', f: r => 'L' + r.from + ' → L' + r.to + (r.free ? ' <span class="pill pending">free</span>' : r.reset ? ' <span class="pill rejected">reset</span>' : '') }, { h: 'Cost', f: r => fmt(r.cost, 4), v: r => num(r.cost), right: true }, { h: 'Ref', f: r => '<span class="mono tiny">' + esc(r.id) + '</span>' }] : [{ h: 'Multiplier', f: r => '×' + num(r.mult) }, { h: 'Hours', f: r => num(r.hours) }, { h: 'Cost', f: r => fmt(r.cost, 4), v: r => num(r.cost), right: true }, { h: 'State', f: r => num(r.until) > now ? pill('approved', 'Active') : pill('inactive', 'Expired') }]), rows, { hay: r => r.uid + ' ' + uName(r.uid), ph: 'Search user…', icon: 'fa-clock-rotate-left', csv: true, empty: 'No records' });
+        }
+      }
+      const cl = U.filter(u => stOf(u).status === 'CLAIM_AVAILABLE').length, ac = U.filter(u => stOf(u).status === 'MINING_ACTIVE').length, upg = U.reduce((a, u) => a + (u.mining && u.mining.level > 1 ? u.mining.level - 1 : 0), 0);
+      return pageHead('Mining Monitor', 'Live sessions, claims, level upgrades and boosts — from real user records') + grid(4, statCard('fa-bolt', 'Mining now', fint(ac), '') + statCard('fa-gift', 'Claim waiting', fint(cl), 'Expired, unclaimed', cl ? 'warn' : '') + statCard('fa-arrow-up', 'Levels gained (all users)', fint(upg), '') + statCard('fa-rocket', 'Active boosts', fint(act.length), act.length ? 'Avg ×' + (act.reduce((a, u) => a + num(u.mining.boost.mult), 0) / act.length).toFixed(2) : '')) +
+        '<div class="card"><div class="tabs" style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">' + tabs.map(t => '<button class="btn ' + (tab === t[0] ? '' : 'gh') + ' sm" data-act="mxTab" data-id="' + t[0] + '">' + t[1] + '</button>').join('') + '</div>' + body + '</div>';
+    }
+  };
+  ACT.mxTab = d => { S.mxTab = d.id; renderView(); };
+  ACT.mxLoadHist = async (d, el) => runBtn(el, async () => { const s = await db.ref(d.id).once('value'); S.mxHist = S.mxHist || {}; S.mxHist[d.id] = s.val() || {}; renderView(); });
+
+  /* ================= Task Monitor (completions, pending verification, history, countdown) ================= */
+  PG.mxtasks = {
+    title: 'Task Monitor', deps: ['users', 'config'], live: false,
+    render() {
+      lazy('starts', 'taskStarts', v => { S.mxStarts = v; });
+      const w = S.cfg.webTasks || {}, sec = Math.max(10, num((S.cfg.taskVerify || {}).seconds) || 10), now = Date.now();
+      const comp = []; Object.values(S.users).forEach(u => Object.keys(u.taskHistory || {}).forEach(k => comp.push({ uid: String(u.id), k, ts: num(u.taskHistory[k]), name: (w[k] || {}).name || k, reward: num((w[k] || {}).reward) })));
+      comp.sort((a, b) => b.ts - a.ts);
+      const pend = []; Object.keys(S.mxStarts || {}).forEach(u => Object.keys(S.mxStarts[u] || {}).forEach(k => { const st = num(S.mxStarts[u][k]); if (!(u in S.users && (S.users[u].taskHistory || {})[k])) pend.push({ uid: u, k, st, name: (w[k] || {}).name || k, ready: now - st >= sec * 1000 }); }));
+      pend.sort((a, b) => b.st - a.st);
+      const perTask = Object.keys(w).map(k => ({ k, name: w[k].name || k, n: comp.filter(c => c.k === k).length, reward: num(w[k].reward), on: w[k].visible !== false && !w[k].archived }));
+      return pageHead('Task Monitor', 'Completions, tasks waiting for verification and countdown rule. Create / edit / delete tasks stays in Task Management.', '<button class="btn" data-act="mxTvSave"' + (can('settings') ? '' : ' disabled') + '><i class="fas fa-floppy-disk"></i> Save rule</button>') + needLock('settings') +
+        grid(4, statCard('fa-circle-check', 'Completions', fint(comp.length), '') + statCard('fa-hourglass-half', 'Waiting for verification', fint(pend.length), fint(pend.filter(p => p.ready).length) + ' ready') + statCard('fa-list-check', 'Official tasks', fint(perTask.length), fint(perTask.filter(t => t.on).length) + ' live') + statCard('fa-coins', 'Rewards paid', fmt(comp.reduce((a, c) => a + c.reward, 0)) + ' ' + esc(sym()), 'Official tasks')) +
+        '<div class="card"><div class="ct"><i class="fas fa-stopwatch"></i> Verification countdown</div><div class="fr">' + fld('tv_s', 'Seconds before VERIFY unlocks (minimum 10)', sec, { type: 'number', min: 10, step: '1', hint: 'The start time is a server timestamp enforced by database rules; users cannot shorten it.' }) + '</div></div>' +
+        '<div class="card"><div class="ct"><i class="fas fa-hourglass-half"></i> Waiting for verification</div>' + tbl('mxtp', [{ h: 'User', f: r => userCell(r.uid) }, { h: 'Task', f: r => esc(r.name) }, { h: 'Started', f: r => esc(fdt(r.st)), v: r => r.st }, { h: 'State', f: r => r.ready ? pill('pending', 'Ready') : pill('inactive', 'Counting') }], pend, { hay: r => r.uid + r.name, ph: 'Search…', icon: 'fa-hourglass-half', empty: 'Nothing waiting', size: 10 }) + '</div>' +
+        '<div class="card"><div class="ct"><i class="fas fa-clock-rotate-left"></i> Completion history</div>' + tbl('mxtc', [{ h: 'When', f: r => esc(fdt(r.ts)), v: r => r.ts }, { h: 'User', f: r => userCell(r.uid) }, { h: 'Task', f: r => esc(r.name) }, { h: 'Reward', f: r => fmt(r.reward), right: true }], comp, { hay: r => r.uid + ' ' + uName(r.uid) + ' ' + r.name, ph: 'Search user or task…', icon: 'fa-inbox', csv: true, empty: 'No completions yet' }) + '</div>' +
+        '<div class="card"><div class="ct"><i class="fas fa-chart-simple"></i> Completions per task</div>' + tbl('mxtt', [{ h: 'Task', f: r => esc(r.name) }, { h: 'Status', f: r => r.on ? pill('active', 'Live') : pill('inactive', 'Off') }, { h: 'Completed', f: r => fint(r.n), v: r => r.n, right: true }, { h: 'Reward', f: r => fmt(r.reward), right: true }], perTask, { ph: 'Search…', icon: 'fa-list-check', empty: 'No official tasks', size: 10 }) + '</div>';
+    }
+  };
+  ACT.mxTvSave = (d, el) => runBtn(el, async () => { const s = Math.floor(nv('tv_s')); if (!(s >= 10)) return toast('Minimum is 10 seconds', 'er'); await saveCfg({ 'taskVerify/seconds': s }, 'task.verify'); });
+
   /* register nav (new section after "Earning") */
-  NAV.splice(4, 0, ['Mining & Rewards', [['mxhub', 'fa-hammer', 'Mining Settings'], ['mxlevels', 'fa-stairs', 'Level Editor'], ['mxusers', 'fa-user-gear', 'Mining Users'], ['mxstreak', 'fa-fire', 'Daily Streak'], ['mxquiz', 'fa-circle-question', 'Quiz Management'], ['mxpages', 'fa-table-cells-large', 'Pages & Modules']]]);
+  NAV.splice(4, 0, ['Mining & Rewards', [['mxhub', 'fa-hammer', 'Mining Settings'], ['mxlevels', 'fa-stairs', 'Level Editor'], ['mxusers', 'fa-user-gear', 'Mining Users'], ['mxmon', 'fa-gauge-high', 'Mining Monitor'], ['mxtasks', 'fa-list-check', 'Task Monitor'], ['mxstreak', 'fa-fire', 'Daily Streak'], ['mxpages', 'fa-table-cells-large', 'Pages & Modules']]]);
   try { renderNav(); } catch (e) {}
 })();
 

@@ -2124,11 +2124,16 @@ async function confirmInvest(){
       returnPct: planReturnPct(p), targetReturn: Number(planTarget(p, amt).toFixed(2)),
       startAt, matureAt, status: 'active', settledAt: null, payout: 0, settleNote: ''
     };
-    await invRef.set(rec);
-    await db.ref('users/' + uid + '/investments/' + invId).set({ invId, amount: amt, status: 'active', planName: rec.planName, startAt, matureAt });
-    await db.ref('users/' + uid + '/investedTotal').transaction(v => (num(v) + amt).toFixed(2));
-    await writeLedger(uid, { type: 'investment', direction: 'out', wallet: 'main', amount: amt, balanceAfter: nb, status: 'active', ref: invId, desc: 'Invested in ' + rec.planName });
-    await notifyApp('Investment started', 'Amount ' + money(amt) + ' locked in ' + rec.planName + ' until ' + fmtDate(matureAt), 'invest');
+    let written = false;
+    try {
+      await invRef.set(rec);
+      await db.ref('users/' + uid + '/investments/' + invId).set({ invId, amount: amt, status: 'active', planName: rec.planName, startAt, matureAt });
+      await db.ref('users/' + uid + '/investedTotal').transaction(v => (num(v) + amt).toFixed(2));
+      await writeLedger(uid, { type: 'investment', direction: 'out', wallet: 'main', amount: amt, balanceAfter: nb, status: 'active', ref: invId, desc: 'Invested in ' + rec.planName });
+      written = true;
+    } finally {
+      if (!written) await db.ref('users/' + uid + '/balance').transaction(v => (num(v) + amt).toFixed(2));
+    }    await notifyApp('Investment started', 'Amount ' + money(amt) + ' locked in ' + rec.planName + ' until ' + fmtDate(matureAt), 'invest');
     notifyUserTG('<b>Investment started</b>\nPlan: ' + rec.planName + '\nAmount: ' + money(amt) + ' ' + curSym() + '\nMatures: ' + fmtDate(matureAt) + '\nTarget return is not guaranteed.');
     notifyAdminTG('<b>New investment</b>\nUser: ' + uid + '\nPlan: ' + rec.planName + '\nAmount: ' + money(amt));
     toast('Investment started. Funds are locked until maturity.', 'ok');
